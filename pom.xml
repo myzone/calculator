@@ -3,6 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
+    <inceptionYear>2013</inceptionYear>
 
     <groupId>com.myzone</groupId>
     <artifactId>calculator</artifactId>
@@ -10,7 +11,6 @@
     <packaging>jar</packaging>
 
     <name>calculator</name>
-    <url>http://maven.apache.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -19,6 +19,7 @@
         <slf4j-version>1.7.2</slf4j-version>
 
         <junit-version>4.11</junit-version>
+        <powermock-version>1.5</powermock-version>
     </properties>
 
     <dependencies>
@@ -39,26 +40,78 @@
             <version>${slf4j-version}</version>
         </dependency>
 
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit-version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-core</artifactId>
-            <version>1.5</version>
+            <version>${powermock-version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-api-mockito</artifactId>
-            <version>1.5</version>
+            <version>${powermock-version}</version>
+            <scope>test</scope>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.mockito</groupId>-->
-            <!--<artifactId>mockito-all</artifactId>-->
-            <!--<version>1.9.5</version>-->
-        <!--</dependency>-->
     </dependencies>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>myzones</id>
+            <url>http://192.168.0.100:8080/nexus-2.3.1-01/content/repositories/myzones</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>myzones</id>
+            <url>http://192.168.0.100:8080/nexus-2.3.1-01/content/repositories/myzones</url>
+        </repository>
+        <repository>
+            <id>central</id>
+            <url>http://repo1.maven.org/maven2/</url>
+        </repository>
+    </repositories>
+
+    <contributors>
+        <contributor>
+            <name>Vyacheslav Goldenshteyn</name>
+            <email>vyacheslav.goldenshteyn@gmail.com</email>
+            <roles>
+                <role>designer</role>
+                <role>developer</role>
+                <role>tester</role>
+                <role>contributor</role>
+            </roles>
+        </contributor>
+    </contributors>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.0</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <testSource>1.8</testSource>
+                    <testTarget>1.8</testTarget>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.7</version>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
