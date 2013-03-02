@@ -39,7 +39,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
     private static final DecimalFormat SCIENTIFIC_DECIMAL_FORMAT;
     private static final DecimalFormat BIG_SCIENTIFIC_DECIMAL_FORMAT;
 
-    private static final String NORMAL_DECIMAL_FORMAT_PATTERN = "#0.###########";
+    private static final String NORMAL_DECIMAL_FORMAT_PATTERN = "#0.#################";
     private static final String SCIENTIFIC_DECIMAL_FORMAT_PATTERN = "0.000000E00";
 
     static {
@@ -573,6 +573,12 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                     return afterSingSelection;
 
                 case REVERSE:
+                    if(model.getDisplayText().startsWith("-")) {
+                        model.setDisplayText(model.getDisplayText().substring(1));
+                    } else {
+                        model.setDisplayText("-" + model.getDisplayText());
+                    }
+                    view.refresh();
                     return afterSingSelection;
 
                 case MEMORY_CLEAR:

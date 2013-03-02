@@ -208,7 +208,7 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).refresh();
-        assertEquals("0.00363945578", model.getDisplayText());
+        assertEquals("0.0036394557823129", model.getDisplayText());
     }
 
     @Test
@@ -409,7 +409,7 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).refresh();
-        assertEquals("2.73556479974", model.getDisplayText());
+        assertEquals("2.7355647997347607", model.getDisplayText());
     }
 
     @Test
@@ -423,7 +423,7 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).refresh();
-        assertEquals("1.65395429191", model.getDisplayText());
+        assertEquals("1.6539542919121921", model.getDisplayText());
     }
 
     @Test
@@ -444,7 +444,7 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).refresh();
-        assertEquals("12.07106781187", model.getDisplayText());
+        assertEquals("12.071067811865476", model.getDisplayText());
     }
 
     @Test
@@ -557,7 +557,6 @@ public class CalculatorStatesTest {
     }
 
     @Test
-    @Ignore("Until deploy")
     public void testNegativeOverflow() {
         assertEquals(0, stateMachine.run(
                 DIGIT_5,
@@ -580,7 +579,6 @@ public class CalculatorStatesTest {
                 MINUS,
                 REVERSE,
                 EVALUATE,
-                EVALUATE,
                 EVALUATE
         ).length);
 
@@ -589,8 +587,7 @@ public class CalculatorStatesTest {
     }
 
     @Test
-    @Ignore("Until deploy")
-    public void testTODO1() {
+    public void testPrecision() {
         assertEquals(0, stateMachine.run(
                 DOT,
                 DIGIT_0,
@@ -630,14 +627,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).refresh();
-
-        throw new NotImplementedException();
+        assertEquals("0.0000000000000001", model.getDisplayText());
     }
 
 
     @Test
-    @Ignore("Until deploy")
-    public void testTODO2() {
+    public void testPercentAfterSign() {
         assertEquals(0, stateMachine.run(
             DIGIT_2,
             DIVIDE,
@@ -646,13 +641,29 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).refresh();
-
-        throw new NotImplementedException();
+        assertEquals("0.0008", model.getDisplayText());
     }
 
-
     @Test
-    @Ignore("Until deploy")
+    public void testComplexEvaluations() {
+        assertEquals(0, stateMachine.run(
+                SQUARE_ROOT,
+                DIGIT_2,
+                MEMORY_PLUS,
+                MINUS,
+                DIGIT_1,
+                DIGIT_0,
+                PERCENT,
+                MEMORY_MINUS,
+                EVALUATE,
+                MEMORY_RESTORE,
+                EVALUATE
+        ).length);
+
+        verify(view, atLeastOnce()).refresh();
+        assertEquals("1.6", model.getDisplayText());
+    }
+
     public void testTODON() {
         assertEquals(0, stateMachine.run(
             DIVIDE

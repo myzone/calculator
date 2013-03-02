@@ -10,6 +10,8 @@ import java.util.Map;
  */
 public class CalculatorModel {
 
+    private static final int MAX_DISPLAY_TEXT_LENGTH = 16;
+
     private double lArg;
     private double rArg;
 
@@ -60,7 +62,10 @@ public class CalculatorModel {
 
     public void setDisplayText(String displayText) {
         this.displayText = displayText.substring(0, Math.min(
-                16 + (displayText.startsWith("-") ? 1 : 0) + (displayText.contains("e") ? 5 : 0),
+                MAX_DISPLAY_TEXT_LENGTH
+                        + (displayText.startsWith("-") ? 1 : 0)
+                        + (displayText.contains("e") ? 5 : 0)
+                        + (displayText.contains(".") ? 2 : 0),
                 displayText.length()
         ));
     }
