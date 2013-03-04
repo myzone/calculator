@@ -274,7 +274,7 @@ public class CalculatorView extends Application {
                                                                 .create()
                                                                 .minHeight(MIN_COLUMN_HEIGHT * 2 + SPACING_SIZE)
                                                                 .minWidth(MIN_COLUMN_WIDTH)
-                                                                .text("+/-")
+                                                                .text("±")
                                                                 .onMouseClicked(new SignalEmitter<>(REVERSE))
                                                                 .focusTraversable(false)
                                                                 .build(),
@@ -388,7 +388,7 @@ public class CalculatorView extends Application {
         stage.show();
     }
 
-    public void refresh() {
+    public void invalidate() {
         displayTextField.setText(model.getDisplayText());
 //        return null;
     }

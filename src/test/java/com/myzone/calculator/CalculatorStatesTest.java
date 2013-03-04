@@ -4,9 +4,8 @@ import com.myzone.calculator.model.CalculatorModel;
 import com.myzone.calculator.model.CalculatorStateFactory;
 import com.myzone.calculator.model.Signal;
 import com.myzone.calculator.view.CalculatorView;
-import com.myzone.utils.statemachine.TestEventStateMachine;
+import com.myzone.utils.statemachine.TestingEventStateMachine;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -22,13 +21,20 @@ public class CalculatorStatesTest {
 
     private CalculatorView view;
     private CalculatorModel model;
-    private TestEventStateMachine<Signal> stateMachine;
+    private TestingEventStateMachine<Signal> stateMachine;
 
     @Before
     public void setUp() throws Exception {
         view = mock(CalculatorView.class);
-        model = new CalculatorModel();
-        stateMachine = new TestEventStateMachine<>(new CalculatorStateFactory(model, view));
+        model = new CalculatorModel() {
+            @Override
+            public void setDisplayText(String displayText) {
+                super.setDisplayText(displayText);
+
+                System.out.println(getDisplayText());
+            }
+        };
+        stateMachine = new TestingEventStateMachine<>(new CalculatorStateFactory(model, view));
     }
 
     @Test
@@ -40,7 +46,7 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("4", model.getDisplayText());
     }
 
@@ -56,7 +62,7 @@ public class CalculatorStatesTest {
         ).length);
 
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("16", model.getDisplayText());
     }
 
@@ -70,7 +76,7 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("16", model.getDisplayText());
     }
 
@@ -82,7 +88,7 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("4", model.getDisplayText());
     }
 
@@ -102,7 +108,7 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("25", model.getDisplayText());
     }
 
@@ -125,7 +131,7 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("25", model.getDisplayText());
     }
 
@@ -147,7 +153,7 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("25", model.getDisplayText());
     }
 
@@ -165,7 +171,7 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("10", model.getDisplayText());
     }
 
@@ -184,7 +190,7 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("3.2", model.getDisplayText());
     }
 
@@ -207,7 +213,7 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("0.0036394557823129", model.getDisplayText());
     }
 
@@ -223,7 +229,7 @@ public class CalculatorStatesTest {
                 PERCENT
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("6.25", model.getDisplayText());
     }
 
@@ -240,7 +246,7 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("21.25", model.getDisplayText());
     }
 
@@ -252,7 +258,7 @@ public class CalculatorStatesTest {
                 PERCENT
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("0", model.getDisplayText());
     }
 
@@ -266,7 +272,7 @@ public class CalculatorStatesTest {
                 PERCENT
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("0.96", model.getDisplayText());
     }
 
@@ -281,7 +287,7 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("47.04", model.getDisplayText());
     }
 
@@ -295,7 +301,7 @@ public class CalculatorStatesTest {
                 DOT
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("0.", model.getDisplayText());
     }
 
@@ -309,7 +315,7 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("56", model.getDisplayText());
     }
 
@@ -324,7 +330,7 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("-56", model.getDisplayText());
     }
 
@@ -338,7 +344,7 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("ERR", model.getDisplayText());
     }
 
@@ -351,7 +357,7 @@ public class CalculatorStatesTest {
                 SQUARE_ROOT
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("ERR", model.getDisplayText());
     }
 
@@ -368,7 +374,7 @@ public class CalculatorStatesTest {
                 SQUARE_ROOT
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("ERR", model.getDisplayText());
     }
 
@@ -382,7 +388,7 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("6", model.getDisplayText());
     }
 
@@ -395,7 +401,7 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("3", model.getDisplayText());
     }
 
@@ -408,8 +414,8 @@ public class CalculatorStatesTest {
                 SQUARE_ROOT
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
-        assertEquals("2.7355647997347607", model.getDisplayText());
+        verify(view, atLeastOnce()).invalidate();
+        assertEquals("2.735564799734761", model.getDisplayText());
     }
 
     @Test
@@ -422,8 +428,8 @@ public class CalculatorStatesTest {
                 SQUARE_ROOT
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
-        assertEquals("1.6539542919121921", model.getDisplayText());
+        verify(view, atLeastOnce()).invalidate();
+        assertEquals("1.653954291912192", model.getDisplayText());
     }
 
     @Test
@@ -443,8 +449,8 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
-        assertEquals("12.071067811865476", model.getDisplayText());
+        verify(view, atLeastOnce()).invalidate();
+        assertEquals("12.07106781186548", model.getDisplayText());
     }
 
     @Test
@@ -462,7 +468,7 @@ public class CalculatorStatesTest {
                 BACK_SPACE
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("0", model.getDisplayText());
     }
 
@@ -486,7 +492,7 @@ public class CalculatorStatesTest {
                 BACK_SPACE
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("0", model.getDisplayText());
     }
 
@@ -510,7 +516,7 @@ public class CalculatorStatesTest {
                 DIGIT_2
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("55555.2", model.getDisplayText());
     }
 
@@ -524,7 +530,7 @@ public class CalculatorStatesTest {
                 REVERSE
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("56.", model.getDisplayText());
     }
 
@@ -552,7 +558,7 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("1.666667e+16", model.getDisplayText());
     }
 
@@ -582,7 +588,7 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("-1.666667e+16", model.getDisplayText());
     }
 
@@ -626,29 +632,29 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
-        assertEquals("0.0000000000000001", model.getDisplayText());
+        verify(view, atLeastOnce()).invalidate();
+        assertEquals("0.000000000000001", model.getDisplayText());
     }
 
 
     @Test
     public void testPercentAfterSign() {
         assertEquals(0, stateMachine.run(
-            DIGIT_2,
-            DIVIDE,
-            PERCENT,
-            PERCENT
+                DIGIT_2,
+                DIVIDE,
+                PERCENT,
+                PERCENT
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
         assertEquals("0.0008", model.getDisplayText());
     }
 
     @Test
     public void testComplexEvaluations() {
         assertEquals(0, stateMachine.run(
-                SQUARE_ROOT,
                 DIGIT_2,
+                SQUARE_ROOT,
                 MEMORY_PLUS,
                 MINUS,
                 DIGIT_1,
@@ -656,20 +662,109 @@ public class CalculatorStatesTest {
                 PERCENT,
                 MEMORY_MINUS,
                 EVALUATE,
-                MEMORY_RESTORE,
+                MEMORY_RESTORE
+        ).length);
+
+        verify(view, atLeastOnce()).invalidate();
+        assertEquals("1.272792206135786", model.getDisplayText());
+    }
+
+    @Test
+    public void testManyNullsAtBeginning() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_0,
+                DIGIT_0,
+                DIGIT_0,
+                DIGIT_0,
+                DIGIT_0,
+                DIGIT_0
+        ).length);
+
+        assertEquals("0", model.getDisplayText());
+    }
+
+    @Test
+    public void testManyNullsAfterSingSelection() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_1,
+                PLUS,
+                DIGIT_0,
+                DIGIT_0,
+                DIGIT_0,
+                DIGIT_0,
+                DIGIT_0
+        ).length);
+
+        verify(view, atLeastOnce()).invalidate();
+        assertEquals("0", model.getDisplayText());
+    }
+
+
+    @Test
+    public void testReverseNullsAtBeginning() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_0,
+                REVERSE
+        ).length);
+
+        assertEquals("0", model.getDisplayText());
+    }
+
+    @Test
+    public void testReverseNullsAfterSingSelection() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_1,
+                PLUS,
+                DIGIT_0,
+                REVERSE
+        ).length);
+
+        verify(view, atLeastOnce()).invalidate();
+        assertEquals("0", model.getDisplayText());
+    }
+
+    @Test
+    public void testManySquareRootMultiplications1() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_1,
+                DIGIT_6,
+                SQUARE_ROOT,
+                MULTIPLY,
+                SQUARE_ROOT,
+                MULTIPLY,
+                SQUARE_ROOT,
+                MULTIPLY,
                 EVALUATE
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
-        assertEquals("1.6", model.getDisplayText());
+        verify(view, atLeastOnce()).invalidate();
+        assertEquals("512", model.getDisplayText());
     }
+
+    @Test
+    public void testManySquareRootMultiplications2() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_1,
+                DIGIT_6,
+                MULTIPLY,
+                SQUARE_ROOT,
+                MULTIPLY,
+                SQUARE_ROOT,
+                MULTIPLY,
+                EVALUATE
+        ).length);
+
+        verify(view, atLeastOnce()).invalidate();
+        assertEquals("262144", model.getDisplayText());
+    }
+
 
     public void testTODON() {
         assertEquals(0, stateMachine.run(
-            DIVIDE
+                DIVIDE
         ).length);
 
-        verify(view, atLeastOnce()).refresh();
+        verify(view, atLeastOnce()).invalidate();
 
         throw new NotImplementedException();
     }

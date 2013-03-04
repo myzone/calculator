@@ -65,7 +65,7 @@ public class CalculatorModel {
                 MAX_DISPLAY_TEXT_LENGTH
                         + (displayText.startsWith("-") ? 1 : 0)
                         + (displayText.contains("e") ? 5 : 0)
-                        + (displayText.contains(".") ? 2 : 0),
+                        + (displayText.contains(".") ? 1 : 0),
                 displayText.length()
         ));
     }
