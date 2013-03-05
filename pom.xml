@@ -15,6 +15,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+        <statemachine-version>1.0-SNAPSHOT</statemachine-version>
+        <utils-commons-version>1.0-SNAPSHOT</utils-commons-version>
+
         <guava-version>13.0.1</guava-version>
         <slf4j-version>1.7.2</slf4j-version>
 
@@ -23,6 +26,17 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.myzone.utils</groupId>
+            <artifactId>statemachine</artifactId>
+            <version>${statemachine-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.myzone.utils</groupId>
+            <artifactId>commons</artifactId>
+            <version>${utils-commons-version}</version>
+        </dependency>
+
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
