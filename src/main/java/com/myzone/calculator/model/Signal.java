@@ -19,6 +19,7 @@ public enum Signal {
     EVALUATE("="),
 
     DOT("."),
+
     PLUS("+"),
     MINUS("-"),
     MULTIPLY("*"),
@@ -26,7 +27,7 @@ public enum Signal {
 
     PERCENT("%"),
     SQUARE_ROOT("√"),
-    REVERSE("+/-"),
+    REVERSE("±"),
 
     MEMORY_CLEAR("MC"),
     MEMORY_RESTORE("MR"),

@@ -10,8 +10,6 @@ import java.util.Map;
  */
 public class CalculatorModel {
 
-    private static final int MAX_DISPLAY_TEXT_LENGTH = 16;
-
     private double lArg;
     private double rArg;
 
@@ -49,6 +47,10 @@ public class CalculatorModel {
     }
 
     public double getMemory() {
+        if(!Double.isFinite(memory)) {
+            throw new ArithmeticException("Memory is overflowed");
+        }
+
         return memory;
     }
 
@@ -62,7 +64,7 @@ public class CalculatorModel {
 
     public void setDisplayText(String displayText) {
         this.displayText = displayText.substring(0, Math.min(
-                MAX_DISPLAY_TEXT_LENGTH
+                17
                         + (displayText.startsWith("-") ? 1 : 0)
                         + (displayText.contains("e") ? 5 : 0)
                         + (displayText.contains(".") ? 1 : 0),

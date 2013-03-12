@@ -1,13 +1,12 @@
 package com.myzone.calculator.model;
 
 import com.myzone.calculator.view.CalculatorView;
+import com.myzone.utils.Converter;
 import com.myzone.utils.statemachine.State;
+import org.jetbrains.annotations.NotNull;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.ParseException;
-
-import static java.lang.Math.abs;
+import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
 /**
@@ -16,56 +15,7 @@ import static java.lang.Math.sqrt;
  */
 public class CalculatorStateFactory implements State.Factory<Signal> {
 
-    private static final State<Signal> ERR = new State<Signal>() {
-        @Override
-        public State<Signal> react(Signal stimulus) {
-            return this;
-        }
-
-        @Override
-        public String toString() {
-            return "ERR";
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return false;
-        }
-    };
-
-    private static final double MAX_THRESHOLD = Math.pow(10, 10);
-
-    private static final DecimalFormat NORMAL_DECIMAL_FORMAT;
-    private static final DecimalFormat SCIENTIFIC_DECIMAL_FORMAT;
-    private static final DecimalFormat BIG_SCIENTIFIC_DECIMAL_FORMAT;
-
-    private static final String NORMAL_DECIMAL_FORMAT_PATTERN = "#0.###############";
-    private static final String SCIENTIFIC_DECIMAL_FORMAT_PATTERN = "0.000000E00";
-
-    static {
-        DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols();
-        decimalFormatSymbols.setDecimalSeparator('.');
-        decimalFormatSymbols.setExponentSeparator("e");
-
-        NORMAL_DECIMAL_FORMAT = new DecimalFormat();
-        NORMAL_DECIMAL_FORMAT.applyPattern(NORMAL_DECIMAL_FORMAT_PATTERN);
-        NORMAL_DECIMAL_FORMAT.setDecimalSeparatorAlwaysShown(false);
-        NORMAL_DECIMAL_FORMAT.setDecimalFormatSymbols(decimalFormatSymbols);
-
-        SCIENTIFIC_DECIMAL_FORMAT = new DecimalFormat();
-        SCIENTIFIC_DECIMAL_FORMAT.applyPattern(SCIENTIFIC_DECIMAL_FORMAT_PATTERN);
-        SCIENTIFIC_DECIMAL_FORMAT.setDecimalSeparatorAlwaysShown(false);
-        SCIENTIFIC_DECIMAL_FORMAT.setDecimalFormatSymbols(decimalFormatSymbols);
-
-        DecimalFormatSymbols bigDecimalFormatSymbols = new DecimalFormatSymbols();
-        bigDecimalFormatSymbols.setDecimalSeparator('.');
-        bigDecimalFormatSymbols.setExponentSeparator("e+");
-
-        BIG_SCIENTIFIC_DECIMAL_FORMAT = new DecimalFormat();
-        BIG_SCIENTIFIC_DECIMAL_FORMAT.applyPattern(SCIENTIFIC_DECIMAL_FORMAT_PATTERN);
-        BIG_SCIENTIFIC_DECIMAL_FORMAT.setDecimalSeparatorAlwaysShown(false);
-        BIG_SCIENTIFIC_DECIMAL_FORMAT.setDecimalFormatSymbols(bigDecimalFormatSymbols);
-    }
+    protected static final Converter<String, Double> DOUBLE_CONVERTER = new DoubleConverter(16, pow(10D, 16D), pow(10D, -16D));
 
     protected CalculatorModel model;
     protected CalculatorView view;
@@ -80,7 +30,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
     protected State<Signal> afterEvaluation;
     protected State<Signal> errorInputState;
 
-    public CalculatorStateFactory(CalculatorModel model, CalculatorView view) {
+    public CalculatorStateFactory(@NotNull CalculatorModel model, @NotNull CalculatorView view) {
         this.model = model;
         this.view = view;
 
@@ -96,7 +46,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
     }
 
     private State<Signal> createInitialState() {
-        return new LoggableState<>("initialState", (signal) -> {
+        return new LoggableState<>("initialState", signal -> {
             switch (signal) {
                 case DIGIT_0:
                     if ("0".equals(model.getDisplayText()))
@@ -148,7 +98,6 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                 case CLEAR:
                     model.setlArg(0);
                     model.setrArg(0);
-                    model.setMemory(0);
                     model.setDisplayText("0");
                     view.invalidate();
                     return initialState;
@@ -217,9 +166,9 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                     model.setMemory(model.getMemory() - parseDouble(model.getDisplayText()));
                     return initialState;
 
-                default:
-                    return ERR;
             }
+
+            throw new RuntimeException();
         });
     }
 
@@ -350,10 +299,9 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                 case MEMORY_MINUS:
                     model.setMemory(model.getMemory() - parseDouble(model.getDisplayText()));
                     return afterDigitInLArg;
-
-                default:
-                    return ERR;
             }
+
+            throw new RuntimeException();
         });
     }
 
@@ -406,7 +354,6 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                 case CLEAR:
                     model.setlArg(0);
                     model.setrArg(0);
-                    model.setMemory(0);
                     model.setDisplayText("0");
                     view.invalidate();
                     return initialState;
@@ -482,10 +429,9 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                 case MEMORY_MINUS:
                     model.setMemory(model.getMemory() - parseDouble(model.getDisplayText()));
                     return afterDotInLArg;
-
-                default:
-                    return ERR;
             }
+
+            throw new RuntimeException();
         });
     }
 
@@ -538,7 +484,6 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                 case CLEAR:
                     model.setlArg(0);
                     model.setrArg(0);
-                    model.setMemory(0);
                     model.setDisplayText("0");
                     view.invalidate();
                     return initialState;
@@ -560,7 +505,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                 case PERCENT:
                     model.setDisplayText(renderDouble(model.getlArg() * parseDouble(model.getDisplayText()) / 100));
                     view.invalidate();
-                    return afterSingSelection;
+                    return afterChangeInRArg;
 
                 case SQUARE_ROOT:
                     try {
@@ -604,7 +549,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         return errorInputState;
                     }
                     view.invalidate();
-                    return afterSingSelection;
+                    return afterChangeInRArg;
 
                 case MEMORY_PLUS:
                     model.setMemory(model.getMemory() + parseDouble(model.getDisplayText()));
@@ -613,10 +558,9 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                 case MEMORY_MINUS:
                     model.setMemory(model.getMemory() - parseDouble(model.getDisplayText()));
                     return afterSingSelection;
-
-                default:
-                    return ERR;
             }
+
+            throw new RuntimeException();
         });
     }
 
@@ -672,7 +616,6 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                 case CLEAR:
                     model.setlArg(0);
                     model.setrArg(0);
-                    model.setMemory(0);
                     model.setDisplayText("0");
                     view.invalidate();
                     return initialState;
@@ -747,10 +690,9 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                 case MEMORY_MINUS:
                     model.setMemory(model.getMemory() - parseDouble(model.getDisplayText()));
                     return afterSingSelection;
-
-                default:
-                    return ERR;
             }
+
+            throw new RuntimeException();
         });
     }
 
@@ -811,7 +753,6 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                 case CLEAR:
                     model.setlArg(0);
                     model.setrArg(0);
-                    model.setMemory(0);
                     model.setDisplayText("0");
                     view.invalidate();
                     return initialState;
@@ -887,10 +828,9 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                 case MEMORY_MINUS:
                     model.setMemory(model.getMemory() - parseDouble(model.getDisplayText()));
                     return afterDigitInRArg;
-
-                default:
-                    return ERR;
             }
+
+            throw new RuntimeException();
         });
     }
 
@@ -949,7 +889,6 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                 case CLEAR:
                     model.setlArg(0);
                     model.setrArg(0);
-                    model.setMemory(0);
                     model.setDisplayText("0");
                     view.invalidate();
                     return initialState;
@@ -1025,10 +964,9 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                 case MEMORY_MINUS:
                     model.setMemory(model.getMemory() - parseDouble(model.getDisplayText()));
                     return afterDotInRArg;
-
-                default:
-                    return ERR;
             }
+
+            throw new RuntimeException();
         });
     }
 
@@ -1079,7 +1017,6 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                 case CLEAR:
                     model.setlArg(0);
                     model.setrArg(0);
-                    model.setMemory(0);
                     model.setDisplayText("0");
                     view.invalidate();
                     return initialState;
@@ -1094,7 +1031,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                     return afterEvaluation;
 
                 case PERCENT:
-                    model.setDisplayText(renderDouble(model.getlArg() * parseDouble(model.getDisplayText()) / 100));
+                    model.setDisplayText(renderDouble(model.getlArg() / 100 * parseDouble(model.getDisplayText())));
                     view.invalidate();
                     return afterEvaluation;
 
@@ -1150,10 +1087,9 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                 case MEMORY_MINUS:
                     model.setMemory(model.getMemory() - parseDouble(model.getDisplayText()));
                     return afterEvaluation;
-
-                default:
-                    return ERR;
             }
+
+            throw new RuntimeException();
         });
     }
 
@@ -1161,7 +1097,6 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
         return new LoggableState<>("errorInputState", (signal) -> {
             switch (signal) {
                 case CLEAR:
-                    model.setMemory(0);
                 case CLEAR_EVALUATION:
                     model.setlArg(0);
                     model.setrArg(0);
@@ -1176,11 +1111,13 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
     }
 
     @Override
+    @NotNull
     public State<Signal> getStartState() {
         return initialState;
     }
 
     @Override
+    @NotNull
     public State<Signal> getEndState() {
         // this state machine have not any end state, so it's fake end state
         return new State<Signal>() {
@@ -1196,13 +1133,14 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
         protected final String name;
         protected final State<S> decorated;
 
-        public LoggableState(String name, State<S> decorated) {
+        public LoggableState(String name, @NotNull State<S> decorated) {
             this.name = name;
             this.decorated = decorated;
         }
 
         @Override
-        public State<S> react(S stimulus) {
+        @NotNull
+        public State<S> react(@NotNull S stimulus) {
             return decorated.react(stimulus);
         }
 
@@ -1214,12 +1152,8 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
     private static double parseDouble(String s) {
         try {
-            return (s.contains("e+")
-                    ? BIG_SCIENTIFIC_DECIMAL_FORMAT
-                    : (s.contains("e")
-                    ? SCIENTIFIC_DECIMAL_FORMAT
-                    : NORMAL_DECIMAL_FORMAT)).parse(s).doubleValue();
-        } catch (ParseException e) {
+            return DOUBLE_CONVERTER.parse(s);
+        } catch (Exception e) {
             return Double.NaN;
         }
     }
@@ -1229,11 +1163,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
             throw new ArithmeticException("Double is NaN");
         }
 
-        return (abs(d) < MAX_THRESHOLD
-                ? NORMAL_DECIMAL_FORMAT
-                : (abs(d) > 1
-                ? BIG_SCIENTIFIC_DECIMAL_FORMAT
-                : SCIENTIFIC_DECIMAL_FORMAT)).format(d);
+        return DOUBLE_CONVERTER.render(d);
     }
 
 }

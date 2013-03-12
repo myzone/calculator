@@ -19,6 +19,9 @@
         <utils-commons-version>1.0-SNAPSHOT</utils-commons-version>
 
         <guava-version>13.0.1</guava-version>
+        <apache-commons-version>3.1</apache-commons-version>
+
+        <intellij-annotations-version>9.0.4</intellij-annotations-version>
         <slf4j-version>1.7.2</slf4j-version>
 
         <junit-version>4.11</junit-version>
@@ -37,12 +40,23 @@
             <version>${utils-commons-version}</version>
         </dependency>
 
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${apache-commons-version}</version>
+        </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${guava-version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.intellij</groupId>
+            <artifactId>annotations</artifactId>
+            <version>${intellij-annotations-version}</version>
+        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
