@@ -4,19 +4,10 @@ import com.myzone.calculator.model.CalculatorModel;
 import com.myzone.calculator.model.CalculatorStateFactory;
 import com.myzone.calculator.model.Signal;
 import com.myzone.calculator.view.CalculatorView;
-import com.myzone.utils.statemachine.State;
 import com.myzone.utils.statemachine.TestingEventStateMachine;
-import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.mockito.Mockito;
-import org.slf4j.LoggerFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import static com.myzone.calculator.model.Signal.*;
 import static org.junit.Assert.assertEquals;
@@ -638,7 +629,6 @@ public class CalculatorStatesTest {
         assertEquals("0.0000000000000001", model.getDisplayText());
     }
 
-
     @Test
     public void testPercentAfterSign() {
         assertEquals(0, stateMachine.run(
@@ -710,7 +700,6 @@ public class CalculatorStatesTest {
         assertEquals("0", model.getDisplayText());
     }
 
-
     @Test
     public void testReverseNullsAtBeginning() {
         assertEquals(0, stateMachine.run(
@@ -734,7 +723,7 @@ public class CalculatorStatesTest {
         assertEquals("0", model.getDisplayText());
     }
 
-//    @Test
+    //    @Test
     public void testManySquareRootMultiplications1() {
         assertEquals(0, stateMachine.run(
                 DIGIT_1,
@@ -800,6 +789,39 @@ public class CalculatorStatesTest {
 
         verify(view, atLeastOnce()).invalidate();
         assertEquals("4", model.getDisplayText());
+    }
+
+    @Test
+    public void testMinusZero() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_0,
+                DOT,
+                DIGIT_0,
+                DIGIT_0,
+                DIGIT_0,
+                DIGIT_0,
+                REVERSE,
+                BACK_SPACE,
+                BACK_SPACE,
+                BACK_SPACE,
+                BACK_SPACE,
+                BACK_SPACE
+        ).length);
+
+        verify(view, atLeastOnce()).invalidate();
+        assertEquals("0", model.getDisplayText());
+    }
+
+    @Test
+    public void testReverseSquareRoot() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_2,
+                SQUARE_ROOT,
+                REVERSE
+        ).length);
+
+        verify(view, atLeastOnce()).invalidate();
+        assertEquals("-1.414213562373095", model.getDisplayText());
     }
 
     public void testTODON() {

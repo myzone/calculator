@@ -49,7 +49,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
         return new LoggableState<>("initialState", signal -> {
             switch (signal) {
                 case DIGIT_0:
-                    if ("0".equals(model.getDisplayText()))
+                    if (!"0".equals(model.getDisplayText()))
                         return initialState;
                 case DIGIT_1:
                 case DIGIT_2:
@@ -137,6 +137,13 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                     return initialState;
 
                 case REVERSE:
+                    if (!"0".equals(model.getDisplayText())) {
+                        if (model.getDisplayText().startsWith("-")) {
+                            model.setDisplayText(model.getDisplayText().substring(1));
+                        } else {
+                            model.setDisplayText("-" + model.getDisplayText());
+                        }
+                    }
                     return initialState;
 
                 case MEMORY_CLEAR:
@@ -235,13 +242,10 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                 case BACK_SPACE:
                     model.setDisplayText(model.getDisplayText().substring(0, model.getDisplayText().length() - 1));
-                    if (model.getDisplayText().isEmpty() || "-".equals(model.getDisplayText())) {
+                    if (model.getDisplayText().isEmpty() || "-".equals(model.getDisplayText()) || "-0".equals(model.getDisplayText())) {
                         model.setDisplayText("0");
                     }
                     view.invalidate();
-                    if (model.getDisplayText().startsWith("-")) {
-                        return model.getDisplayText().length() < 3 ? initialState : afterDigitInLArg;
-                    }
                     return model.getDisplayText().length() < 3 ? initialState : afterDigitInLArg;
 
                 case PERCENT:
@@ -265,10 +269,12 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                     return initialState;
 
                 case REVERSE:
-                    if (model.getDisplayText().startsWith("-")) {
-                        model.setDisplayText(model.getDisplayText().substring(1));
-                    } else {
-                        model.setDisplayText("-" + model.getDisplayText());
+                    if (!"0".equals(model.getDisplayText())) {
+                        if (model.getDisplayText().startsWith("-")) {
+                            model.setDisplayText(model.getDisplayText().substring(1));
+                        } else {
+                            model.setDisplayText("-" + model.getDisplayText());
+                        }
                     }
                     view.invalidate();
                     return afterDigitInLArg;
@@ -367,10 +373,16 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                 case BACK_SPACE:
                     if (model.getDisplayText().charAt(model.getDisplayText().length() - 1) == '.') {
                         model.setDisplayText(model.getDisplayText().substring(0, model.getDisplayText().length() - 1));
+                        if (model.getDisplayText().isEmpty() || "-".equals(model.getDisplayText()) || "-0".equals(model.getDisplayText())) {
+                            model.setDisplayText("0");
+                        }
                         view.invalidate();
                         return afterDigitInLArg;
                     }
                     model.setDisplayText(model.getDisplayText().substring(0, model.getDisplayText().length() - 1));
+                    if("0".equals(model.getDisplayText()) || "-0".equals(model.getDisplayText())) {
+                        model.setDisplayText("0");
+                    }
                     view.invalidate();
                     return afterDotInLArg;
 
@@ -395,10 +407,12 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                     return initialState;
 
                 case REVERSE:
-                    if (model.getDisplayText().startsWith("-")) {
-                        model.setDisplayText(model.getDisplayText().substring(1));
-                    } else {
-                        model.setDisplayText("-" + model.getDisplayText());
+                    if (!"0".equals(model.getDisplayText())) {
+                        if (model.getDisplayText().startsWith("-")) {
+                            model.setDisplayText(model.getDisplayText().substring(1));
+                        } else {
+                            model.setDisplayText("-" + model.getDisplayText());
+                        }
                     }
                     view.invalidate();
                     return afterDotInLArg;
@@ -496,7 +510,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                 case BACK_SPACE:
                     model.setDisplayText(model.getDisplayText().substring(0, model.getDisplayText().length() - 1));
-                    if (model.getDisplayText().isEmpty() || "-".equals(model.getDisplayText())) {
+                    if (model.getDisplayText().isEmpty() || "-".equals(model.getDisplayText()) || "-0".equals(model.getDisplayText())) {
                         model.setDisplayText("0");
                     }
                     view.invalidate();
@@ -628,7 +642,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                 case BACK_SPACE:
                     model.setDisplayText(model.getDisplayText().substring(0, model.getDisplayText().length() - 1));
-                    if (model.getDisplayText().isEmpty() || "-".equals(model.getDisplayText())) {
+                    if (model.getDisplayText().isEmpty() || "-".equals(model.getDisplayText()) || "-0".equals(model.getDisplayText())) {
                         model.setDisplayText("0");
                     }
                     view.invalidate();
@@ -765,13 +779,10 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                 case BACK_SPACE:
                     model.setDisplayText(model.getDisplayText().substring(0, model.getDisplayText().length() - 1));
-                    if (model.getDisplayText().isEmpty() || "-".equals(model.getDisplayText())) {
+                    if (model.getDisplayText().isEmpty() || "-".equals(model.getDisplayText()) ||  "-0".equals(model.getDisplayText())) {
                         model.setDisplayText("0");
                     }
                     view.invalidate();
-                    if (model.getDisplayText().startsWith("-")) {
-                        return model.getDisplayText().length() < 3 ? initialState : afterDigitInLArg;
-                    }
                     return model.getDisplayText().length() < 3 ? initialState : afterDigitInLArg;
 
                 case PERCENT:
@@ -794,10 +805,12 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                     return afterChangeInRArg;
 
                 case REVERSE:
-                    if (model.getDisplayText().startsWith("-")) {
-                        model.setDisplayText(model.getDisplayText().substring(1));
-                    } else {
-                        model.setDisplayText("-" + model.getDisplayText());
+                    if (!"0".equals(model.getDisplayText())) {
+                        if (model.getDisplayText().startsWith("-")) {
+                            model.setDisplayText(model.getDisplayText().substring(1));
+                        } else {
+                            model.setDisplayText("-" + model.getDisplayText());
+                        }
                     }
                     view.invalidate();
                     return afterDigitInRArg;
@@ -902,10 +915,16 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                 case BACK_SPACE:
                     if (model.getDisplayText().charAt(model.getDisplayText().length() - 1) == '.') {
                         model.setDisplayText(model.getDisplayText().substring(0, model.getDisplayText().length() - 1));
+                        if (model.getDisplayText().isEmpty() || "-".equals(model.getDisplayText()) || "-0".equals(model.getDisplayText())) {
+                            model.setDisplayText("0");
+                        }
                         view.invalidate();
                         return afterDigitInRArg;
                     }
                     model.setDisplayText(model.getDisplayText().substring(0, model.getDisplayText().length() - 1));
+                    if (model.getDisplayText().isEmpty() || "-".equals(model.getDisplayText()) || "-0".equals(model.getDisplayText())) {
+                        model.setDisplayText("0");
+                    }
                     view.invalidate();
                     return afterDotInRArg;
 
@@ -930,10 +949,12 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                     return afterChangeInRArg;
 
                 case REVERSE:
-                    if (model.getDisplayText().startsWith("-")) {
-                        model.setDisplayText(model.getDisplayText().substring(1));
-                    } else {
-                        model.setDisplayText("-" + model.getDisplayText());
+                    if (!"0".equals(model.getDisplayText())) {
+                        if (model.getDisplayText().startsWith("-")) {
+                            model.setDisplayText(model.getDisplayText().substring(1));
+                        } else {
+                            model.setDisplayText("-" + model.getDisplayText());
+                        }
                     }
                     view.invalidate();
                     return afterDotInRArg;
