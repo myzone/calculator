@@ -12,7 +12,7 @@ import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.repeat;
 
 /**
- * @author : myzone
+ * @author: myzone
  * @date: 05.03.13 19:20
  */
 public class DoubleConverter implements Converter<String, Double> {

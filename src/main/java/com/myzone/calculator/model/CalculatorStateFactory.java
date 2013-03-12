@@ -49,7 +49,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
         return new LoggableState<>("initialState", signal -> {
             switch (signal) {
                 case DIGIT_0:
-                    if (!"0".equals(model.getDisplayText()))
+                    if ("0".equals(model.getDisplayText()))
                         return initialState;
                 case DIGIT_1:
                 case DIGIT_2:

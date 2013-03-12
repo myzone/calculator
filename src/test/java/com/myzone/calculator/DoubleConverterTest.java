@@ -8,7 +8,7 @@ import static java.lang.Math.pow;
 import static org.junit.Assert.assertEquals;
 
 /**
- * @author : myzone
+ * @author: myzone
  * @date: 06.03.13 2:49
  */
 public class DoubleConverterTest {
