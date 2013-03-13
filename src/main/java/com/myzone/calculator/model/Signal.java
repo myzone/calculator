@@ -28,6 +28,7 @@ public enum Signal {
     PERCENT("%"),
     SQUARE_ROOT("√"),
     REVERSE("±"),
+    INVERSE("1/x"),
 
     MEMORY_CLEAR("MC"),
     MEMORY_RESTORE("MR"),

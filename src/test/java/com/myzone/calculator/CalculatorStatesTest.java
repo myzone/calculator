@@ -667,7 +667,7 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("2.220446049250313e-16", model.getDisplayText());
+        assertEquals("0.0000000000000002", model.getDisplayText());
     }
 
     @Test

@@ -272,10 +272,18 @@ public class CalculatorView extends Application {
                                                 .children(
                                                         ButtonBuilder
                                                                 .create()
-                                                                .minHeight(MIN_COLUMN_HEIGHT * 2 + SPACING_SIZE)
+                                                                .minHeight(MIN_COLUMN_HEIGHT)
                                                                 .minWidth(MIN_COLUMN_WIDTH)
                                                                 .text("±")
                                                                 .onMouseClicked(new SignalEmitter<>(REVERSE))
+                                                                .focusTraversable(false)
+                                                                .build(),
+                                                        ButtonBuilder
+                                                                .create()
+                                                                .minHeight(MIN_COLUMN_HEIGHT)
+                                                                .minWidth(MIN_COLUMN_WIDTH)
+                                                                .text("xˉ¹")
+                                                                .onMouseClicked(new SignalEmitter<>(INVERSE))
                                                                 .focusTraversable(false)
                                                                 .build(),
                                                         ButtonBuilder
@@ -388,9 +396,8 @@ public class CalculatorView extends Application {
         stage.show();
     }
 
-    public void invalidate() {
+    public synchronized void invalidate() {
         displayTextField.setText(model.getDisplayText());
-//        return null;
     }
 
     protected class SignalEmitter<E extends Event> extends StimulusEmitter<Signal, E> {

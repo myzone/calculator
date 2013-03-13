@@ -4,7 +4,6 @@ import com.myzone.calculator.view.CalculatorView;
 import com.myzone.utils.Converter;
 import com.myzone.utils.statemachine.State;
 import org.jetbrains.annotations.NotNull;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
@@ -15,11 +14,9 @@ import static java.lang.Math.sqrt;
  */
 public class CalculatorStateFactory implements State.Factory<Signal> {
 
-    protected static final Converter<String, Double> DOUBLE_CONVERTER = new DoubleConverter(16, pow(10D, 15D), pow(10D, -15D));
-
+    protected static final Converter<String, Double> DOUBLE_CONVERTER = new DoubleConverter(16, pow(10D, 16D), pow(10D, -16D));
     protected CalculatorModel model;
     protected CalculatorView view;
-
     protected State<Signal> initialState;
     protected State<Signal> afterDigitInLArg;
     protected State<Signal> afterDotInLArg;
@@ -43,6 +40,22 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
         afterDotInRArg = createAfterDotInRArg();
         afterEvaluation = createAfterEvaluation();
         errorInputState = createErrorInputState();
+    }
+
+    private static double parseDouble(String s) {
+        try {
+            return DOUBLE_CONVERTER.parse(s);
+        } catch (Exception e) {
+            return Double.NaN;
+        }
+    }
+
+    private static String renderDouble(double d) {
+        if (Double.isNaN(d) || Double.isInfinite(d)) {
+            throw new ArithmeticException("Double is NaN");
+        }
+
+        return DOUBLE_CONVERTER.render(d);
     }
 
     private State<Signal> createInitialState() {
@@ -144,6 +157,18 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                             model.setDisplayText("-" + model.getDisplayText());
                         }
                     }
+                    view.invalidate();
+                    return initialState;
+
+                case INVERSE:
+                    try {
+                        model.setDisplayText(renderDouble(1D / parseDouble(model.getDisplayText())));
+                    } catch (Exception e) {
+                        model.setDisplayText("ERR");
+                        view.invalidate();
+                        return errorInputState;
+                    }
+                    view.invalidate();
                     return initialState;
 
                 case MEMORY_CLEAR:
@@ -279,6 +304,17 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                     view.invalidate();
                     return afterDigitInLArg;
 
+                case INVERSE:
+                    try {
+                        model.setDisplayText(renderDouble(1D / parseDouble(model.getDisplayText())));
+                    } catch (Exception e) {
+                        model.setDisplayText("ERR");
+                        view.invalidate();
+                        return errorInputState;
+                    }
+                    view.invalidate();
+                    return afterDigitInLArg;
+
                 case MEMORY_CLEAR:
                     model.setMemory(0);
                     return afterDigitInLArg;
@@ -380,7 +416,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         return afterDigitInLArg;
                     }
                     model.setDisplayText(model.getDisplayText().substring(0, model.getDisplayText().length() - 1));
-                    if("0".equals(model.getDisplayText()) || "-0".equals(model.getDisplayText())) {
+                    if ("0".equals(model.getDisplayText()) || "-0".equals(model.getDisplayText())) {
                         model.setDisplayText("0");
                     }
                     view.invalidate();
@@ -413,6 +449,17 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         } else {
                             model.setDisplayText("-" + model.getDisplayText());
                         }
+                    }
+                    view.invalidate();
+                    return afterDotInLArg;
+
+                case INVERSE:
+                    try {
+                        model.setDisplayText(renderDouble(1D / parseDouble(model.getDisplayText())));
+                    } catch (Exception e) {
+                        model.setDisplayText("ERR");
+                        view.invalidate();
+                        return errorInputState;
                     }
                     view.invalidate();
                     return afterDotInLArg;
@@ -544,6 +591,18 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                             model.setDisplayText("-" + model.getDisplayText());
                         }
                     }
+                    view.invalidate();
+                    return afterSingSelection;
+
+                case INVERSE:
+                    try {
+                        model.setDisplayText(renderDouble(1D / parseDouble(model.getDisplayText())));
+                    } catch (Exception e) {
+                        model.setDisplayText("ERR");
+                        view.invalidate();
+                        return errorInputState;
+                    }
+                    view.invalidate();
                     return afterSingSelection;
 
                 case MEMORY_CLEAR:
@@ -676,6 +735,18 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                             model.setDisplayText("-" + model.getDisplayText());
                         }
                     }
+                    view.invalidate();
+                    return afterSingSelection;
+
+                case INVERSE:
+                    try {
+                        model.setDisplayText(renderDouble(1D / parseDouble(model.getDisplayText())));
+                    } catch (Exception e) {
+                        model.setDisplayText("ERR");
+                        view.invalidate();
+                        return errorInputState;
+                    }
+                    view.invalidate();
                     return afterSingSelection;
 
                 case MEMORY_CLEAR:
@@ -779,7 +850,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                 case BACK_SPACE:
                     model.setDisplayText(model.getDisplayText().substring(0, model.getDisplayText().length() - 1));
-                    if (model.getDisplayText().isEmpty() || "-".equals(model.getDisplayText()) ||  "-0".equals(model.getDisplayText())) {
+                    if (model.getDisplayText().isEmpty() || "-".equals(model.getDisplayText()) || "-0".equals(model.getDisplayText())) {
                         model.setDisplayText("0");
                     }
                     view.invalidate();
@@ -811,6 +882,17 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         } else {
                             model.setDisplayText("-" + model.getDisplayText());
                         }
+                    }
+                    view.invalidate();
+                    return afterDigitInRArg;
+
+                case INVERSE:
+                    try {
+                        model.setDisplayText(renderDouble(1D / parseDouble(model.getDisplayText())));
+                    } catch (Exception e) {
+                        model.setDisplayText("ERR");
+                        view.invalidate();
+                        return errorInputState;
                     }
                     view.invalidate();
                     return afterDigitInRArg;
@@ -957,7 +1039,18 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         }
                     }
                     view.invalidate();
-                    return afterDotInRArg;
+                    return afterChangeInRArg;
+
+                case INVERSE:
+                    try {
+                        model.setDisplayText(renderDouble(1D / parseDouble(model.getDisplayText())));
+                    } catch (Exception e) {
+                        model.setDisplayText("ERR");
+                        view.invalidate();
+                        return errorInputState;
+                    }
+                    view.invalidate();
+                    return afterChangeInRArg;
 
                 case MEMORY_CLEAR:
                     model.setMemory(0);
@@ -1078,8 +1171,19 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         } else {
                             model.setDisplayText("-" + model.getDisplayText());
                         }
-                        view.invalidate();
                     }
+                    view.invalidate();
+                    return afterEvaluation;
+
+                case INVERSE:
+                    try {
+                        model.setDisplayText(renderDouble(1D / parseDouble(model.getDisplayText())));
+                    } catch (Exception e) {
+                        model.setDisplayText("ERR");
+                        view.invalidate();
+                        return errorInputState;
+                    }
+                    view.invalidate();
                     return afterEvaluation;
 
                 case MEMORY_CLEAR:
@@ -1169,22 +1273,6 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
         public String toString() {
             return name;
         }
-    }
-
-    private static double parseDouble(String s) {
-        try {
-            return DOUBLE_CONVERTER.parse(s);
-        } catch (Exception e) {
-            return Double.NaN;
-        }
-    }
-
-    private static String renderDouble(double d) {
-        if (Double.isNaN(d) || Double.isInfinite(d)) {
-            throw new ArithmeticException("Double is NaN");
-        }
-
-        return DOUBLE_CONVERTER.render(d);
     }
 
 }
