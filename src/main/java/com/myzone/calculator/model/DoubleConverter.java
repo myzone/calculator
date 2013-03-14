@@ -66,8 +66,6 @@ public class DoubleConverter implements Converter<String, Double> {
 
         if (source == 0D || source == -0D) {
             return "0";
-        } else if (abs(1 - source) < 1000 * minThreshold) {
-            return "1";
         } else if (abs(source) > maxThreshold) {
             formatter = bigScientificDecimalFormat;
             formatter.applyPattern(format(

@@ -723,7 +723,7 @@ public class CalculatorStatesTest {
         assertEquals("0", model.getDisplayText());
     }
 
-    //    @Test
+    @Test
     public void testManySquareRootMultiplications1() {
         assertEquals(0, stateMachine.run(
                 DIGIT_1,
@@ -823,6 +823,21 @@ public class CalculatorStatesTest {
         verify(view, atLeastOnce()).invalidate();
         assertEquals("-1.414213562373095", model.getDisplayText());
     }
+
+    @Test
+    public void testDoubleInverse() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_7,
+                DIGIT_4,
+                DIGIT_3,
+                INVERSE,
+                INVERSE
+        ).length);
+
+        verify(view, atLeastOnce()).invalidate();
+        assertEquals("743", model.getDisplayText());
+    }
+
 
     public void testTODON() {
         assertEquals(0, stateMachine.run(

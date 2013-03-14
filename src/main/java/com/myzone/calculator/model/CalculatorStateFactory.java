@@ -4,6 +4,7 @@ import com.myzone.calculator.view.CalculatorView;
 import com.myzone.utils.Converter;
 import com.myzone.utils.statemachine.State;
 import org.jetbrains.annotations.NotNull;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
@@ -15,6 +16,7 @@ import static java.lang.Math.sqrt;
 public class CalculatorStateFactory implements State.Factory<Signal> {
 
     protected static final Converter<String, Double> DOUBLE_CONVERTER = new DoubleConverter(16, pow(10D, 16D), pow(10D, -16D));
+
     protected CalculatorModel model;
     protected CalculatorView view;
     protected State<Signal> initialState;
@@ -1246,8 +1248,9 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
     public State<Signal> getEndState() {
         // this state machine have not any end state, so it's fake end state
         return new State<Signal>() {
+            @NotNull
             @Override
-            public State<Signal> react(Signal stimulus) {
+            public State<Signal> react(@NotNull Signal signal) {
                 return this;
             }
         };

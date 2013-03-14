@@ -396,7 +396,7 @@ public class CalculatorView extends Application {
         stage.show();
     }
 
-    public synchronized void invalidate() {
+    public void invalidate() {
         displayTextField.setText(model.getDisplayText());
     }
 
