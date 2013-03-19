@@ -10,14 +10,15 @@ import java.util.Map;
  */
 public class CalculatorModel {
 
-    private double lArg;
-    private double rArg;
+    private volatile double lArg;
+    private volatile double rArg;
 
-    private double memory;
+    private volatile double memory;
 
-    private String displayText;
+    private volatile String displayText;
+    private volatile double displayData;
 
-    private Operation operation;
+    private volatile Operation operation;
 
     public CalculatorModel() {
         lArg = 0;
@@ -26,6 +27,7 @@ public class CalculatorModel {
         memory = 0;
 
         displayText = "0";
+        displayData = 0D;
 
         operation = null;
     }
@@ -47,7 +49,7 @@ public class CalculatorModel {
     }
 
     public double getMemory() {
-        if(!Double.isFinite(memory)) {
+        if (!Double.isFinite(memory)) {
             throw new ArithmeticException("Memory is overflowed");
         }
 
@@ -70,6 +72,14 @@ public class CalculatorModel {
                         + (displayText.contains(".") ? 1 : 0),
                 displayText.length()
         ));
+    }
+
+    public double getDisplayData() {
+        return displayData;
+    }
+
+    public void setDisplayData(double displayData) {
+        this.displayData = displayData;
     }
 
     public Operation getOperation() {
@@ -108,7 +118,6 @@ public class CalculatorModel {
                 return lArg / rArg;
             }
         };
-
         private static final Map<Signal, Operation> signalOperationMap = ImmutableMap.<Signal, Operation>builder()
                 .put(Signal.PLUS, PLUS)
                 .put(Signal.MINUS, MINUS)

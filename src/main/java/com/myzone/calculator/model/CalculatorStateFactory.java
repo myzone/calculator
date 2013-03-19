@@ -175,10 +175,12 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                 case MEMORY_CLEAR:
                     model.setMemory(0);
+                    view.invalidate();
                     return initialState;
 
                 case MEMORY_STORE:
                     model.setMemory(parseDouble(model.getDisplayText()));
+                    view.invalidate();
                     return initialState;
 
                 case MEMORY_RESTORE:
@@ -194,10 +196,12 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                 case MEMORY_PLUS:
                     model.setMemory(model.getMemory() + parseDouble(model.getDisplayText()));
+                    view.invalidate();
                     return initialState;
 
                 case MEMORY_MINUS:
                     model.setMemory(model.getMemory() - parseDouble(model.getDisplayText()));
+                    view.invalidate();
                     return initialState;
 
             }
@@ -319,10 +323,12 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                 case MEMORY_CLEAR:
                     model.setMemory(0);
+                    view.invalidate();
                     return afterDigitInLArg;
 
                 case MEMORY_STORE:
                     model.setMemory(parseDouble(model.getDisplayText()));
+                    view.invalidate();
                     return afterDigitInLArg;
 
                 case MEMORY_RESTORE:
@@ -338,10 +344,12 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                 case MEMORY_PLUS:
                     model.setMemory(model.getMemory() + parseDouble(model.getDisplayText()));
+                    view.invalidate();
                     return afterDigitInLArg;
 
                 case MEMORY_MINUS:
                     model.setMemory(model.getMemory() - parseDouble(model.getDisplayText()));
+                    view.invalidate();
                     return afterDigitInLArg;
             }
 
@@ -468,10 +476,12 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                 case MEMORY_CLEAR:
                     model.setMemory(0);
+                    view.invalidate();
                     return afterDotInLArg;
 
                 case MEMORY_STORE:
                     model.setMemory(parseDouble(model.getDisplayText()));
+                    view.invalidate();
                     return afterDotInLArg;
 
                 case MEMORY_RESTORE:
@@ -487,10 +497,12 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                 case MEMORY_PLUS:
                     model.setMemory(model.getMemory() + parseDouble(model.getDisplayText()));
+                    view.invalidate();
                     return afterDotInLArg;
 
                 case MEMORY_MINUS:
                     model.setMemory(model.getMemory() - parseDouble(model.getDisplayText()));
+                    view.invalidate();
                     return afterDotInLArg;
             }
 
@@ -609,10 +621,12 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                 case MEMORY_CLEAR:
                     model.setMemory(0);
+                    view.invalidate();
                     return afterSingSelection;
 
                 case MEMORY_STORE:
                     model.setMemory(parseDouble(model.getDisplayText()));
+                    view.invalidate();
                     return afterSingSelection;
 
                 case MEMORY_RESTORE:
@@ -628,10 +642,12 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                 case MEMORY_PLUS:
                     model.setMemory(model.getMemory() + parseDouble(model.getDisplayText()));
+                    view.invalidate();
                     return afterSingSelection;
 
                 case MEMORY_MINUS:
                     model.setMemory(model.getMemory() - parseDouble(model.getDisplayText()));
+                    view.invalidate();
                     return afterSingSelection;
             }
 
@@ -753,10 +769,12 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                 case MEMORY_CLEAR:
                     model.setMemory(0);
+                    view.invalidate();
                     return afterSingSelection;
 
                 case MEMORY_STORE:
                     model.setMemory(parseDouble(model.getDisplayText()));
+                    view.invalidate();
                     return afterSingSelection;
 
                 case MEMORY_RESTORE:
@@ -772,10 +790,12 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                 case MEMORY_PLUS:
                     model.setMemory(model.getMemory() + parseDouble(model.getDisplayText()));
+                    view.invalidate();
                     return afterSingSelection;
 
                 case MEMORY_MINUS:
                     model.setMemory(model.getMemory() - parseDouble(model.getDisplayText()));
+                    view.invalidate();
                     return afterSingSelection;
             }
 
@@ -901,10 +921,12 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                 case MEMORY_CLEAR:
                     model.setMemory(0);
+                    view.invalidate();
                     return afterDigitInRArg;
 
                 case MEMORY_STORE:
                     model.setMemory(parseDouble(model.getDisplayText()));
+                    view.invalidate();
                     return afterDigitInRArg;
 
                 case MEMORY_RESTORE:
@@ -920,10 +942,12 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                 case MEMORY_PLUS:
                     model.setMemory(model.getMemory() + parseDouble(model.getDisplayText()));
+                    view.invalidate();
                     return afterDigitInRArg;
 
                 case MEMORY_MINUS:
                     model.setMemory(model.getMemory() - parseDouble(model.getDisplayText()));
+                    view.invalidate();
                     return afterDigitInRArg;
             }
 
@@ -1056,10 +1080,12 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                 case MEMORY_CLEAR:
                     model.setMemory(0);
+                    view.invalidate();
                     return afterDotInRArg;
 
                 case MEMORY_STORE:
                     model.setMemory(parseDouble(model.getDisplayText()));
+                    view.invalidate();
                     return afterDotInRArg;
 
                 case MEMORY_RESTORE:
@@ -1075,10 +1101,12 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                 case MEMORY_PLUS:
                     model.setMemory(model.getMemory() + parseDouble(model.getDisplayText()));
+                    view.invalidate();
                     return initialState;
 
                 case MEMORY_MINUS:
                     model.setMemory(model.getMemory() - parseDouble(model.getDisplayText()));
+                    view.invalidate();
                     return afterDotInRArg;
             }
 
@@ -1190,10 +1218,12 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                 case MEMORY_CLEAR:
                     model.setMemory(0);
+                    view.invalidate();
                     return afterEvaluation;
 
                 case MEMORY_STORE:
                     model.setMemory(parseDouble(model.getDisplayText()));
+                    view.invalidate();
                     return afterEvaluation;
 
                 case MEMORY_RESTORE:
@@ -1209,10 +1239,12 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                 case MEMORY_PLUS:
                     model.setMemory(model.getMemory() + parseDouble(model.getDisplayText()));
+                    view.invalidate();
                     return afterEvaluation;
 
                 case MEMORY_MINUS:
                     model.setMemory(model.getMemory() - parseDouble(model.getDisplayText()));
+                    view.invalidate();
                     return afterEvaluation;
             }
 
