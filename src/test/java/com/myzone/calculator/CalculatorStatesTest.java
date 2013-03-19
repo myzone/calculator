@@ -838,6 +838,19 @@ public class CalculatorStatesTest {
         assertEquals("743", model.getDisplayText());
     }
 
+    @Test
+    public void testNormalize() {
+        assertEquals(0, stateMachine.run(
+                DOT,
+                DIGIT_0,
+                DIGIT_1,
+                DIGIT_0,
+                PLUS
+        ).length);
+
+        verify(view, atLeastOnce()).invalidate();
+        assertEquals("0.01", model.getDisplayText());
+    }
 
     public void testTODON() {
         assertEquals(0, stateMachine.run(

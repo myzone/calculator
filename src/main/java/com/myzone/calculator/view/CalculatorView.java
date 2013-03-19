@@ -87,6 +87,7 @@ public class CalculatorView extends Application {
                 .cache(false)
                 .prefHeight(PREF_COLUMN_HEIGHT + SPACING_SIZE)
                 .prefColumnCount(2)
+                .alignment(Pos.CENTER)
                 .text("")
                 .build();
 

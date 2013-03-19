@@ -89,6 +89,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                 case MULTIPLY:
                 case DIVIDE:
                     model.setlArg(parseDouble(model.getDisplayText()));
+                    model.setDisplayText(renderDouble(model.getlArg()));
                     model.setOperation(CalculatorModel.Operation.bySignal(signal));
                     return afterSingSelection;
 
@@ -237,6 +238,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                 case MULTIPLY:
                 case DIVIDE:
                     model.setlArg(parseDouble(model.getDisplayText()));
+                    model.setDisplayText(renderDouble(model.getlArg()));
                     model.setOperation(CalculatorModel.Operation.bySignal(signal));
                     return afterSingSelection;
 
@@ -382,6 +384,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                 case MULTIPLY:
                 case DIVIDE:
                     model.setlArg(parseDouble(model.getDisplayText()));
+                    model.setDisplayText(renderDouble(model.getlArg()));
                     model.setOperation(CalculatorModel.Operation.bySignal(signal));
                     return afterSingSelection;
 
