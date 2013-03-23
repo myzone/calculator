@@ -3,12 +3,18 @@ package com.myzone.calculator.model;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Map;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Block;
 
 /**
  * @author: myzone
  * @date: 04.02.13 12:47
  */
 public class CalculatorModel {
+
+    private final ReentrantLock lock;
 
     private volatile double lArg;
     private volatile double rArg;
@@ -21,6 +27,8 @@ public class CalculatorModel {
     private volatile Operation operation;
 
     public CalculatorModel() {
+        lock = new ReentrantLock(true);
+
         lArg = 0;
         rArg = 0;
 
@@ -33,22 +41,32 @@ public class CalculatorModel {
     }
 
     public double getlArg() {
+        verifyLocked();
+
         return lArg;
     }
 
     public void setlArg(double lArg) {
+        verifyLocked();
+
         this.lArg = lArg;
     }
 
     public double getrArg() {
+        verifyLocked();
+
         return rArg;
     }
 
     public void setrArg(double rArg) {
+        verifyLocked();
+
         this.rArg = rArg;
     }
 
     public double getMemory() {
+        verifyLocked();
+
         if (!Double.isFinite(memory)) {
             throw new ArithmeticException("Memory is overflowed");
         }
@@ -57,14 +75,20 @@ public class CalculatorModel {
     }
 
     public void setMemory(double memory) {
+        verifyLocked();
+
         this.memory = memory;
     }
 
     public String getDisplayText() {
+        verifyLocked();
+
         return displayText;
     }
 
     public void setDisplayText(String displayText) {
+        verifyLocked();
+
         this.displayText = displayText.substring(0, Math.min(
                 17
                         + (displayText.startsWith("-") ? 1 : 0)
@@ -75,19 +99,33 @@ public class CalculatorModel {
     }
 
     public double getDisplayData() {
+        verifyLocked();
+
         return displayData;
     }
 
     public void setDisplayData(double displayData) {
+        verifyLocked();
+
         this.displayData = displayData;
     }
 
     public Operation getOperation() {
+        verifyLocked();
+
         return operation;
     }
 
     public void setOperation(Operation operation) {
+        verifyLocked();
+
         this.operation = operation;
+    }
+
+    protected void verifyLocked() {
+        if(!lock.isLocked()) {
+            throw new IllegalStateException(lock + " isn't locked");
+        }
     }
 
     public static enum Operation {
