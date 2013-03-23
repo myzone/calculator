@@ -798,7 +798,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                 case PERCENT:
                     model.setDisplayText(renderDouble(model.getlArg() * parseDouble(model.getDisplayText()) / 100));
                     view.invalidate();
-                    return afterChangeInRArg;
+                    return afterEvaluation;
 
                 case SQUARE_ROOT:
                     try {
