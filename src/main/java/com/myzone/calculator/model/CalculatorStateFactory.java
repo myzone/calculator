@@ -61,7 +61,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
     }
 
     private State<Signal> createInitialState() {
-        return new AbstractState("initialState") {
+        return new LArgState("initialState") {
             @NotNull
             @Override
             public State<Signal> react(@NotNull Signal signal) {
@@ -121,66 +121,6 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         }
                         view.invalidate();
                         return initialState;
-
-                    case PERCENT:
-                        model.setDisplayText(renderDouble(model.getlArg() * parseDouble(model.getDisplayText()) / 100));
-                        view.invalidate();
-                        return initialState;
-
-                    case SQUARE_ROOT:
-                        try {
-                            if (model.getDisplayText().startsWith("-")) {
-                                throw new ArithmeticException("Negative square root");
-                            }
-
-                            model.setDisplayText(renderDouble(sqrt(parseDouble(model.getDisplayText()))));
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
-                        view.invalidate();
-                        return initialState;
-
-                    case REVERSE:
-                        if (!"0".equals(model.getDisplayText())) {
-                            if (model.getDisplayText().startsWith("-")) {
-                                model.setDisplayText(model.getDisplayText().substring(1));
-                            } else {
-                                model.setDisplayText("-" + model.getDisplayText());
-                            }
-                        }
-                        view.invalidate();
-                        return initialState;
-
-                    case INVERSE:
-                        try {
-                            model.setDisplayText(renderDouble(1D / parseDouble(model.getDisplayText())));
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
-                        view.invalidate();
-                        return initialState;
-
-                    case CLEAR_EVALUATION:
-                        model.setlArg(0);
-                        model.setDisplayText("0");
-                        view.invalidate();
-                        return initialState;
-
-                    case MEMORY_RESTORE:
-                        try {
-                            model.setDisplayText(renderDouble(model.getMemory()));
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
-                        view.invalidate();
-                        return initialState;
-
                 }
 
                 return super.react(signal);
@@ -189,7 +129,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
     }
 
     private State<Signal> createAfterDigitInLArg() {
-        return new AbstractState("afterDigitInLArg") {
+        return new LArgState("afterDigitInLArg") {
             @NotNull
             @Override
             public State<Signal> react(@NotNull Signal signal) {
@@ -247,65 +187,6 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         }
                         view.invalidate();
                         return model.getDisplayText().length() < 3 ? initialState : afterDigitInLArg;
-
-                    case PERCENT:
-                        model.setDisplayText(renderDouble(model.getlArg() * parseDouble(model.getDisplayText()) / 100));
-                        view.invalidate();
-                        return afterDigitInLArg;
-
-                    case SQUARE_ROOT:
-                        try {
-                            if (model.getDisplayText().startsWith("-")) {
-                                throw new ArithmeticException("Negative square root");
-                            }
-
-                            model.setDisplayText(renderDouble(sqrt(parseDouble(model.getDisplayText()))));
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
-                        view.invalidate();
-                        return initialState;
-
-                    case REVERSE:
-                        if (!"0".equals(model.getDisplayText())) {
-                            if (model.getDisplayText().startsWith("-")) {
-                                model.setDisplayText(model.getDisplayText().substring(1));
-                            } else {
-                                model.setDisplayText("-" + model.getDisplayText());
-                            }
-                        }
-                        view.invalidate();
-                        return afterDigitInLArg;
-
-                    case INVERSE:
-                        try {
-                            model.setDisplayText(renderDouble(1D / parseDouble(model.getDisplayText())));
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
-                        view.invalidate();
-                        return afterDigitInLArg;
-
-                    case CLEAR_EVALUATION:
-                        model.setlArg(0);
-                        model.setDisplayText("0");
-                        view.invalidate();
-                        return initialState;
-
-                    case MEMORY_RESTORE:
-                        try {
-                            model.setDisplayText(renderDouble(model.getMemory()));
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
-                        view.invalidate();
-                        return initialState;
                 }
 
                 return super.react(signal);
@@ -314,7 +195,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
     }
 
     private State<Signal> createAfterDotInLArg() {
-        return new AbstractState("afterDotInLArg") {
+        return new LArgState("afterDotInLArg") {
             @NotNull
             @Override
             public State<Signal> react(@NotNull Signal signal) {
@@ -379,26 +260,6 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         view.invalidate();
                         return afterDotInLArg;
 
-                    case PERCENT:
-                        model.setDisplayText(renderDouble(model.getlArg() * parseDouble(model.getDisplayText()) / 100));
-                        view.invalidate();
-                        return afterDotInLArg;
-
-                    case SQUARE_ROOT:
-                        try {
-                            if (model.getDisplayText().startsWith("-")) {
-                                throw new ArithmeticException("Negative square root");
-                            }
-
-                            model.setDisplayText(renderDouble(sqrt(parseDouble(model.getDisplayText()))));
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
-                        view.invalidate();
-                        return initialState;
-
                     case REVERSE:
                         if (!"0".equals(model.getDisplayText())) {
                             if (model.getDisplayText().startsWith("-")) {
@@ -409,33 +270,6 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         }
                         view.invalidate();
                         return afterDotInLArg;
-
-                    case INVERSE:
-                        try {
-                            model.setDisplayText(renderDouble(1D / parseDouble(model.getDisplayText())));
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
-                        view.invalidate();
-                        return afterDotInLArg;
-
-                    case CLEAR_EVALUATION:
-                        model.setDisplayText("0");
-                        view.invalidate();
-                        return afterChangeInRArg;
-
-                    case MEMORY_RESTORE:
-                        try {
-                            model.setDisplayText(renderDouble(model.getMemory()));
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
-                        view.invalidate();
-                        return initialState;
                 }
 
                 return super.react(signal);
@@ -444,7 +278,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
     }
 
     private State<Signal> createAfterSingSelection() {
-        return new AbstractState("afterSingSelection") {
+        return new RArgState("afterSingSelection") {
             @NotNull
             @Override
             public State<Signal> react(@NotNull Signal signal) {
@@ -499,64 +333,6 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         }
                         view.invalidate();
                         return afterSingSelection;
-
-                    case PERCENT:
-                        model.setDisplayText(renderDouble(model.getlArg() * parseDouble(model.getDisplayText()) / 100));
-                        view.invalidate();
-                        return afterChangeInRArg;
-
-                    case SQUARE_ROOT:
-                        try {
-                            if (model.getDisplayText().startsWith("-")) {
-                                throw new ArithmeticException("Negative square root");
-                            }
-
-                            model.setDisplayText(renderDouble(sqrt(parseDouble(model.getDisplayText()))));
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
-                        view.invalidate();
-                        return afterChangeInRArg;
-
-                    case REVERSE:
-                        if (!"0".equals(model.getDisplayText())) {
-                            if (model.getDisplayText().startsWith("-")) {
-                                model.setDisplayText(model.getDisplayText().substring(1));
-                            } else {
-                                model.setDisplayText("-" + model.getDisplayText());
-                            }
-                        }
-                        view.invalidate();
-                        return afterSingSelection;
-
-                    case INVERSE:
-                        try {
-                            model.setDisplayText(renderDouble(1D / parseDouble(model.getDisplayText())));
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
-                        view.invalidate();
-                        return afterSingSelection;
-
-                    case CLEAR_EVALUATION:
-                        model.setDisplayText("0");
-                        view.invalidate();
-                        return afterChangeInRArg;
-
-                    case MEMORY_RESTORE:
-                        try {
-                            model.setDisplayText(renderDouble(model.getMemory()));
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
-                        view.invalidate();
-                        return afterChangeInRArg;
                 }
 
                 return super.react(signal);
@@ -565,7 +341,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
     }
 
     private State<Signal> createAfterChangeInRArg() {
-        return new AbstractState("afterChangeInRArg") {
+        return new RArgState("afterChangeInRArg") {
             @NotNull
             @Override
             public State<Signal> react(@NotNull Signal signal) {
@@ -623,64 +399,6 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         }
                         view.invalidate();
                         return afterSingSelection;
-
-                    case PERCENT:
-                        model.setDisplayText(renderDouble(model.getlArg() * parseDouble(model.getDisplayText()) / 100));
-                        view.invalidate();
-                        return afterSingSelection;
-
-                    case SQUARE_ROOT:
-                        try {
-                            if (model.getDisplayText().startsWith("-")) {
-                                throw new ArithmeticException("Negative square root");
-                            }
-
-                            model.setDisplayText(renderDouble(sqrt(parseDouble(model.getDisplayText()))));
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
-                        view.invalidate();
-                        return afterChangeInRArg;
-
-                    case REVERSE:
-                        if (!"0".equals(model.getDisplayText())) {
-                            if (model.getDisplayText().startsWith("-")) {
-                                model.setDisplayText(model.getDisplayText().substring(1));
-                            } else {
-                                model.setDisplayText("-" + model.getDisplayText());
-                            }
-                        }
-                        view.invalidate();
-                        return afterSingSelection;
-
-                    case INVERSE:
-                        try {
-                            model.setDisplayText(renderDouble(1D / parseDouble(model.getDisplayText())));
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
-                        view.invalidate();
-                        return afterSingSelection;
-
-                    case CLEAR_EVALUATION:
-                        model.setDisplayText("0");
-                        view.invalidate();
-                        return afterChangeInRArg;
-
-                    case MEMORY_RESTORE:
-                        try {
-                            model.setDisplayText(renderDouble(model.getMemory()));
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
-                        view.invalidate();
-                        return afterChangeInRArg;
                 }
 
                 return super.react(signal);
@@ -689,7 +407,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
     }
 
     private State<Signal> createAfterDigitInRArg() {
-        return new AbstractState("afterDigitInRArg") {
+        return new RArgState("afterDigitInRArg") {
             @NotNull
             @Override
             public State<Signal> react(@NotNull Signal signal) {
@@ -752,63 +470,6 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         }
                         view.invalidate();
                         return model.getDisplayText().length() < 3 ? initialState : afterDigitInLArg;
-
-                    case PERCENT:
-                        model.setDisplayText(renderDouble(model.getlArg() * parseDouble(model.getDisplayText()) / 100));
-                        view.invalidate();
-                        return afterDigitInRArg;
-
-                    case SQUARE_ROOT:
-                        try {
-                            if (model.getDisplayText().startsWith("-")) {
-                                throw new ArithmeticException("Negative square root");
-                            }
-                            model.setDisplayText(renderDouble(sqrt(parseDouble(model.getDisplayText()))));
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
-                        view.invalidate();
-                        return afterChangeInRArg;
-
-                    case REVERSE:
-                        if (!"0".equals(model.getDisplayText())) {
-                            if (model.getDisplayText().startsWith("-")) {
-                                model.setDisplayText(model.getDisplayText().substring(1));
-                            } else {
-                                model.setDisplayText("-" + model.getDisplayText());
-                            }
-                        }
-                        view.invalidate();
-                        return afterDigitInRArg;
-
-                    case INVERSE:
-                        try {
-                            model.setDisplayText(renderDouble(1D / parseDouble(model.getDisplayText())));
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
-                        view.invalidate();
-                        return afterDigitInRArg;
-
-                    case CLEAR_EVALUATION:
-                        model.setDisplayText("0");
-                        view.invalidate();
-                        return afterChangeInRArg;
-
-                    case MEMORY_RESTORE:
-                        try {
-                            model.setDisplayText(renderDouble(model.getMemory()));
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
-                        view.invalidate();
-                        return afterChangeInRArg;
                 }
 
                 return super.react(signal);
@@ -817,7 +478,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
     }
 
     private State<Signal> createAfterDotInRArg() {
-        return new AbstractState("afterDotInRArg") {
+        return new RArgState("afterDotInRArg") {
             @NotNull
             @Override
             public State<Signal> react(@NotNull Signal signal) {
@@ -887,26 +548,6 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         view.invalidate();
                         return afterDotInRArg;
 
-                    case PERCENT:
-                        model.setDisplayText(renderDouble(model.getlArg() * parseDouble(model.getDisplayText()) / 100));
-                        view.invalidate();
-                        return afterDotInRArg;
-
-                    case SQUARE_ROOT:
-                        try {
-                            if (model.getDisplayText().startsWith("-")) {
-                                throw new ArithmeticException("Negative square root");
-                            }
-
-                            model.setDisplayText(renderDouble(sqrt(parseDouble(model.getDisplayText()))));
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
-                        view.invalidate();
-                        return afterChangeInRArg;
-
                     case REVERSE:
                         if (!"0".equals(model.getDisplayText())) {
                             if (model.getDisplayText().startsWith("-")) {
@@ -916,34 +557,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                             }
                         }
                         view.invalidate();
-                        return afterChangeInRArg;
-
-                    case INVERSE:
-                        try {
-                            model.setDisplayText(renderDouble(1D / parseDouble(model.getDisplayText())));
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
-                        view.invalidate();
-                        return afterChangeInRArg;
-
-                    case CLEAR_EVALUATION:
-                        model.setDisplayText("0");
-                        view.invalidate();
-                        return afterChangeInRArg;
-
-                    case MEMORY_RESTORE:
-                        try {
-                            model.setDisplayText(renderDouble(model.getMemory()));
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
-                        view.invalidate();
-                        return afterChangeInRArg;
+                        return afterDotInRArg;
                 }
 
                 return super.react(signal);
@@ -952,7 +566,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
     }
 
     private State<Signal> createAfterEvaluation() {
-        return new AbstractState("afterEvaluation") {
+        return new RArgState("afterEvaluation") {
             @NotNull
             @Override
             public State<Signal> react(@NotNull Signal signal) {
@@ -1000,64 +614,6 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                     case BACK_SPACE:
                         return afterEvaluation;
-
-                    case PERCENT:
-                        model.setDisplayText(renderDouble(model.getlArg() / 100 * parseDouble(model.getDisplayText())));
-                        view.invalidate();
-                        return afterEvaluation;
-
-                    case SQUARE_ROOT:
-                        try {
-                            if (model.getDisplayText().startsWith("-")) {
-                                throw new ArithmeticException("Negative square root");
-                            }
-
-                            model.setDisplayText(renderDouble(sqrt(parseDouble(model.getDisplayText()))));
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
-                        view.invalidate();
-                        return afterEvaluation;
-
-                    case REVERSE:
-                        if (!"0".equals(model.getDisplayText())) {
-                            if (model.getDisplayText().startsWith("-")) {
-                                model.setDisplayText(model.getDisplayText().substring(1));
-                            } else {
-                                model.setDisplayText("-" + model.getDisplayText());
-                            }
-                        }
-                        view.invalidate();
-                        return afterEvaluation;
-
-                    case INVERSE:
-                        try {
-                            model.setDisplayText(renderDouble(1D / parseDouble(model.getDisplayText())));
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
-                        view.invalidate();
-                        return afterChangeInRArg;
-
-                    case CLEAR_EVALUATION:
-                        model.setDisplayText("0");
-                        view.invalidate();
-                        return afterChangeInRArg;
-
-                    case MEMORY_RESTORE:
-                        try {
-                            model.setDisplayText(renderDouble(model.getMemory()));
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
-                        view.invalidate();
-                        return afterChangeInRArg;
                 }
 
                 return super.react(signal);
@@ -1152,6 +708,154 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
         @Override
         public String toString() {
             return name;
+        }
+    }
+
+    protected class LArgState extends AbstractState {
+
+        public LArgState(String name) {
+            super(name);
+        }
+
+        @NotNull
+        @Override
+        public State<Signal> react(@NotNull Signal signal) {
+            switch (signal) {
+                case PERCENT:
+                    model.setDisplayText(renderDouble(model.getlArg() * parseDouble(model.getDisplayText()) / 100));
+                    view.invalidate();
+                    return initialState;
+
+                case SQUARE_ROOT:
+                    try {
+                        if (model.getDisplayText().startsWith("-")) {
+                            throw new ArithmeticException("Negative square root");
+                        }
+
+                        model.setDisplayText(renderDouble(sqrt(parseDouble(model.getDisplayText()))));
+                    } catch (Exception e) {
+                        model.setDisplayText("ERR");
+                        view.invalidate();
+                        return errorInputState;
+                    }
+                    view.invalidate();
+                    return initialState;
+
+                case REVERSE:
+                    if (!"0".equals(model.getDisplayText())) {
+                        if (model.getDisplayText().startsWith("-")) {
+                            model.setDisplayText(model.getDisplayText().substring(1));
+                        } else {
+                            model.setDisplayText("-" + model.getDisplayText());
+                        }
+                    }
+                    view.invalidate();
+                    return initialState;
+
+                case INVERSE:
+                    try {
+                        model.setDisplayText(renderDouble(1D / parseDouble(model.getDisplayText())));
+                    } catch (Exception e) {
+                        model.setDisplayText("ERR");
+                        view.invalidate();
+                        return errorInputState;
+                    }
+                    view.invalidate();
+                    return initialState;
+
+                case CLEAR_EVALUATION:
+                    model.setlArg(0);
+                    model.setDisplayText("0");
+                    view.invalidate();
+                    return initialState;
+
+                case MEMORY_RESTORE:
+                    try {
+                        model.setDisplayText(renderDouble(model.getMemory()));
+                    } catch (Exception e) {
+                        model.setDisplayText("ERR");
+                        view.invalidate();
+                        return errorInputState;
+                    }
+                    view.invalidate();
+                    return initialState;
+            }
+
+            return super.react(signal);
+        }
+    }
+
+    protected class RArgState extends AbstractState {
+
+        public RArgState(String name) {
+            super(name);
+        }
+
+        @NotNull
+        @Override
+        public State<Signal> react(@NotNull Signal signal) {
+            switch (signal) {
+                case PERCENT:
+                    model.setDisplayText(renderDouble(model.getlArg() * parseDouble(model.getDisplayText()) / 100));
+                    view.invalidate();
+                    return afterChangeInRArg;
+
+                case SQUARE_ROOT:
+                    try {
+                        if (model.getDisplayText().startsWith("-")) {
+                            throw new ArithmeticException("Negative square root");
+                        }
+
+                        model.setDisplayText(renderDouble(sqrt(parseDouble(model.getDisplayText()))));
+                    } catch (Exception e) {
+                        model.setDisplayText("ERR");
+                        view.invalidate();
+                        return errorInputState;
+                    }
+                    view.invalidate();
+                    return afterChangeInRArg;
+
+                case REVERSE:
+                    if (!"0".equals(model.getDisplayText())) {
+                        if (model.getDisplayText().startsWith("-")) {
+                            model.setDisplayText(model.getDisplayText().substring(1));
+                        } else {
+                            model.setDisplayText("-" + model.getDisplayText());
+                        }
+                    }
+                    view.invalidate();
+                    return afterChangeInRArg;
+
+                case INVERSE:
+                    try {
+                        model.setDisplayText(renderDouble(1D / parseDouble(model.getDisplayText())));
+                    } catch (Exception e) {
+                        model.setDisplayText("ERR");
+                        view.invalidate();
+                        return errorInputState;
+                    }
+                    view.invalidate();
+                    return afterChangeInRArg;
+
+                case CLEAR_EVALUATION:
+                    model.setrArg(0);
+                    model.setDisplayText("0");
+                    view.invalidate();
+                    return afterChangeInRArg;
+
+                case MEMORY_RESTORE:
+                    try {
+                        model.setDisplayText(renderDouble(model.getMemory()));
+                        view.invalidate();
+                        return afterChangeInRArg;
+                    } catch (Exception e) {
+                        model.setDisplayText("ERR");
+                        view.invalidate();
+                        return errorInputState;
+                    }
+            }
+
+            return super.react(signal);
         }
     }
 
