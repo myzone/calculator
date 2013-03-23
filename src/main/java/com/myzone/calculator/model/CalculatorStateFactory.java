@@ -383,12 +383,12 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         try {
                             model.setrArg(parseDouble(model.getDisplayText()));
                             model.setlArg(model.getOperation().evaluate(model.getlArg(), model.getrArg()));
+                            model.setDisplayText(renderDouble(model.getlArg()));
                         } catch (Exception e) {
                             model.setDisplayText("ERR");
                             view.invalidate();
                             return errorInputState;
                         }
-                        model.setDisplayText(renderDouble(model.getlArg()));
                         view.invalidate();
                         return afterEvaluation;
 
@@ -566,7 +566,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
     }
 
     private State<Signal> createAfterEvaluation() {
-        return new RArgState("afterEvaluation") {
+        return new LArgState("afterEvaluation") {
             @NotNull
             @Override
             public State<Signal> react(@NotNull Signal signal) {
@@ -798,7 +798,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                 case PERCENT:
                     model.setDisplayText(renderDouble(model.getlArg() * parseDouble(model.getDisplayText()) / 100));
                     view.invalidate();
-                    return afterEvaluation;
+                    return afterChangeInRArg;
 
                 case SQUARE_ROOT:
                     try {
@@ -858,5 +858,4 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
             return super.react(signal);
         }
     }
-
 }
