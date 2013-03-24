@@ -736,7 +736,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
         };
     }
 
-    protected class AbstractState implements State<Signal> {
+    protected abstract class AbstractState implements State<Signal> {
 
         protected final String name;
 
@@ -746,7 +746,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
         @NotNull
         @Override
-        public State<Signal> react(@NotNull Signal signal) {
+        public strictfp State<Signal> react(@NotNull Signal signal) {
             model.getLock().lock();
             try {
                 switch (signal) {
@@ -764,7 +764,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         return this;
 
                     case MEMORY_STORE:
-                        model.setMemory(parseDouble(model.getDisplayText()));
+                        model.setMemory(model.getDisplayData());
                         view.invalidate();
                         return this;
 
@@ -777,10 +777,9 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         model.setMemory(model.getMemory() - model.getDisplayData());
                         view.invalidate();
                         return this;
-
                 }
 
-                return this;
+                throw new IllegalStateException(signal + " was not processed");
             } finally {
                 model.getLock().unlock();
             }
@@ -861,13 +860,13 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         try {
                             model.setDisplayData(model.getMemory());
                             model.setDisplayText(renderDouble(model.getDisplayData()));
+                            view.invalidate();
+                            return initialState;
                         } catch (Exception e) {
                             model.setDisplayText("ERR");
                             view.invalidate();
                             return errorInputState;
                         }
-                        view.invalidate();
-                        return initialState;
                 }
 
                 return super.react(signal);
@@ -910,6 +909,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                             view.invalidate();
                             return errorInputState;
                         }
+
                     case REVERSE:
                         if (!"0".equals(model.getDisplayText())) {
                             if (model.getDisplayText().startsWith("-")) {

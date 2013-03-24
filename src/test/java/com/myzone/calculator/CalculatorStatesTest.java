@@ -6,7 +6,6 @@ import com.myzone.calculator.model.Signal;
 import com.myzone.calculator.view.CalculatorView;
 import com.myzone.utils.statemachine.TestingEventStateMachine;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -814,28 +813,24 @@ public class CalculatorStatesTest {
     }
 
     @Test
-    @Ignore("double prec")
-    public void testMemoryPrecision() {
+    public void testPrecision1() {
         assertEquals(0, stateMachine.run(
                 DIGIT_2,
                 SQUARE_ROOT,
-                MEMORY_PLUS,
                 MINUS,
                 DIGIT_1,
                 DIGIT_0,
                 PERCENT,
-                MEMORY_MINUS,
-                MEMORY_MINUS,
-                MEMORY_MINUS,
-                MEMORY_MINUS,
-                MEMORY_MINUS,
-                MEMORY_MINUS,
-                MEMORY_MINUS,
-                MEMORY_MINUS,
-                MEMORY_MINUS,
-                MEMORY_MINUS,
                 EVALUATE,
-                MEMORY_RESTORE
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
@@ -915,30 +910,6 @@ public class CalculatorStatesTest {
         try {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("0", model.getDisplayText());
-        } finally {
-            model.getLock().unlock();
-        }
-    }
-
-    @Test
-    @Ignore("double prec")
-    public void testManySquareRootMultiplications1() {
-        assertEquals(0, stateMachine.run(
-                DIGIT_1,
-                DIGIT_6,
-                SQUARE_ROOT,
-                MULTIPLY,
-                SQUARE_ROOT,
-                MULTIPLY,
-                SQUARE_ROOT,
-                MULTIPLY,
-                EVALUATE
-        ).length);
-
-        model.getLock().lock();
-        try {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("512", model.getDisplayText());
         } finally {
             model.getLock().unlock();
         }
@@ -1073,6 +1044,25 @@ public class CalculatorStatesTest {
 
     @Test
     public void testNormalize() {
+        assertEquals(0, stateMachine.run(
+                DOT,
+                DIGIT_0,
+                DIGIT_1,
+                DIGIT_0,
+                PLUS
+        ).length);
+
+        verify(view, atLeastOnce()).invalidate();
+        model.getLock().lock();
+        try {
+            assertEquals("0.01", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
+    }
+
+    @Test
+    public void testNormalizeAfterPlus() {
         assertEquals(0, stateMachine.run(
                 DOT,
                 DIGIT_0,
