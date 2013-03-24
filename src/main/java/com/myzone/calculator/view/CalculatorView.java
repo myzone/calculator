@@ -6,12 +6,8 @@ import com.myzone.calculator.model.CalculatorStateFactory;
 import com.myzone.calculator.model.Signal;
 import com.myzone.utils.statemachine.EventStateMachine;
 import com.myzone.utils.statemachine.StateMachine;
-import com.sun.javafx.scene.CssFlags;
 import javafx.application.Application;
-import javafx.css.CssMetaData;
-import javafx.css.StyleOrigin;
-import javafx.css.Styleable;
-import javafx.css.StyleableProperty;
+import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -23,12 +19,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBoxBuilder;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.VBoxBuilder;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Map;
 
@@ -47,7 +40,7 @@ public class CalculatorView extends Application {
     private static final Logger logger = LoggerFactory.getLogger(CalculatorView.class);
 
     private CalculatorModel model;
-    private StateMachine<Signal> controller;
+    private StateMachine<Signal> stateMachine;
 
     private final Thread stateMachineThread;
     private final Map<String, SignalEmitter<KeyEvent>> signalEmittersMap;
@@ -57,9 +50,9 @@ public class CalculatorView extends Application {
 
     public CalculatorView() {
         model = new CalculatorModel();
-        controller = new EventStateMachine<>(new CalculatorStateFactory(model, this));
+        stateMachine = new EventStateMachine<>(new CalculatorStateFactory(model, this));
 
-        stateMachineThread = new Thread(controller, "StateMachine Thread");
+        stateMachineThread = new Thread(stateMachine, "StateMachine Thread");
         signalEmittersMap = ImmutableMap
                 .<String, SignalEmitter<KeyEvent>>builder()
                 .put("0", new SignalEmitter<>(DIGIT_0))
@@ -423,15 +416,22 @@ public class CalculatorView extends Application {
         stage.show();
     }
 
-    public synchronized void invalidate() {
-        memoryDisplayTextField.setText(model.getMemory() != 0 ? "M" : "");
-        mainDisplayTextField.setText(model.getDisplayText());
+    public void invalidate() {
+        Platform.runLater(() -> {
+            model.getLock().lock();
+            try {
+                memoryDisplayTextField.setText(model.getMemory() != 0 ? "M" : "");
+                mainDisplayTextField.setText(model.getDisplayText());
+            } finally {
+                model.getLock().unlock();
+            }
+        });
     }
 
     protected class SignalEmitter<E extends Event> extends StimulusEmitter<Signal, E> {
 
         public SignalEmitter(Signal signal) {
-            super(controller, signal);
+            super(CalculatorView.this.stateMachine, signal);
         }
 
         @Override

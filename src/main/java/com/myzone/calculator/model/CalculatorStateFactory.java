@@ -84,70 +84,75 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
             @NotNull
             @Override
             public State<Signal> react(@NotNull Signal signal) {
-                switch (signal) {
-                    case DIGIT_0:
-                        if ("0".equals(model.getDisplayText()))
-                            return initialState;
-                    case DIGIT_1:
-                    case DIGIT_2:
-                    case DIGIT_3:
-                    case DIGIT_4:
-                    case DIGIT_5:
-                    case DIGIT_6:
-                    case DIGIT_7:
-                    case DIGIT_8:
-                    case DIGIT_9:
-                        model.setDisplayText(signal.getRepresentation());
-                        model.setDisplayData(parseDouble(model.getDisplayText()));
-                        view.invalidate();
-                        return afterDigitInLArg;
+                model.getLock().lock();
+                try {
+                    switch (signal) {
+                        case DIGIT_0:
+                            if ("0".equals(model.getDisplayText()))
+                                return initialState;
+                        case DIGIT_1:
+                        case DIGIT_2:
+                        case DIGIT_3:
+                        case DIGIT_4:
+                        case DIGIT_5:
+                        case DIGIT_6:
+                        case DIGIT_7:
+                        case DIGIT_8:
+                        case DIGIT_9:
+                            model.setDisplayText(signal.getRepresentation());
+                            model.setDisplayData(parseDouble(model.getDisplayText()));
+                            view.invalidate();
+                            return afterDigitInLArg;
 
-                    case DOT:
-                        model.setDisplayText(model.getDisplayText() + signal.getRepresentation());
-                        model.setDisplayData(parseDouble(model.getDisplayText()));
-                        view.invalidate();
-                        return afterDotInLArg;
+                        case DOT:
+                            model.setDisplayText(model.getDisplayText() + signal.getRepresentation());
+                            model.setDisplayData(parseDouble(model.getDisplayText()));
+                            view.invalidate();
+                            return afterDotInLArg;
 
-                    case PLUS:
-                    case MINUS:
-                    case MULTIPLY:
-                    case DIVIDE:
-                        model.setlArg(parseDouble(model.getDisplayText()));
-                        model.setDisplayData(model.getlArg());
-                        model.setDisplayText(renderDouble(model.getDisplayData()));
-                        model.setOperation(CalculatorModel.Operation.bySignal(signal));
-                        return afterSingSelection;
+                        case PLUS:
+                        case MINUS:
+                        case MULTIPLY:
+                        case DIVIDE:
+                            model.setlArg(parseDouble(model.getDisplayText()));
+                            model.setDisplayData(model.getlArg());
+                            model.setDisplayText(renderDouble(model.getDisplayData()));
+                            model.setOperation(CalculatorModel.Operation.bySignal(signal));
+                            return afterSingSelection;
 
-                    case EVALUATE:
-                        if (model.getOperation() != null) {
-                            try {
-                                model.setlArg(model.getOperation().evaluate(model.getDisplayData(), model.getrArg()));
-                                model.setDisplayData(model.getlArg());
-                                model.setDisplayText(renderDouble(model.getDisplayData()));
-                                view.invalidate();
-                                return afterEvaluation;
-                            } catch (Exception e) {
-                                model.setDisplayText("ERR");
-                                view.invalidate();
-                                return errorInputState;
+                        case EVALUATE:
+                            if (model.getOperation() != null) {
+                                try {
+                                    model.setlArg(model.getOperation().evaluate(model.getDisplayData(), model.getrArg()));
+                                    model.setDisplayData(model.getlArg());
+                                    model.setDisplayText(renderDouble(model.getDisplayData()));
+                                    view.invalidate();
+                                    return afterEvaluation;
+                                } catch (Exception e) {
+                                    model.setDisplayText("ERR");
+                                    view.invalidate();
+                                    return errorInputState;
+                                }
                             }
-                        }
 
-                        model.setDisplayText(renderDouble(model.getDisplayData()));
-                        model.setDisplayData(parseDouble(model.getDisplayText()));
-                        return initialState;
+                            model.setDisplayText(renderDouble(model.getDisplayData()));
+                            model.setDisplayData(parseDouble(model.getDisplayText()));
+                            return initialState;
 
-                    case BACK_SPACE:
-                        model.setDisplayText(model.getDisplayText().substring(0, model.getDisplayText().length() - 1));
-                        if (model.getDisplayText().isEmpty() || "-".equals(model.getDisplayText())) {
-                            model.setDisplayText("0");
-                        }
-                        model.setDisplayData(parseDouble(model.getDisplayText()));
-                        view.invalidate();
-                        return initialState;
+                        case BACK_SPACE:
+                            model.setDisplayText(model.getDisplayText().substring(0, model.getDisplayText().length() - 1));
+                            if (model.getDisplayText().isEmpty() || "-".equals(model.getDisplayText())) {
+                                model.setDisplayText("0");
+                            }
+                            model.setDisplayData(parseDouble(model.getDisplayText()));
+                            view.invalidate();
+                            return initialState;
+                    }
+
+                    return super.react(signal);
+                } finally {
+                    model.getLock().unlock();
                 }
-
-                return super.react(signal);
             }
         };
     }
@@ -157,68 +162,73 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
             @NotNull
             @Override
             public State<Signal> react(@NotNull Signal signal) {
-                switch (signal) {
-                    case DIGIT_0:
-                    case DIGIT_1:
-                    case DIGIT_2:
-                    case DIGIT_3:
-                    case DIGIT_4:
-                    case DIGIT_5:
-                    case DIGIT_6:
-                    case DIGIT_7:
-                    case DIGIT_8:
-                    case DIGIT_9:
-                        model.setDisplayText(model.getDisplayText() + signal.getRepresentation());
-                        model.setDisplayData(parseDouble(model.getDisplayText()));
-                        view.invalidate();
-                        return afterDigitInLArg;
+                model.getLock().lock();
+                try {
+                    switch (signal) {
+                        case DIGIT_0:
+                        case DIGIT_1:
+                        case DIGIT_2:
+                        case DIGIT_3:
+                        case DIGIT_4:
+                        case DIGIT_5:
+                        case DIGIT_6:
+                        case DIGIT_7:
+                        case DIGIT_8:
+                        case DIGIT_9:
+                            model.setDisplayText(model.getDisplayText() + signal.getRepresentation());
+                            model.setDisplayData(parseDouble(model.getDisplayText()));
+                            view.invalidate();
+                            return afterDigitInLArg;
 
-                    case DOT:
-                        model.setDisplayText(model.getDisplayText() + signal.getRepresentation());
-                        model.setDisplayData(parseDouble(model.getDisplayText()));
-                        view.invalidate();
-                        return afterDotInLArg;
+                        case DOT:
+                            model.setDisplayText(model.getDisplayText() + signal.getRepresentation());
+                            model.setDisplayData(parseDouble(model.getDisplayText()));
+                            view.invalidate();
+                            return afterDotInLArg;
 
-                    case PLUS:
-                    case MINUS:
-                    case MULTIPLY:
-                    case DIVIDE:
-                        model.setlArg(model.getDisplayData());
-                        model.setDisplayText(renderDouble(model.getDisplayData()));
-                        model.setOperation(CalculatorModel.Operation.bySignal(signal));
-                        return afterSingSelection;
+                        case PLUS:
+                        case MINUS:
+                        case MULTIPLY:
+                        case DIVIDE:
+                            model.setlArg(model.getDisplayData());
+                            model.setDisplayText(renderDouble(model.getDisplayData()));
+                            model.setOperation(CalculatorModel.Operation.bySignal(signal));
+                            return afterSingSelection;
 
-                    case EVALUATE:
-                        if (model.getOperation() != null) {
-                            try {
-                                model.setlArg(model.getOperation().evaluate(model.getDisplayData(), model.getrArg()));
-                                model.setDisplayData(model.getlArg());
-                                model.setDisplayText(renderDouble(model.getDisplayData()));
-                                view.invalidate();
-                                return afterEvaluation;
-                            } catch (Exception e) {
-                                model.setDisplayText("ERR");
-                                view.invalidate();
-                                return errorInputState;
+                        case EVALUATE:
+                            if (model.getOperation() != null) {
+                                try {
+                                    model.setlArg(model.getOperation().evaluate(model.getDisplayData(), model.getrArg()));
+                                    model.setDisplayData(model.getlArg());
+                                    model.setDisplayText(renderDouble(model.getDisplayData()));
+                                    view.invalidate();
+                                    return afterEvaluation;
+                                } catch (Exception e) {
+                                    model.setDisplayText("ERR");
+                                    view.invalidate();
+                                    return errorInputState;
+                                }
                             }
-                        }
 
-                        model.setDisplayText(renderDouble(model.getDisplayData()));
-                        model.setDisplayData(parseDouble(model.getDisplayText()));
-                        view.invalidate();
-                        return initialState;
+                            model.setDisplayText(renderDouble(model.getDisplayData()));
+                            model.setDisplayData(parseDouble(model.getDisplayText()));
+                            view.invalidate();
+                            return initialState;
 
-                    case BACK_SPACE:
-                        model.setDisplayText(model.getDisplayText().substring(0, model.getDisplayText().length() - 1));
-                        if (model.getDisplayText().isEmpty() || "-".equals(model.getDisplayText()) || "-0".equals(model.getDisplayText())) {
-                            model.setDisplayText("0");
-                        }
-                        model.setDisplayData(parseDouble(model.getDisplayText()));
-                        view.invalidate();
-                        return model.getDisplayText().length() < 3 ? initialState : afterDigitInLArg;
+                        case BACK_SPACE:
+                            model.setDisplayText(model.getDisplayText().substring(0, model.getDisplayText().length() - 1));
+                            if (model.getDisplayText().isEmpty() || "-".equals(model.getDisplayText()) || "-0".equals(model.getDisplayText())) {
+                                model.setDisplayText("0");
+                            }
+                            model.setDisplayData(parseDouble(model.getDisplayText()));
+                            view.invalidate();
+                            return model.getDisplayText().length() < 3 ? initialState : afterDigitInLArg;
+                    }
+
+                    return super.react(signal);
+                } finally {
+                    model.getLock().unlock();
                 }
-
-                return super.react(signal);
             }
         };
     }
@@ -228,84 +238,89 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
             @NotNull
             @Override
             public State<Signal> react(@NotNull Signal signal) {
-                switch (signal) {
-                    case DIGIT_0:
-                    case DIGIT_1:
-                    case DIGIT_2:
-                    case DIGIT_3:
-                    case DIGIT_4:
-                    case DIGIT_5:
-                    case DIGIT_6:
-                    case DIGIT_7:
-                    case DIGIT_8:
-                    case DIGIT_9:
-                        model.setDisplayText(model.getDisplayText() + signal.getRepresentation());
-                        model.setDisplayData(parseDouble(model.getDisplayText()));
-                        view.invalidate();
-                        return afterDotInLArg;
+                model.getLock().lock();
+                try {
+                    switch (signal) {
+                        case DIGIT_0:
+                        case DIGIT_1:
+                        case DIGIT_2:
+                        case DIGIT_3:
+                        case DIGIT_4:
+                        case DIGIT_5:
+                        case DIGIT_6:
+                        case DIGIT_7:
+                        case DIGIT_8:
+                        case DIGIT_9:
+                            model.setDisplayText(model.getDisplayText() + signal.getRepresentation());
+                            model.setDisplayData(parseDouble(model.getDisplayText()));
+                            view.invalidate();
+                            return afterDotInLArg;
 
-                    case DOT:
-                        return afterDotInLArg;
+                        case DOT:
+                            return afterDotInLArg;
 
-                    case PLUS:
-                    case MINUS:
-                    case MULTIPLY:
-                    case DIVIDE:
-                        model.setlArg(model.getDisplayData());
-                        model.setDisplayText(renderDouble(model.getlArg()));
-                        model.setOperation(CalculatorModel.Operation.bySignal(signal));
-                        return afterSingSelection;
+                        case PLUS:
+                        case MINUS:
+                        case MULTIPLY:
+                        case DIVIDE:
+                            model.setlArg(model.getDisplayData());
+                            model.setDisplayText(renderDouble(model.getlArg()));
+                            model.setOperation(CalculatorModel.Operation.bySignal(signal));
+                            return afterSingSelection;
 
-                    case EVALUATE:
-                        if (model.getOperation() != null) {
-                            try {
-                                model.setlArg(model.getOperation().evaluate(model.getDisplayData(),model.getrArg()));
-                                model.setDisplayText(renderDouble(model.getDisplayData()));
-                                view.invalidate();
-                                return afterEvaluation;
-                            } catch (Exception e) {
-                                model.setDisplayText("ERR");
-                                view.invalidate();
-                                return errorInputState;
+                        case EVALUATE:
+                            if (model.getOperation() != null) {
+                                try {
+                                    model.setlArg(model.getOperation().evaluate(model.getDisplayData(), model.getrArg()));
+                                    model.setDisplayText(renderDouble(model.getDisplayData()));
+                                    view.invalidate();
+                                    return afterEvaluation;
+                                } catch (Exception e) {
+                                    model.setDisplayText("ERR");
+                                    view.invalidate();
+                                    return errorInputState;
+                                }
                             }
-                        }
 
-                        model.setDisplayText(renderDouble(model.getDisplayData()));
-                        model.setDisplayData(parseDouble(model.getDisplayText()));
-                        return initialState;
+                            model.setDisplayText(renderDouble(model.getDisplayData()));
+                            model.setDisplayData(parseDouble(model.getDisplayText()));
+                            return initialState;
 
-                    case BACK_SPACE:
-                        if (model.getDisplayText().charAt(model.getDisplayText().length() - 1) == '.') {
+                        case BACK_SPACE:
+                            if (model.getDisplayText().charAt(model.getDisplayText().length() - 1) == '.') {
+                                model.setDisplayText(model.getDisplayText().substring(0, model.getDisplayText().length() - 1));
+                                if (model.getDisplayText().isEmpty() || "-".equals(model.getDisplayText()) || "-0".equals(model.getDisplayText())) {
+                                    model.setDisplayText("0");
+                                }
+                                model.setDisplayData(parseDouble(model.getDisplayText()));
+                                view.invalidate();
+                                return afterDigitInLArg;
+                            }
                             model.setDisplayText(model.getDisplayText().substring(0, model.getDisplayText().length() - 1));
-                            if (model.getDisplayText().isEmpty() || "-".equals(model.getDisplayText()) || "-0".equals(model.getDisplayText())) {
+                            if ("0".equals(model.getDisplayText()) || "-0".equals(model.getDisplayText())) {
                                 model.setDisplayText("0");
                             }
                             model.setDisplayData(parseDouble(model.getDisplayText()));
                             view.invalidate();
-                            return afterDigitInLArg;
-                        }
-                        model.setDisplayText(model.getDisplayText().substring(0, model.getDisplayText().length() - 1));
-                        if ("0".equals(model.getDisplayText()) || "-0".equals(model.getDisplayText())) {
-                            model.setDisplayText("0");
-                        }
-                        model.setDisplayData(parseDouble(model.getDisplayText()));
-                        view.invalidate();
-                        return afterDotInLArg;
+                            return afterDotInLArg;
 
-                    case REVERSE:
-                        if (!"0".equals(model.getDisplayText())) {
-                            if (model.getDisplayText().startsWith("-")) {
-                                model.setDisplayText(model.getDisplayText().substring(1));
-                            } else {
-                                model.setDisplayText("-" + model.getDisplayText());
+                        case REVERSE:
+                            if (!"0".equals(model.getDisplayText())) {
+                                if (model.getDisplayText().startsWith("-")) {
+                                    model.setDisplayText(model.getDisplayText().substring(1));
+                                } else {
+                                    model.setDisplayText("-" + model.getDisplayText());
+                                }
                             }
-                        }
-                        model.setDisplayData(parseDouble(model.getDisplayText()));
-                        view.invalidate();
-                        return afterDotInLArg;
-                }
+                            model.setDisplayData(parseDouble(model.getDisplayText()));
+                            view.invalidate();
+                            return afterDotInLArg;
+                    }
 
-                return super.react(signal);
+                    return super.react(signal);
+                } finally {
+                    model.getLock().unlock();
+                }
             }
         };
     }
@@ -315,65 +330,70 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
             @NotNull
             @Override
             public State<Signal> react(@NotNull Signal signal) {
-                switch (signal) {
-                    case DIGIT_0:
-                        model.setDisplayText(signal.getRepresentation());
-                        model.setDisplayData(parseDouble(model.getDisplayText()));
-                        view.invalidate();
-                        return afterSingSelection;
-
-                    case DIGIT_1:
-                    case DIGIT_2:
-                    case DIGIT_3:
-                    case DIGIT_4:
-                    case DIGIT_5:
-                    case DIGIT_6:
-                    case DIGIT_7:
-                    case DIGIT_8:
-                    case DIGIT_9:
-                        model.setDisplayText(signal.getRepresentation());
-                        model.setDisplayData(parseDouble(model.getDisplayText()));
-                        view.invalidate();
-                        return afterDigitInRArg;
-
-                    case DOT:
-                        model.setDisplayText("0" + signal.getRepresentation());
-                        model.setDisplayData(parseDouble(model.getDisplayText()));
-                        view.invalidate();
-                        return afterDotInRArg;
-
-                    case PLUS:
-                    case MINUS:
-                    case MULTIPLY:
-                    case DIVIDE:
-                        model.setOperation(CalculatorModel.Operation.bySignal(signal));
-                        return afterSingSelection;
-
-                    case EVALUATE:
-                        try {
-                            model.setrArg(model.getDisplayData());
-                            model.setlArg(model.getOperation().evaluate(model.getlArg(), model.getrArg()));
-                            model.setDisplayData(model.getlArg());
-                            model.setDisplayText(renderDouble(model.getDisplayData()));
+                model.getLock().lock();
+                try {
+                    switch (signal) {
+                        case DIGIT_0:
+                            model.setDisplayText(signal.getRepresentation());
+                            model.setDisplayData(parseDouble(model.getDisplayText()));
                             view.invalidate();
-                            return afterEvaluation;
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
+                            return afterSingSelection;
 
-                    case BACK_SPACE:
-                        model.setDisplayText(model.getDisplayText().substring(0, model.getDisplayText().length() - 1));
-                        if (model.getDisplayText().isEmpty() || "-".equals(model.getDisplayText()) || "-0".equals(model.getDisplayText())) {
-                            model.setDisplayText("0");
-                        }
-                        model.setDisplayData(parseDouble(model.getDisplayText()));
-                        view.invalidate();
-                        return afterSingSelection;
+                        case DIGIT_1:
+                        case DIGIT_2:
+                        case DIGIT_3:
+                        case DIGIT_4:
+                        case DIGIT_5:
+                        case DIGIT_6:
+                        case DIGIT_7:
+                        case DIGIT_8:
+                        case DIGIT_9:
+                            model.setDisplayText(signal.getRepresentation());
+                            model.setDisplayData(parseDouble(model.getDisplayText()));
+                            view.invalidate();
+                            return afterDigitInRArg;
+
+                        case DOT:
+                            model.setDisplayText("0" + signal.getRepresentation());
+                            model.setDisplayData(parseDouble(model.getDisplayText()));
+                            view.invalidate();
+                            return afterDotInRArg;
+
+                        case PLUS:
+                        case MINUS:
+                        case MULTIPLY:
+                        case DIVIDE:
+                            model.setOperation(CalculatorModel.Operation.bySignal(signal));
+                            return afterSingSelection;
+
+                        case EVALUATE:
+                            try {
+                                model.setrArg(model.getDisplayData());
+                                model.setlArg(model.getOperation().evaluate(model.getlArg(), model.getrArg()));
+                                model.setDisplayData(model.getlArg());
+                                model.setDisplayText(renderDouble(model.getDisplayData()));
+                                view.invalidate();
+                                return afterEvaluation;
+                            } catch (Exception e) {
+                                model.setDisplayText("ERR");
+                                view.invalidate();
+                                return errorInputState;
+                            }
+
+                        case BACK_SPACE:
+                            model.setDisplayText(model.getDisplayText().substring(0, model.getDisplayText().length() - 1));
+                            if (model.getDisplayText().isEmpty() || "-".equals(model.getDisplayText()) || "-0".equals(model.getDisplayText())) {
+                                model.setDisplayText("0");
+                            }
+                            model.setDisplayData(parseDouble(model.getDisplayText()));
+                            view.invalidate();
+                            return afterSingSelection;
+                    }
+
+                    return super.react(signal);
+                } finally {
+                    model.getLock().unlock();
                 }
-
-                return super.react(signal);
             }
         };
     }
@@ -383,69 +403,74 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
             @NotNull
             @Override
             public State<Signal> react(@NotNull Signal signal) {
-                switch (signal) {
-                    case DIGIT_0:
-                        model.setDisplayText(signal.getRepresentation());
-                        model.setDisplayData(parseDouble(model.getDisplayText()));
-                        view.invalidate();
-                        return afterSingSelection;
+                model.getLock().lock();
+                try {
+                    switch (signal) {
+                        case DIGIT_0:
+                            model.setDisplayText(signal.getRepresentation());
+                            model.setDisplayData(parseDouble(model.getDisplayText()));
+                            view.invalidate();
+                            return afterSingSelection;
 
-                    case DIGIT_1:
-                    case DIGIT_2:
-                    case DIGIT_3:
-                    case DIGIT_4:
-                    case DIGIT_5:
-                    case DIGIT_6:
-                    case DIGIT_7:
-                    case DIGIT_8:
-                    case DIGIT_9:
-                        model.setDisplayText(signal.getRepresentation());
-                        model.setDisplayData(parseDouble(model.getDisplayText()));
-                        view.invalidate();
-                        return afterDigitInRArg;
+                        case DIGIT_1:
+                        case DIGIT_2:
+                        case DIGIT_3:
+                        case DIGIT_4:
+                        case DIGIT_5:
+                        case DIGIT_6:
+                        case DIGIT_7:
+                        case DIGIT_8:
+                        case DIGIT_9:
+                            model.setDisplayText(signal.getRepresentation());
+                            model.setDisplayData(parseDouble(model.getDisplayText()));
+                            view.invalidate();
+                            return afterDigitInRArg;
 
-                    case DOT:
-                        model.setDisplayText("0" + signal.getRepresentation());
-                        model.setDisplayData(parseDouble(model.getDisplayText()));
-                        view.invalidate();
-                        return afterDotInRArg;
+                        case DOT:
+                            model.setDisplayText("0" + signal.getRepresentation());
+                            model.setDisplayData(parseDouble(model.getDisplayText()));
+                            view.invalidate();
+                            return afterDotInRArg;
 
-                    case PLUS:
-                    case MINUS:
-                    case MULTIPLY:
-                    case DIVIDE:
-                        model.setlArg(model.getOperation().evaluate(model.getlArg(), model.getDisplayData()));
-                        model.setDisplayData(model.getlArg());
-                        model.setDisplayText(renderDouble(model.getDisplayData()));
-                        model.setOperation(CalculatorModel.Operation.bySignal(signal));
-                        view.invalidate();
-                        return afterSingSelection;
-
-                    case EVALUATE:
-                        try {
-                            model.setrArg(model.getDisplayData());
-                            model.setlArg(model.getOperation().evaluate(model.getlArg(), model.getrArg()));
+                        case PLUS:
+                        case MINUS:
+                        case MULTIPLY:
+                        case DIVIDE:
+                            model.setlArg(model.getOperation().evaluate(model.getlArg(), model.getDisplayData()));
                             model.setDisplayData(model.getlArg());
                             model.setDisplayText(renderDouble(model.getDisplayData()));
+                            model.setOperation(CalculatorModel.Operation.bySignal(signal));
                             view.invalidate();
-                            return afterEvaluation;
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
+                            return afterSingSelection;
 
-                    case BACK_SPACE:
-                        model.setDisplayText(model.getDisplayText().substring(0, model.getDisplayText().length() - 1));
-                        if (model.getDisplayText().isEmpty() || "-".equals(model.getDisplayText()) || "-0".equals(model.getDisplayText())) {
-                            model.setDisplayText("0");
-                        }
-                        model.setDisplayData(parseDouble(model.getDisplayText()));
-                        view.invalidate();
-                        return afterSingSelection;
+                        case EVALUATE:
+                            try {
+                                model.setrArg(model.getDisplayData());
+                                model.setlArg(model.getOperation().evaluate(model.getlArg(), model.getrArg()));
+                                model.setDisplayData(model.getlArg());
+                                model.setDisplayText(renderDouble(model.getDisplayData()));
+                                view.invalidate();
+                                return afterEvaluation;
+                            } catch (Exception e) {
+                                model.setDisplayText("ERR");
+                                view.invalidate();
+                                return errorInputState;
+                            }
+
+                        case BACK_SPACE:
+                            model.setDisplayText(model.getDisplayText().substring(0, model.getDisplayText().length() - 1));
+                            if (model.getDisplayText().isEmpty() || "-".equals(model.getDisplayText()) || "-0".equals(model.getDisplayText())) {
+                                model.setDisplayText("0");
+                            }
+                            model.setDisplayData(parseDouble(model.getDisplayText()));
+                            view.invalidate();
+                            return afterSingSelection;
+                    }
+
+                    return super.react(signal);
+                } finally {
+                    model.getLock().unlock();
                 }
-
-                return super.react(signal);
             }
         };
     }
@@ -455,70 +480,75 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
             @NotNull
             @Override
             public State<Signal> react(@NotNull Signal signal) {
-                switch (signal) {
-                    case DIGIT_0:
-                    case DIGIT_1:
-                    case DIGIT_2:
-                    case DIGIT_3:
-                    case DIGIT_4:
-                    case DIGIT_5:
-                    case DIGIT_6:
-                    case DIGIT_7:
-                    case DIGIT_8:
-                    case DIGIT_9:
-                        model.setDisplayText(model.getDisplayText() + signal.getRepresentation());
-                        model.setDisplayData(parseDouble(model.getDisplayText()));
-                        view.invalidate();
-                        return afterDigitInRArg;
+                model.getLock().lock();
+                try {
+                    switch (signal) {
+                        case DIGIT_0:
+                        case DIGIT_1:
+                        case DIGIT_2:
+                        case DIGIT_3:
+                        case DIGIT_4:
+                        case DIGIT_5:
+                        case DIGIT_6:
+                        case DIGIT_7:
+                        case DIGIT_8:
+                        case DIGIT_9:
+                            model.setDisplayText(model.getDisplayText() + signal.getRepresentation());
+                            model.setDisplayData(parseDouble(model.getDisplayText()));
+                            view.invalidate();
+                            return afterDigitInRArg;
 
-                    case DOT:
-                        model.setDisplayText(model.getDisplayText() + signal.getRepresentation());
-                        model.setDisplayData(parseDouble(model.getDisplayText()));
-                        view.invalidate();
-                        return afterDotInRArg;
+                        case DOT:
+                            model.setDisplayText(model.getDisplayText() + signal.getRepresentation());
+                            model.setDisplayData(parseDouble(model.getDisplayText()));
+                            view.invalidate();
+                            return afterDotInRArg;
 
-                    case PLUS:
-                    case MINUS:
-                    case MULTIPLY:
-                    case DIVIDE:
-                        try {
-                            model.setlArg(model.getOperation().evaluate(model.getlArg(), model.getDisplayData()));
+                        case PLUS:
+                        case MINUS:
+                        case MULTIPLY:
+                        case DIVIDE:
+                            try {
+                                model.setlArg(model.getOperation().evaluate(model.getlArg(), model.getDisplayData()));
+                                model.setDisplayData(model.getlArg());
+                                model.setDisplayText(renderDouble(model.getDisplayData()));
+                                model.setOperation(CalculatorModel.Operation.bySignal(signal));
+                                view.invalidate();
+                                return afterSingSelection;
+                            } catch (Exception e) {
+                                model.setDisplayText("ERR");
+                                view.invalidate();
+                                return errorInputState;
+                            }
+
+                        case EVALUATE:
+                            try {
+                                model.setrArg(model.getDisplayData());
+                                model.setlArg(model.getOperation().evaluate(model.getlArg(), model.getrArg()));
+                            } catch (Exception e) {
+                                model.setDisplayText("ERR");
+                                view.invalidate();
+                                return errorInputState;
+                            }
                             model.setDisplayData(model.getlArg());
                             model.setDisplayText(renderDouble(model.getDisplayData()));
-                            model.setOperation(CalculatorModel.Operation.bySignal(signal));
                             view.invalidate();
-                            return afterSingSelection;
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
+                            return afterEvaluation;
 
-                    case EVALUATE:
-                        try {
-                            model.setrArg(model.getDisplayData());
-                            model.setlArg(model.getOperation().evaluate(model.getlArg(), model.getrArg()));
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
+                        case BACK_SPACE:
+                            model.setDisplayText(model.getDisplayText().substring(0, model.getDisplayText().length() - 1));
+                            if (model.getDisplayText().isEmpty() || "-".equals(model.getDisplayText()) || "-0".equals(model.getDisplayText())) {
+                                model.setDisplayText("0");
+                            }
+                            model.setDisplayData(parseDouble(model.getDisplayText()));
                             view.invalidate();
-                            return errorInputState;
-                        }
-                        model.setDisplayData(model.getlArg());
-                        model.setDisplayText(renderDouble(model.getDisplayData()));
-                        view.invalidate();
-                        return afterEvaluation;
+                            return model.getDisplayText().length() < 3 ? initialState : afterDigitInLArg;
+                    }
 
-                    case BACK_SPACE:
-                        model.setDisplayText(model.getDisplayText().substring(0, model.getDisplayText().length() - 1));
-                        if (model.getDisplayText().isEmpty() || "-".equals(model.getDisplayText()) || "-0".equals(model.getDisplayText())) {
-                            model.setDisplayText("0");
-                        }
-                        model.setDisplayData(parseDouble(model.getDisplayText()));
-                        view.invalidate();
-                        return model.getDisplayText().length() < 3 ? initialState : afterDigitInLArg;
+                    return super.react(signal);
+                } finally {
+                    model.getLock().unlock();
                 }
-
-                return super.react(signal);
             }
         };
     }
@@ -528,87 +558,92 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
             @NotNull
             @Override
             public State<Signal> react(@NotNull Signal signal) {
-                switch (signal) {
-                    case DIGIT_0:
-                    case DIGIT_1:
-                    case DIGIT_2:
-                    case DIGIT_3:
-                    case DIGIT_4:
-                    case DIGIT_5:
-                    case DIGIT_6:
-                    case DIGIT_7:
-                    case DIGIT_8:
-                    case DIGIT_9:
-                        model.setDisplayText(model.getDisplayText() + signal.getRepresentation());
-                        model.setDisplayData(parseDouble(model.getDisplayText()));
-                        view.invalidate();
-                        return afterDotInRArg;
-
-                    case DOT:
-                        return afterDotInRArg;
-
-                    case PLUS:
-                    case MINUS:
-                    case MULTIPLY:
-                    case DIVIDE:
-                        try {
-                            model.setlArg(model.getOperation().evaluate(model.getlArg(), model.getDisplayData()));
-                            model.setDisplayData(model.getlArg());
-                            model.setDisplayText(renderDouble(model.getDisplayData()));
-                            model.setOperation(CalculatorModel.Operation.bySignal(signal));
+                model.getLock().lock();
+                try {
+                    switch (signal) {
+                        case DIGIT_0:
+                        case DIGIT_1:
+                        case DIGIT_2:
+                        case DIGIT_3:
+                        case DIGIT_4:
+                        case DIGIT_5:
+                        case DIGIT_6:
+                        case DIGIT_7:
+                        case DIGIT_8:
+                        case DIGIT_9:
+                            model.setDisplayText(model.getDisplayText() + signal.getRepresentation());
+                            model.setDisplayData(parseDouble(model.getDisplayText()));
                             view.invalidate();
-                            return afterSingSelection;
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
+                            return afterDotInRArg;
 
-                    case EVALUATE:
-                        try {
-                            model.setrArg(model.getDisplayData());
-                            model.setlArg(model.getOperation().evaluate(model.getlArg(), model.getrArg()));
-                            model.setDisplayData(model.getlArg());
-                            model.setDisplayText(renderDouble(model.getDisplayData()));
-                            view.invalidate();
-                            return afterEvaluation;
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
+                        case DOT:
+                            return afterDotInRArg;
 
-                    case BACK_SPACE:
-                        if (model.getDisplayText().charAt(model.getDisplayText().length() - 1) == '.') {
+                        case PLUS:
+                        case MINUS:
+                        case MULTIPLY:
+                        case DIVIDE:
+                            try {
+                                model.setlArg(model.getOperation().evaluate(model.getlArg(), model.getDisplayData()));
+                                model.setDisplayData(model.getlArg());
+                                model.setDisplayText(renderDouble(model.getDisplayData()));
+                                model.setOperation(CalculatorModel.Operation.bySignal(signal));
+                                view.invalidate();
+                                return afterSingSelection;
+                            } catch (Exception e) {
+                                model.setDisplayText("ERR");
+                                view.invalidate();
+                                return errorInputState;
+                            }
+
+                        case EVALUATE:
+                            try {
+                                model.setrArg(model.getDisplayData());
+                                model.setlArg(model.getOperation().evaluate(model.getlArg(), model.getrArg()));
+                                model.setDisplayData(model.getlArg());
+                                model.setDisplayText(renderDouble(model.getDisplayData()));
+                                view.invalidate();
+                                return afterEvaluation;
+                            } catch (Exception e) {
+                                model.setDisplayText("ERR");
+                                view.invalidate();
+                                return errorInputState;
+                            }
+
+                        case BACK_SPACE:
+                            if (model.getDisplayText().charAt(model.getDisplayText().length() - 1) == '.') {
+                                model.setDisplayText(model.getDisplayText().substring(0, model.getDisplayText().length() - 1));
+                                if (model.getDisplayText().isEmpty() || "-".equals(model.getDisplayText()) || "-0".equals(model.getDisplayText())) {
+                                    model.setDisplayText("0");
+                                }
+                                model.setDisplayData(parseDouble(model.getDisplayText()));
+                                view.invalidate();
+                                return afterDigitInRArg;
+                            }
                             model.setDisplayText(model.getDisplayText().substring(0, model.getDisplayText().length() - 1));
                             if (model.getDisplayText().isEmpty() || "-".equals(model.getDisplayText()) || "-0".equals(model.getDisplayText())) {
                                 model.setDisplayText("0");
                             }
                             model.setDisplayData(parseDouble(model.getDisplayText()));
                             view.invalidate();
-                            return afterDigitInRArg;
-                        }
-                        model.setDisplayText(model.getDisplayText().substring(0, model.getDisplayText().length() - 1));
-                        if (model.getDisplayText().isEmpty() || "-".equals(model.getDisplayText()) || "-0".equals(model.getDisplayText())) {
-                            model.setDisplayText("0");
-                        }
-                        model.setDisplayData(parseDouble(model.getDisplayText()));
-                        view.invalidate();
-                        return afterDotInRArg;
+                            return afterDotInRArg;
 
-                    case REVERSE:
-                        if (!"0".equals(model.getDisplayText())) {
-                            if (model.getDisplayText().startsWith("-")) {
-                                model.setDisplayText(model.getDisplayText().substring(1));
-                            } else {
-                                model.setDisplayText("-" + model.getDisplayText());
+                        case REVERSE:
+                            if (!"0".equals(model.getDisplayText())) {
+                                if (model.getDisplayText().startsWith("-")) {
+                                    model.setDisplayText(model.getDisplayText().substring(1));
+                                } else {
+                                    model.setDisplayText("-" + model.getDisplayText());
+                                }
                             }
-                        }
-                        view.invalidate();
-                        return afterDotInRArg;
-                }
+                            view.invalidate();
+                            return afterDotInRArg;
+                    }
 
-                return super.react(signal);
+                    return super.react(signal);
+                } finally {
+                    model.getLock().unlock();
+                }
             }
         };
     }
@@ -618,53 +653,58 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
             @NotNull
             @Override
             public State<Signal> react(@NotNull Signal signal) {
-                switch (signal) {
-                    case DIGIT_0:
-                    case DIGIT_1:
-                    case DIGIT_2:
-                    case DIGIT_3:
-                    case DIGIT_4:
-                    case DIGIT_5:
-                    case DIGIT_6:
-                    case DIGIT_7:
-                    case DIGIT_8:
-                    case DIGIT_9:
-                        model.setDisplayText(signal.getRepresentation());
-                        model.setDisplayData(parseDouble(model.getDisplayText()));
-                        view.invalidate();
-                        return afterDigitInLArg;
-
-                    case DOT:
-                        model.setDisplayText("0" + signal.getRepresentation());
-                        model.setDisplayData(parseDouble(model.getDisplayText()));
-                        view.invalidate();
-                        return afterDotInLArg;
-
-                    case PLUS:
-                    case MINUS:
-                    case MULTIPLY:
-                    case DIVIDE:
-                        model.setlArg(parseDouble(model.getDisplayText()));
-                        model.setOperation(CalculatorModel.Operation.bySignal(signal));
-                        return afterSingSelection;
-
-                    case EVALUATE:
-                        try {
-                            model.setDisplayData(model.getOperation().evaluate(model.getDisplayData(), model.getrArg()));
-                            model.setDisplayText(renderDouble(model.getDisplayData()));
+                model.getLock().lock();
+                try {
+                    switch (signal) {
+                        case DIGIT_0:
+                        case DIGIT_1:
+                        case DIGIT_2:
+                        case DIGIT_3:
+                        case DIGIT_4:
+                        case DIGIT_5:
+                        case DIGIT_6:
+                        case DIGIT_7:
+                        case DIGIT_8:
+                        case DIGIT_9:
+                            model.setDisplayText(signal.getRepresentation());
+                            model.setDisplayData(parseDouble(model.getDisplayText()));
                             view.invalidate();
+                            return afterDigitInLArg;
+
+                        case DOT:
+                            model.setDisplayText("0" + signal.getRepresentation());
+                            model.setDisplayData(parseDouble(model.getDisplayText()));
+                            view.invalidate();
+                            return afterDotInLArg;
+
+                        case PLUS:
+                        case MINUS:
+                        case MULTIPLY:
+                        case DIVIDE:
+                            model.setlArg(parseDouble(model.getDisplayText()));
+                            model.setOperation(CalculatorModel.Operation.bySignal(signal));
+                            return afterSingSelection;
+
+                        case EVALUATE:
+                            try {
+                                model.setDisplayData(model.getOperation().evaluate(model.getDisplayData(), model.getrArg()));
+                                model.setDisplayText(renderDouble(model.getDisplayData()));
+                                view.invalidate();
+                                return afterEvaluation;
+                            } catch (Exception e) {
+                                model.setDisplayText("ERR");
+                                view.invalidate();
+                                return errorInputState;
+                            }
+
+                        case BACK_SPACE:
                             return afterEvaluation;
-                        } catch (Exception e) {
-                            model.setDisplayText("ERR");
-                            view.invalidate();
-                            return errorInputState;
-                        }
+                    }
 
-                    case BACK_SPACE:
-                        return afterEvaluation;
+                    return super.react(signal);
+                } finally {
+                    model.getLock().unlock();
                 }
-
-                return super.react(signal);
             }
         };
     }
@@ -674,17 +714,23 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
             @NotNull
             @Override
             public State<Signal> react(@NotNull Signal signal) {
-                switch (signal) {
-                    case CLEAR:
-                    case CLEAR_EVALUATION:
-                        model.setlArg(0);
-                        model.setrArg(0);
-                        model.setDisplayText("0");
-                        view.invalidate();
-                        return initialState;
+                model.getLock().lock();
+                try {
+                    switch (signal) {
+                        case CLEAR:
+                        case CLEAR_EVALUATION:
+                            model.setlArg(0);
+                            model.setrArg(0);
+                            model.setDisplayText("0");
+                            view.invalidate();
+                            return initialState;
 
-                    default:
-                        return errorInputState;
+                        default:
+                            return errorInputState;
+                    }
+
+                } finally {
+                    model.getLock().unlock();
                 }
             }
         };
@@ -701,38 +747,43 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
         @NotNull
         @Override
         public State<Signal> react(@NotNull Signal signal) {
-            switch (signal) {
-                case CLEAR:
-                    model.setlArg(0);
-                    model.setrArg(0);
-                    model.setDisplayText("0");
-                    model.setDisplayData(0);
-                    view.invalidate();
-                    return initialState;
+            model.getLock().lock();
+            try {
+                switch (signal) {
+                    case CLEAR:
+                        model.setlArg(0);
+                        model.setrArg(0);
+                        model.setDisplayText("0");
+                        model.setDisplayData(0);
+                        view.invalidate();
+                        return initialState;
 
-                case MEMORY_CLEAR:
-                    model.setMemory(0);
-                    view.invalidate();
-                    return this;
+                    case MEMORY_CLEAR:
+                        model.setMemory(0);
+                        view.invalidate();
+                        return this;
 
-                case MEMORY_STORE:
-                    model.setMemory(parseDouble(model.getDisplayText()));
-                    view.invalidate();
-                    return this;
+                    case MEMORY_STORE:
+                        model.setMemory(parseDouble(model.getDisplayText()));
+                        view.invalidate();
+                        return this;
 
-                case MEMORY_PLUS:
-                    model.setMemory(model.getMemory() + model.getDisplayData());
-                    view.invalidate();
-                    return this;
+                    case MEMORY_PLUS:
+                        model.setMemory(model.getMemory() + model.getDisplayData());
+                        view.invalidate();
+                        return this;
 
-                case MEMORY_MINUS:
-                    model.setMemory(model.getMemory() - model.getDisplayData());
-                    view.invalidate();
-                    return this;
+                    case MEMORY_MINUS:
+                        model.setMemory(model.getMemory() - model.getDisplayData());
+                        view.invalidate();
+                        return this;
 
+                }
+
+                return this;
+            } finally {
+                model.getLock().unlock();
             }
-
-            return this;
         }
 
         @Override
@@ -750,74 +801,79 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
         @NotNull
         @Override
         public State<Signal> react(@NotNull Signal signal) {
-            switch (signal) {
-                case PERCENT:
-                    model.setDisplayData(model.getlArg() * model.getDisplayData() / 100);
-                    model.setDisplayText(renderDouble(model.getDisplayData()));
-                    view.invalidate();
-                    return initialState;
-
-                case SQUARE_ROOT:
-                    try {
-                        if (model.getDisplayText().startsWith("-")) {
-                            throw new ArithmeticException("Negative square root");
-                        }
-
-                        model.setDisplayData(sqrt(model.getDisplayData()));
+            model.getLock().lock();
+            try {
+                switch (signal) {
+                    case PERCENT:
+                        model.setDisplayData(model.getlArg() * model.getDisplayData() / 100);
                         model.setDisplayText(renderDouble(model.getDisplayData()));
                         view.invalidate();
                         return initialState;
-                    } catch (Exception e) {
-                        model.setDisplayText("ERR");
-                        view.invalidate();
-                        return errorInputState;
-                    }
 
-                case REVERSE:
-                    if (!"0".equals(model.getDisplayText())) {
-                        if (model.getDisplayText().startsWith("-")) {
-                            model.setDisplayText(model.getDisplayText().substring(1));
-                        } else {
-                            model.setDisplayText("-" + model.getDisplayText());
+                    case SQUARE_ROOT:
+                        try {
+                            if (model.getDisplayText().startsWith("-")) {
+                                throw new ArithmeticException("Negative square root");
+                            }
+
+                            model.setDisplayData(sqrt(model.getDisplayData()));
+                            model.setDisplayText(renderDouble(model.getDisplayData()));
+                            view.invalidate();
+                            return initialState;
+                        } catch (Exception e) {
+                            model.setDisplayText("ERR");
+                            view.invalidate();
+                            return errorInputState;
                         }
-                    }
-                    model.setDisplayData(parseDouble(model.getDisplayText()));
-                    view.invalidate();
-                    return initialState;
 
-                case INVERSE:
-                    try {
-                        model.setDisplayData(1D / model.getDisplayData());
-                        model.setDisplayText(renderDouble(model.getDisplayData()));
+                    case REVERSE:
+                        if (!"0".equals(model.getDisplayText())) {
+                            if (model.getDisplayText().startsWith("-")) {
+                                model.setDisplayText(model.getDisplayText().substring(1));
+                            } else {
+                                model.setDisplayText("-" + model.getDisplayText());
+                            }
+                        }
+                        model.setDisplayData(parseDouble(model.getDisplayText()));
                         view.invalidate();
                         return initialState;
-                    } catch (Exception e) {
-                        model.setDisplayText("ERR");
-                        view.invalidate();
-                        return errorInputState;
-                    }
 
-                case CLEAR_EVALUATION:
-                    model.setlArg(0);
-                    model.setDisplayText("0");
-                    model.setDisplayData(0);
-                    view.invalidate();
-                    return initialState;
+                    case INVERSE:
+                        try {
+                            model.setDisplayData(1D / model.getDisplayData());
+                            model.setDisplayText(renderDouble(model.getDisplayData()));
+                            view.invalidate();
+                            return initialState;
+                        } catch (Exception e) {
+                            model.setDisplayText("ERR");
+                            view.invalidate();
+                            return errorInputState;
+                        }
 
-                case MEMORY_RESTORE:
-                    try {
-                        model.setDisplayData(model.getMemory());
-                        model.setDisplayText(renderDouble(model.getDisplayData()));
-                    } catch (Exception e) {
-                        model.setDisplayText("ERR");
+                    case CLEAR_EVALUATION:
+                        model.setlArg(0);
+                        model.setDisplayText("0");
+                        model.setDisplayData(0);
                         view.invalidate();
-                        return errorInputState;
-                    }
-                    view.invalidate();
-                    return initialState;
+                        return initialState;
+
+                    case MEMORY_RESTORE:
+                        try {
+                            model.setDisplayData(model.getMemory());
+                            model.setDisplayText(renderDouble(model.getDisplayData()));
+                        } catch (Exception e) {
+                            model.setDisplayText("ERR");
+                            view.invalidate();
+                            return errorInputState;
+                        }
+                        view.invalidate();
+                        return initialState;
+                }
+
+                return super.react(signal);
+            } finally {
+                model.getLock().unlock();
             }
-
-            return super.react(signal);
         }
     }
 
@@ -830,73 +886,78 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
         @NotNull
         @Override
         public State<Signal> react(@NotNull Signal signal) {
-            switch (signal) {
-                case PERCENT:
-                    model.setDisplayData(model.getlArg() * model.getDisplayData() / 100);
-                    model.setDisplayText(renderDouble(model.getDisplayData()));
-                    view.invalidate();
-                    return afterChangeInRArg;
+            model.getLock().lock();
+            try {
+                switch (signal) {
+                    case PERCENT:
+                        model.setDisplayData(model.getlArg() * model.getDisplayData() / 100);
+                        model.setDisplayText(renderDouble(model.getDisplayData()));
+                        view.invalidate();
+                        return afterChangeInRArg;
 
-                case SQUARE_ROOT:
-                    try {
-                        if (model.getDisplayText().startsWith("-")) {
-                            throw new ArithmeticException("Negative square root");
+                    case SQUARE_ROOT:
+                        try {
+                            if (model.getDisplayText().startsWith("-")) {
+                                throw new ArithmeticException("Negative square root");
+                            }
+
+                            model.setDisplayData(sqrt(model.getDisplayData()));
+                            model.setDisplayText(renderDouble(model.getDisplayData()));
+                            view.invalidate();
+                            return afterChangeInRArg;
+                        } catch (Exception e) {
+                            model.setDisplayText("ERR");
+                            view.invalidate();
+                            return errorInputState;
+                        }
+                    case REVERSE:
+                        if (!"0".equals(model.getDisplayText())) {
+                            if (model.getDisplayText().startsWith("-")) {
+                                model.setDisplayText(model.getDisplayText().substring(1));
+                            } else {
+                                model.setDisplayText("-" + model.getDisplayText());
+                            }
+                        }
+                        model.setDisplayData(parseDouble(model.getDisplayText()));
+                        view.invalidate();
+                        return afterChangeInRArg;
+
+                    case INVERSE:
+                        try {
+                            model.setDisplayData(1D / model.getDisplayData());
+                            model.setDisplayText(renderDouble(model.getDisplayData()));
+                            view.invalidate();
+                            return afterChangeInRArg;
+                        } catch (Exception e) {
+                            model.setDisplayText("ERR");
+                            view.invalidate();
+                            return errorInputState;
                         }
 
-                        model.setDisplayData(sqrt(model.getDisplayData()));
-                        model.setDisplayText(renderDouble(model.getDisplayData()));
+                    case CLEAR_EVALUATION:
+                        model.setrArg(0);
+                        model.setDisplayText("0");
+                        model.setDisplayData(0);
                         view.invalidate();
                         return afterChangeInRArg;
-                    } catch (Exception e) {
-                        model.setDisplayText("ERR");
-                        view.invalidate();
-                        return errorInputState;
-                    }
-                case REVERSE:
-                    if (!"0".equals(model.getDisplayText())) {
-                        if (model.getDisplayText().startsWith("-")) {
-                            model.setDisplayText(model.getDisplayText().substring(1));
-                        } else {
-                            model.setDisplayText("-" + model.getDisplayText());
+
+                    case MEMORY_RESTORE:
+                        try {
+                            model.setDisplayData(model.getMemory());
+                            model.setDisplayText(renderDouble(model.getDisplayData()));
+                            view.invalidate();
+                            return afterChangeInRArg;
+                        } catch (Exception e) {
+                            model.setDisplayText("ERR");
+                            view.invalidate();
+                            return errorInputState;
                         }
-                    }
-                    model.setDisplayData(parseDouble(model.getDisplayText()));
-                    view.invalidate();
-                    return afterChangeInRArg;
+                }
 
-                case INVERSE:
-                    try {
-                        model.setDisplayData(1D / model.getDisplayData());
-                        model.setDisplayText(renderDouble(model.getDisplayData()));
-                        view.invalidate();
-                        return afterChangeInRArg;
-                    } catch (Exception e) {
-                        model.setDisplayText("ERR");
-                        view.invalidate();
-                        return errorInputState;
-                    }
-
-                case CLEAR_EVALUATION:
-                    model.setrArg(0);
-                    model.setDisplayText("0");
-                    model.setDisplayData(0);
-                    view.invalidate();
-                    return afterChangeInRArg;
-
-                case MEMORY_RESTORE:
-                    try {
-                        model.setDisplayData(model.getMemory());
-                        model.setDisplayText(renderDouble(model.getDisplayData()));
-                        view.invalidate();
-                        return afterChangeInRArg;
-                    } catch (Exception e) {
-                        model.setDisplayText("ERR");
-                        view.invalidate();
-                        return errorInputState;
-                    }
+                return super.react(signal);
+            } finally {
+                model.getLock().unlock();
             }
-
-            return super.react(signal);
         }
     }
 }

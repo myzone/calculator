@@ -41,7 +41,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("4", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("4", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -57,7 +62,12 @@ public class CalculatorStatesTest {
 
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("16", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("16", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -71,7 +81,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("16", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("16", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -83,7 +98,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("4", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("4", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -103,7 +123,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("25", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("25", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -126,7 +151,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("25", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("25", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -148,7 +178,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("25", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("25", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -166,7 +201,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("10", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("10", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -185,7 +225,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("3.2", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("3.2", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -208,7 +253,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("0.0036394557823129", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("0.0036394557823129", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -224,7 +274,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("6.25", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("6.25", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -241,7 +296,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("21.25", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("21.25", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -253,7 +313,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("0", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("0", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -267,7 +332,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("0.96", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("0.96", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -282,7 +352,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("47.04", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("47.04", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -296,7 +371,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("0.", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("0.", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -310,7 +390,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("56", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("56", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -325,7 +410,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("-56", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("-56", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -339,7 +429,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("ERR", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("ERR", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -352,7 +447,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("ERR", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("ERR", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -369,7 +469,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("ERR", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("ERR", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -383,7 +488,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("6", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("6", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -396,7 +506,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("3", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("3", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -409,7 +524,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("2.735564799734761", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("2.735564799734761", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -423,7 +543,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("1.653954291912192", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("1.653954291912192", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -444,7 +569,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("12.07106781186548", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("12.07106781186548", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -463,7 +593,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("0", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("0", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -487,7 +622,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("0", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("0", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -511,7 +651,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("55555.2", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("55555.2", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -525,7 +670,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("56.", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("56.", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -553,7 +703,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("1.666666666666667e+16", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("1.666666666666667e+16", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -583,7 +738,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("-1.666666666666667e+16", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("-1.666666666666667e+16", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -627,7 +787,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("0.0000000000000001", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("0.0000000000000001", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -640,7 +805,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("0.0008", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("0.0008", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -669,7 +839,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("0.0000000000000002", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("0.0000000000000002", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -683,7 +858,12 @@ public class CalculatorStatesTest {
                 DIGIT_0
         ).length);
 
-        assertEquals("0", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("0", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -698,8 +878,13 @@ public class CalculatorStatesTest {
                 DIGIT_0
         ).length);
 
-        verify(view, atLeastOnce()).invalidate();
-        assertEquals("0", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            verify(view, atLeastOnce()).invalidate();
+            assertEquals("0", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -709,7 +894,12 @@ public class CalculatorStatesTest {
                 REVERSE
         ).length);
 
-        assertEquals("0", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("0", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -721,8 +911,13 @@ public class CalculatorStatesTest {
                 REVERSE
         ).length);
 
-        verify(view, atLeastOnce()).invalidate();
-        assertEquals("0", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            verify(view, atLeastOnce()).invalidate();
+            assertEquals("0", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -740,8 +935,13 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        verify(view, atLeastOnce()).invalidate();
-        assertEquals("512", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            verify(view, atLeastOnce()).invalidate();
+            assertEquals("512", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -757,8 +957,13 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        verify(view, atLeastOnce()).invalidate();
-        assertEquals("262144", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            verify(view, atLeastOnce()).invalidate();
+            assertEquals("262144", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -775,7 +980,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("381469726562500", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("381469726562500", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -791,7 +1001,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("4", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("4", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -812,7 +1027,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("0", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("0", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -824,7 +1044,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("-1.414213562373095", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("-1.414213562373095", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -838,7 +1063,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("743", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("743", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     @Test
@@ -852,7 +1082,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-        assertEquals("0.01", model.getDisplayText());
+        model.getLock().lock();
+        try {
+            assertEquals("0.01", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
     public void testTODON() {
@@ -861,8 +1096,12 @@ public class CalculatorStatesTest {
         ).length);
 
         verify(view, atLeastOnce()).invalidate();
-
-        throw new NotImplementedException();
+        model.getLock().lock();
+        try {
+            throw new NotImplementedException();
+        } finally {
+            model.getLock().unlock();
+        }
     }
 
 }

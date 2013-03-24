@@ -40,6 +40,10 @@ public class CalculatorModel {
         operation = null;
     }
 
+    public ReentrantLock getLock() {
+        return lock;
+    }
+
     public double getlArg() {
         verifyLocked();
 
