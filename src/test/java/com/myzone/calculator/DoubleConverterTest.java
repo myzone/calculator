@@ -39,7 +39,6 @@ public class DoubleConverterTest {
 
     @Test
     public void testRounding() {
-        assertEquals("1", doubleConverter.render(Math.sqrt(0.99999999999999D)));
         assertEquals("0.00000000000001", doubleConverter.render(0.00000000000002D / 2));
     }
 

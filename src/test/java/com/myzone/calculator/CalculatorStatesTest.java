@@ -1157,6 +1157,43 @@ public class CalculatorStatesTest {
         }
     }
 
+    @Test
+    public void testRounding() {
+        assertEquals(0, stateMachine.run(
+                DOT,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                SQUARE_ROOT
+        ).length);
+
+        verify(view, atLeastOnce()).invalidate();
+        model.getLock().lock();
+        try {
+            assertEquals("1", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
+    }
+
     public void testTODON() {
         assertEquals(0, stateMachine.run(
                 DIVIDE

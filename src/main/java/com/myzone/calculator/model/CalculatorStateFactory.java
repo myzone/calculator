@@ -5,6 +5,7 @@ import com.myzone.utils.Converter;
 import com.myzone.utils.statemachine.State;
 import org.jetbrains.annotations.NotNull;
 
+import static java.lang.Math.abs;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
@@ -27,6 +28,11 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
     private static String renderDouble(double d) {
         if (Double.isNaN(d) || Double.isInfinite(d)) {
             throw new ArithmeticException("Double is NaN");
+        }
+
+        // rounding hook
+        if (abs(1 - d) < pow(10, -15)) {
+            d = 1;
         }
 
         return DOUBLE_CONVERTER.render(d);
