@@ -92,22 +92,6 @@ public class CalculatorView extends Application {
                 .cache(false)
                 .alignment(Pos.CENTER_RIGHT)
                 .text("0")
-                .onKeyReleased((event) -> {
-                    switch (event.getCode()) {
-                        case ENTER:
-                            signalEmittersMap.get("=").handle(event);
-                            break;
-                        case BACK_SPACE:
-                            signalEmittersMap.get("<").handle(event);
-                            break;
-                        default:
-                            SignalEmitter<KeyEvent> signalEmitter = signalEmittersMap.get(event.getText());
-
-                            if (signalEmitter != null) {
-                                signalEmitter.handle(event);
-                            }
-                    }
-                })
                 .build();
 
     }
@@ -409,6 +393,23 @@ public class CalculatorView extends Application {
                 )
                 .focusTraversable(false)
                 .build();
+
+        mainContainer.setOnKeyReleased((event) -> {
+            switch (event.getCode()) {
+                case ENTER:
+                    signalEmittersMap.get("=").handle(event);
+                    break;
+                case BACK_SPACE:
+                    signalEmittersMap.get("<").handle(event);
+                    break;
+                default:
+                    SignalEmitter<KeyEvent> signalEmitter = signalEmittersMap.get(event.getText());
+
+                    if (signalEmitter != null) {
+                        signalEmitter.handle(event);
+                    }
+            }
+        });
 
         stage.setOnCloseRequest((event) -> stateMachineThread.interrupt());
         stage.setScene(new Scene(mainContainer));
