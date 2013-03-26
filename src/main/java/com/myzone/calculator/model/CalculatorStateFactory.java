@@ -294,7 +294,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                                 }
                                 model.setDisplayData(parseDouble(model.getDisplayText()));
                                 view.invalidate();
-                                return afterDigitInLArg;
+                                return model.getDisplayData() != 0 ? afterDigitInLArg : initialState;
                             }
                             model.setDisplayText(model.getDisplayText().substring(0, model.getDisplayText().length() - 1));
                             if ("0".equals(model.getDisplayText()) || "-0".equals(model.getDisplayText())) {
@@ -618,7 +618,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                                 }
                                 model.setDisplayData(parseDouble(model.getDisplayText()));
                                 view.invalidate();
-                                return afterDigitInRArg;
+                                return model.getDisplayData() != 0 ? afterDigitInRArg : afterChangeInRArg;
                             }
                             model.setDisplayText(model.getDisplayText().substring(0, model.getDisplayText().length() - 1));
                             if (model.getDisplayText().isEmpty() || "-".equals(model.getDisplayText()) || "-0".equals(model.getDisplayText())) {

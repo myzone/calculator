@@ -1080,6 +1080,83 @@ public class CalculatorStatesTest {
         }
     }
 
+    @Test
+    public void testBackspaceAfterDotInLArg1() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_0,
+                DOT,
+                BACK_SPACE,
+                DIGIT_9
+        ).length);
+
+        verify(view, atLeastOnce()).invalidate();
+        model.getLock().lock();
+        try {
+            assertEquals("9", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
+    }
+
+    @Test
+    public void testBackspaceAfterDotInRArg1() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_1,
+                PLUS,
+                DIGIT_0,
+                DOT,
+                BACK_SPACE,
+                DIGIT_9
+        ).length);
+
+        verify(view, atLeastOnce()).invalidate();
+        model.getLock().lock();
+        try {
+            assertEquals("9", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
+    }
+
+
+    @Test
+    public void testBackspaceAfterDotInLArg2() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_1,
+                DOT,
+                BACK_SPACE,
+                DIGIT_9
+        ).length);
+
+        verify(view, atLeastOnce()).invalidate();
+        model.getLock().lock();
+        try {
+            assertEquals("19", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
+    }
+
+    @Test
+    public void testBackspaceAfterDotInRArg2() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_1,
+                PLUS,
+                DIGIT_1,
+                DOT,
+                BACK_SPACE,
+                DIGIT_9
+        ).length);
+
+        verify(view, atLeastOnce()).invalidate();
+        model.getLock().lock();
+        try {
+            assertEquals("19", model.getDisplayText());
+        } finally {
+            model.getLock().unlock();
+        }
+    }
+
     public void testTODON() {
         assertEquals(0, stateMachine.run(
                 DIVIDE
