@@ -1041,6 +1041,22 @@ public class CalculatorStatesTest {
         }
     }
 
+    @Test
+    public void testManyEvaluationsAfterDot() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_2,
+                DOT,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE
+        ).length);
+
+        try (CalculatorModel.Session session = model.createSession()) {
+            verify(view, atLeastOnce()).invalidate();
+            assertEquals("2", session.getDisplayText());
+        }
+    }
+
     public void testTODON() {
         assertEquals(0, stateMachine.run(
                 DIVIDE
