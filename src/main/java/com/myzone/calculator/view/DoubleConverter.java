@@ -1,4 +1,4 @@
-package com.myzone.calculator.model;
+package com.myzone.calculator.view;
 
 import com.myzone.utils.Converter;
 

@@ -3,10 +3,8 @@ package com.myzone.calculator.model;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Map;
-import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.function.Block;
 
 /**
  * @author: myzone
@@ -14,7 +12,7 @@ import java.util.function.Block;
  */
 public class CalculatorModel {
 
-    private final ReentrantLock lock;
+    private final Lock lock;
 
     private volatile double lArg;
     private volatile double rArg;
@@ -40,37 +38,97 @@ public class CalculatorModel {
         operation = null;
     }
 
-    public ReentrantLock getLock() {
-        return lock;
+    public Session createSession() {
+        return new Session() {
+
+            /* Session () */ {
+                CalculatorModel.this.lock.lock();
+            }
+
+            @Override
+            public double getlArg() {
+                return CalculatorModel.this.getlArg();
+            }
+
+            @Override
+            public void setlArg(double lArg) {
+                CalculatorModel.this.setlArg(lArg);
+            }
+
+            @Override
+            public double getrArg() {
+                return CalculatorModel.this.getrArg();
+            }
+
+            @Override
+            public void setrArg(double rArg) {
+                CalculatorModel.this.setrArg(rArg);
+            }
+
+            @Override
+            public double getMemory() {
+                return CalculatorModel.this.getMemory();
+            }
+
+            @Override
+            public void setMemory(double memory) {
+                CalculatorModel.this.setMemory(memory);
+            }
+
+            @Override
+            public String getDisplayText() {
+                return CalculatorModel.this.getDisplayText();
+            }
+
+            @Override
+            public void setDisplayText(String displayText) {
+                CalculatorModel.this.setDisplayText(displayText);
+            }
+
+            @Override
+            public double getDisplayData() {
+                return CalculatorModel.this.getDisplayData();
+            }
+
+            @Override
+            public void setDisplayData(double displayData) {
+                CalculatorModel.this.setDisplayData(displayData);
+            }
+
+            @Override
+            public Operation getOperation() {
+                return CalculatorModel.this.getOperation();
+            }
+
+            @Override
+            public void setOperation(Operation operation) {
+                CalculatorModel.this.setOperation(operation);
+            }
+
+            @Override
+            public void close() {
+                CalculatorModel.this.lock.unlock();
+            }
+        };
     }
 
-    public double getlArg() {
-        verifyLocked();
-
+    protected double getlArg() {
         return lArg;
     }
 
-    public void setlArg(double lArg) {
-        verifyLocked();
-
+    protected void setlArg(double lArg) {
         this.lArg = lArg;
     }
 
-    public double getrArg() {
-        verifyLocked();
-
+    protected double getrArg() {
         return rArg;
     }
 
-    public void setrArg(double rArg) {
-        verifyLocked();
-
+    protected void setrArg(double rArg) {
         this.rArg = rArg;
     }
 
-    public double getMemory() {
-        verifyLocked();
-
+    protected double getMemory() {
         if (!Double.isFinite(memory)) {
             throw new ArithmeticException("Memory is overflowed");
         }
@@ -78,21 +136,15 @@ public class CalculatorModel {
         return memory;
     }
 
-    public void setMemory(double memory) {
-        verifyLocked();
-
+    protected void setMemory(double memory) {
         this.memory = memory;
     }
 
-    public String getDisplayText() {
-        verifyLocked();
-
+    protected String getDisplayText() {
         return displayText;
     }
 
-    public void setDisplayText(String displayText) {
-        verifyLocked();
-
+    protected void setDisplayText(String displayText) {
         this.displayText = displayText.substring(0, Math.min(
                 17
                         + (displayText.startsWith("-") ? 1 : 0)
@@ -102,34 +154,51 @@ public class CalculatorModel {
         ));
     }
 
-    public double getDisplayData() {
-        verifyLocked();
-
+    protected double getDisplayData() {
         return displayData;
     }
 
-    public void setDisplayData(double displayData) {
-        verifyLocked();
-
+    protected void setDisplayData(double displayData) {
         this.displayData = displayData;
     }
 
-    public Operation getOperation() {
-        verifyLocked();
-
+    protected Operation getOperation() {
         return operation;
     }
 
-    public void setOperation(Operation operation) {
-        verifyLocked();
-
+    protected void setOperation(Operation operation) {
         this.operation = operation;
     }
 
-    protected void verifyLocked() {
-        if(!lock.isLocked()) {
-            throw new IllegalStateException(lock + " isn't locked");
-        }
+    public static interface Session extends AutoCloseable {
+
+        double getlArg();
+
+        void setlArg(double lArg);
+
+        double getrArg();
+
+        void setrArg(double rArg);
+
+        public double getMemory();
+
+        public void setMemory(double memory);
+
+        public String getDisplayText();
+
+        void setDisplayText(String displayText);
+
+        double getDisplayData();
+
+        void setDisplayData(double displayData);
+
+        Operation getOperation();
+
+        void setOperation(Operation operation);
+
+        @Override
+        void close();
+
     }
 
     public static enum Operation {

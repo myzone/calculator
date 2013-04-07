@@ -1,8 +1,8 @@
 package com.myzone.calculator.view;
 
 import com.google.common.collect.ImmutableMap;
+import com.myzone.calculator.controller.CalculatorStateFactory;
 import com.myzone.calculator.model.CalculatorModel;
-import com.myzone.calculator.model.CalculatorStateFactory;
 import com.myzone.calculator.model.Signal;
 import com.myzone.utils.statemachine.EventStateMachine;
 import com.myzone.utils.statemachine.StateMachine;
@@ -418,15 +418,15 @@ public class CalculatorView extends Application {
     }
 
     public void invalidate() {
-        Platform.runLater(() -> {
-            model.getLock().lock();
-            try {
-                memoryDisplayTextField.setText(model.getMemory() != 0 ? "M" : "");
-                mainDisplayTextField.setText(model.getDisplayText());
-            } finally {
-                model.getLock().unlock();
-            }
-        });
+        try(CalculatorModel.Session session = model.createSession()) {
+            double memory = session.getMemory();
+            String displayText = session.getDisplayText();
+
+            Platform.runLater(() -> {
+                memoryDisplayTextField.setText(memory != 0 ? "M" : "");
+                mainDisplayTextField.setText(displayText);
+            });
+        }
     }
 
     protected class SignalEmitter<E extends Event> extends StimulusEmitter<Signal, E> {
