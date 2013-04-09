@@ -276,6 +276,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         session.setlArg(session.getDisplayData());
                         session.setDisplayText(renderDouble(session.getlArg()));
                         session.setOperation(CalculatorModel.Operation.bySignal(signal));
+                        view.invalidate();
                         return afterSingSelection;
 
                     case EVALUATE:

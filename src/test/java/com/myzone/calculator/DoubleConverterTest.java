@@ -53,4 +53,9 @@ public class DoubleConverterTest {
         assertEquals(99999999999999999D, doubleConverter.parse("99999999999999999"), 0D);
     }
 
+    @Test
+    public void testParseBigScientific() {
+        assertEquals(pow(999999999999999D, 2D), doubleConverter.parse("9.99999999999998e+29"), 0D);
+    }
+
 }
