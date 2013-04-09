@@ -225,7 +225,7 @@ public class CalculatorStatesTest {
 
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
-            assertEquals("0.0036394557823129", session.getDisplayText());
+            assertEquals("0.00363945578231", session.getDisplayText());
         }
     }
 
@@ -454,7 +454,7 @@ public class CalculatorStatesTest {
 
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
-            assertEquals("2.735564799734761", session.getDisplayText());
+            assertEquals("2.73556479973476", session.getDisplayText());
         }
     }
 
@@ -470,7 +470,7 @@ public class CalculatorStatesTest {
 
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
-            assertEquals("1.653954291912192", session.getDisplayText());
+            assertEquals("1.65395429191219", session.getDisplayText());
         }
     }
 
@@ -493,7 +493,7 @@ public class CalculatorStatesTest {
 
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
-            assertEquals("12.07106781186548", session.getDisplayText());
+            assertEquals("12.0710678118654", session.getDisplayText());
         }
     }
 
@@ -607,6 +607,33 @@ public class CalculatorStatesTest {
                 DIGIT_5,
                 PLUS,
                 EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
                 EVALUATE
         ).length);
 
@@ -638,6 +665,33 @@ public class CalculatorStatesTest {
                 REVERSE,
                 MINUS,
                 REVERSE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
                 EVALUATE,
                 EVALUATE
         ).length);
@@ -690,7 +744,7 @@ public class CalculatorStatesTest {
 
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
-            assertEquals("0.0000000000000001", session.getDisplayText());
+            assertEquals("0.00000000000001", session.getDisplayText());
         }
     }
 
@@ -732,7 +786,7 @@ public class CalculatorStatesTest {
 
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
-            assertEquals("0.0000000000000002", session.getDisplayText());
+            assertEquals("0", session.getDisplayText());
         }
     }
 
@@ -887,7 +941,7 @@ public class CalculatorStatesTest {
 
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
-            assertEquals("-1.414213562373095", session.getDisplayText());
+            assertEquals("-1.41421356237309", session.getDisplayText());
         }
     }
 
@@ -1054,6 +1108,140 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("2", session.getDisplayText());
+        }
+    }
+
+    @Test
+    public void testDecrementMaxNormalized() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                MINUS,
+                DIGIT_1,
+                EVALUATE
+        ).length);
+
+        try (CalculatorModel.Session session = model.createSession()) {
+            verify(view, atLeastOnce()).invalidate();
+            assertEquals("999999999999998", session.getDisplayText());
+        }
+    }
+
+    @Test
+    public void testSquareRootAfterClearAfterError() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_0,
+                INVERSE,
+                CLEAR,
+                SQUARE_ROOT
+        ).length);
+
+        try (CalculatorModel.Session session = model.createSession()) {
+            verify(view, atLeastOnce()).invalidate();
+            assertEquals("0", session.getDisplayText());
+        }
+    }
+
+    @Test
+    public void testScientificNumberModification() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                MULTIPLY,
+                EVALUATE,
+                EVALUATE,
+                BACK_SPACE
+        ).length);
+
+        try (CalculatorModel.Session session = model.createSession()) {
+            verify(view, atLeastOnce()).invalidate();
+            assertEquals("9.99999999999997e+44", session.getDisplayText());
+        }
+    }
+
+    @Test
+    public void testModificationAfterMemorySetInLArg() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_3,
+                DIGIT_3,
+                DIGIT_3,
+                DIGIT_3,
+                MEMORY_STORE,
+                DIGIT_4
+        ).length);
+
+        try (CalculatorModel.Session session = model.createSession()) {
+            verify(view, atLeastOnce()).invalidate();
+            assertEquals("4", session.getDisplayText());
+            assertEquals(3333D, session.getMemory(), 0D);
+        }
+    }
+
+    @Test
+    public void testModificationAfterMemorySetInRArg() {
+        assertEquals(0, stateMachine.run(
+                MULTIPLY,
+                DIGIT_3,
+                DIGIT_3,
+                DIGIT_3,
+                DIGIT_3,
+                MEMORY_STORE,
+                DIGIT_4
+        ).length);
+
+        try (CalculatorModel.Session session = model.createSession()) {
+            verify(view, atLeastOnce()).invalidate();
+            assertEquals("4", session.getDisplayText());
+            assertEquals(3333D, session.getMemory(), 0D);
         }
     }
 

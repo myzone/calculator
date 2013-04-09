@@ -146,7 +146,7 @@ public class CalculatorModel {
 
     protected void setDisplayText(String displayText) {
         this.displayText = displayText.substring(0, Math.min(
-                17
+                15
                         + (displayText.startsWith("-") ? 1 : 0)
                         + (displayText.contains("e") ? 5 : 0)
                         + (displayText.contains(".") ? 1 : 0),

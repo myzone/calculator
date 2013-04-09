@@ -27,6 +27,7 @@ public class DoubleConverterTest {
         assertEquals("-132.2", doubleConverter.render(-132.2D));
         assertEquals("10000000000", doubleConverter.render(pow(10, 10)));
         assertEquals("1000000000000000", doubleConverter.render(pow(10, 15)));
+        assertEquals("999999999999998", doubleConverter.render(999999999999999D - 1D));
         assertEquals("1.272792206135786", doubleConverter.render(1.2727922061357856D));
     }
 
@@ -45,6 +46,11 @@ public class DoubleConverterTest {
     @Test
     public void testRenderSmallScientific() {
         assertEquals("3.e-17", doubleConverter.render(3 * 1 / pow(10, 17)));
+    }
+
+    @Test
+    public void testParseBigNonScientific() {
+        assertEquals(99999999999999999D, doubleConverter.parse("99999999999999999"), 0D);
     }
 
 }

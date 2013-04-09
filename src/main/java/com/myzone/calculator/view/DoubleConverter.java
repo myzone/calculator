@@ -2,10 +2,10 @@ package com.myzone.calculator.view;
 
 import com.myzone.utils.Converter;
 
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
 
 import static java.lang.Math.*;
 import static java.lang.String.format;
@@ -57,7 +57,11 @@ public class DoubleConverter implements Converter<String, Double> {
 
     @Override
     public Double parse(String source) {
-        return new BigDecimal(source).doubleValue();
+        try {
+            return normalDecimalFormat.parse(source).doubleValue();
+        } catch (ParseException e) {
+            return Double.parseDouble(source);
+        }
     }
 
     @Override
