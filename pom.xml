@@ -5,27 +5,21 @@
     <modelVersion>4.0.0</modelVersion>
     <inceptionYear>2013</inceptionYear>
 
+    <parent>
+        <groupId>com.myzone</groupId>
+        <artifactId>root</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
     <groupId>com.myzone</groupId>
     <artifactId>calculator</artifactId>
-    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>calculator</name>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
         <statemachine.version>1.0-SNAPSHOT</statemachine.version>
         <utils-commons.version>1.0-SNAPSHOT</utils-commons.version>
-
-        <guava.version>13.0.1</guava.version>
-        <apache-commons.version>3.1</apache-commons.version>
-
-        <intellij-annotations.version>9.0.4</intellij-annotations.version>
-        <slf4j.version>1.7.2</slf4j.version>
-
-        <junit.version>4.11</junit.version>
-        <powermock.version>1.5</powermock.version>
     </properties>
 
     <dependencies>
@@ -39,7 +33,6 @@
             <artifactId>commons</artifactId>
             <version>${utils-commons.version}</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -68,7 +61,6 @@
             <version>${slf4j.version}</version>
         </dependency>
 
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -89,37 +81,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>myzones</id>
-            <url>http://178.137.14.241:8080/nexus-2.3.1-01/content/repositories/myzones</url>
-        </snapshotRepository>
-    </distributionManagement>
-
-    <repositories>
-        <repository>
-            <id>myzones</id>
-            <url>http://178.137.14.241:8080/nexus-2.3.1-01/content/repositories/myzones</url>
-        </repository>
-        <repository>
-            <id>central</id>
-            <url>http://repo1.maven.org/maven2/</url>
-        </repository>
-    </repositories>
-
-    <contributors>
-        <contributor>
-            <name>Vyacheslav Goldenshteyn</name>
-            <email>vyacheslav.goldenshteyn@gmail.com</email>
-            <roles>
-                <role>designer</role>
-                <role>developer</role>
-                <role>tester</role>
-                <role>contributor</role>
-            </roles>
-        </contributor>
-    </contributors>
 
     <build>
         <plugins>
