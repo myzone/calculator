@@ -66,7 +66,7 @@ public class DoubleConverter implements Converter<String, Double> {
 
         if (source == 0D || source == -0D) {
             return "0";
-        } else if (abs(source) > maxThreshold) {
+        } else if (abs(source) >= maxThreshold) {
             formatter = bigScientificDecimalFormat;
             formatter.applyPattern(format(
                     "0.%sE00",
@@ -74,7 +74,7 @@ public class DoubleConverter implements Converter<String, Double> {
             ));
             formatter.setDecimalSeparatorAlwaysShown(true);
             formatter.setRoundingMode(RoundingMode.UP);
-        } else if (abs(source) < minThreshold) {
+        } else if (abs(source) <= minThreshold) {
             formatter = scientificDecimalFormat;
             formatter.applyPattern(format(
                     "0.%sE00",

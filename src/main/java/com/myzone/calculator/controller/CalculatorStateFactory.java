@@ -16,7 +16,7 @@ import static java.lang.Math.*;
  */
 public class CalculatorStateFactory implements State.Factory<Signal> {
 
-    protected static final Converter<String, Double> DOUBLE_CONVERTER = new DoubleConverter(16, pow(10D, 16D), pow(10D, -16D));
+    protected static final Converter<String, Double> DOUBLE_CONVERTER = new DoubleConverter(16, pow(10D, 15D), pow(10D, -15D));
 
     private static double parseDouble(String s) {
         try {

@@ -1245,6 +1245,41 @@ public class CalculatorStatesTest {
         }
     }
 
+    @Test
+    public void testTransitionToScientificNotation() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                DIGIT_9,
+                BACK_SPACE,
+                DIGIT_7,
+                PLUS,
+                DIGIT_1,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE
+        ).length);
+
+        try (CalculatorModel.Session session = model.createSession()) {
+            verify(view, atLeastOnce()).invalidate();
+            assertEquals("1.000000000000001e+15", session.getDisplayText());
+            assertEquals(1000000000000001D, session.getDisplayData(), 0D);
+        }
+    }
+
     public void testTODON() {
         assertEquals(0, stateMachine.run(
                 DIVIDE
