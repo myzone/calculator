@@ -1,14 +1,22 @@
 package com.myzone.calculator.model;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.Executable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import static com.google.common.collect.Collections2.filter;
+import static java.util.Arrays.asList;
 
 /**
  * @author: myzone
@@ -21,6 +29,7 @@ public class CalculatorModel {
     private static volatile long SESSION_COUNTER = 0;
 
     private final Lock lock;
+    private final ThreadLocal<Session> activeSessions;
 
     private volatile double lArg;
     private volatile double rArg;
@@ -34,6 +43,7 @@ public class CalculatorModel {
 
     public CalculatorModel() {
         lock = new ReentrantLock(true);
+        activeSessions = new ThreadLocal<>();
 
         lArg = 0;
         rArg = 0;
@@ -47,136 +57,33 @@ public class CalculatorModel {
     }
 
     public Session createSession() {
-        return new Session() {
+        Session activeSession = activeSessions.get();
 
-            final long id;
+        if (activeSession != null) {
+            return (Session) Proxy.newProxyInstance(
+                    BlockingSession.class.getClassLoader(),
+                    new Class[] {Session.class},
+                    new InvocationHandler() {
 
-            /* Session () */ {
-                CalculatorModel.this.lock.lock();
+                        private Set<Executable> ignoredMethods = ImmutableSet
+                                .<Executable>builder()
+                                .addAll(asList(Session.class.getConstructors()))
+                                .addAll(filter(asList(Session.class.getMethods()), "close"::equals))
+                                .build();
 
-                id = SESSION_COUNTER++;
+                        @Override
+                        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                            if (!ignoredMethods.contains(method)) {
+                                return method.invoke(activeSession, method, args);
+                            }
 
-                LOGGER.info(
-                        "Calculator model session {} has been opened with "
-                                + "lArg: {}, "
-                                + "rArg: {}, "
-                                + "memory: {}, "
-                                + "displayText: '{}', "
-                                + "displayData: {}, "
-                                + "operation: {}",
-                        id,
-                        lArg,
-                        rArg,
-                        memory,
-                        displayText,
-                        displayData,
-                        operation
-                );
-            }
+                            return null;
+                        }
+                    }
+            );
+        }
 
-            @Override
-            public double getlArg() {
-                return CalculatorModel.this.getlArg();
-            }
-
-            @Override
-            public void setlArg(double lArg) {
-                CalculatorModel.this.setlArg(lArg);
-            }
-
-            @Override
-            public double getrArg() {
-                return CalculatorModel.this.getrArg();
-            }
-
-            @Override
-            public void setrArg(double rArg) {
-                CalculatorModel.this.setrArg(rArg);
-            }
-
-            @Override
-            public double getMemory() {
-                return CalculatorModel.this.getMemory();
-            }
-
-            @Override
-            public void setMemory(double memory) {
-                CalculatorModel.this.setMemory(memory);
-            }
-
-            @Override
-            public String getDisplayText() {
-                return CalculatorModel.this.getDisplayText();
-            }
-
-            @Override
-            public void setDisplayText(String displayText) {
-                CalculatorModel.this.setDisplayText(displayText);
-            }
-
-            @Override
-            public double getDisplayData() {
-                return CalculatorModel.this.getDisplayData();
-            }
-
-            @Override
-            public void setDisplayData(double displayData) {
-                CalculatorModel.this.setDisplayData(displayData);
-            }
-
-            @Override
-            public Operation getOperation() {
-                return CalculatorModel.this.getOperation();
-            }
-
-            @Override
-            public void setOperation(Operation operation) {
-                CalculatorModel.this.setOperation(operation);
-            }
-
-            @Override
-            public void close() {
-                LOGGER.info(
-                        "Calculator model session {} has been closed with "
-                                + "lArg: {}, "
-                                + "rArg: {}, "
-                                + "memory: {}, "
-                                + "displayText: '{}', "
-                                + "displayData: {}, "
-                                + "operation: {}",
-                        id,
-                        lArg,
-                        rArg,
-                        memory,
-                        displayText,
-                        displayData,
-                        operation
-                );
-
-                CalculatorModel.this.lock.unlock();
-            }
-
-            @Override
-            public boolean equals(Object o) {
-                if (this == o) return true;
-                if (o == null || getClass() != o.getClass()) return false;
-
-                try {
-                    Field idField = getClass().getField("id");
-                    idField.setAccessible(true);
-
-                    return id != idField.getLong(o);
-                } catch (Exception e) {
-                    return false;
-                }
-            }
-
-            @Override
-            public int hashCode() {
-                return (int) (id ^ (id >>> 32));
-            }
-
-        };
+        return new BlockingSession();
     }
 
     protected double getlArg() {
@@ -266,6 +173,133 @@ public class CalculatorModel {
         @Override
         void close();
 
+    }
+
+    protected class BlockingSession implements Session {
+
+        private final long id;
+
+        public BlockingSession() {
+            lock.lock();
+
+            id = SESSION_COUNTER++;
+
+            LOGGER.info(
+                    "Calculator model session {} has been opened with "
+                            + "lArg: {}, "
+                            + "rArg: {}, "
+                            + "memory: {}, "
+                            + "displayText: '{}', "
+                            + "displayData: {}, "
+                            + "operation: {}",
+                    id,
+                    lArg,
+                    rArg,
+                    memory,
+                    displayText,
+                    displayData,
+                    operation
+            );
+        }
+
+        @Override
+        public double getlArg() {
+            return CalculatorModel.this.getlArg();
+        }
+
+        @Override
+        public void setlArg(double lArg) {
+            CalculatorModel.this.setlArg(lArg);
+        }
+
+        @Override
+        public double getrArg() {
+            return CalculatorModel.this.getrArg();
+        }
+
+        @Override
+        public void setrArg(double rArg) {
+            CalculatorModel.this.setrArg(rArg);
+        }
+
+        @Override
+        public double getMemory() {
+            return CalculatorModel.this.getMemory();
+        }
+
+        @Override
+        public void setMemory(double memory) {
+            CalculatorModel.this.setMemory(memory);
+        }
+
+        @Override
+        public String getDisplayText() {
+            return CalculatorModel.this.getDisplayText();
+        }
+
+        @Override
+        public void setDisplayText(String displayText) {
+            CalculatorModel.this.setDisplayText(displayText);
+        }
+
+        @Override
+        public double getDisplayData() {
+            return CalculatorModel.this.getDisplayData();
+        }
+
+        @Override
+        public void setDisplayData(double displayData) {
+            CalculatorModel.this.setDisplayData(displayData);
+        }
+
+        @Override
+        public Operation getOperation() {
+            return CalculatorModel.this.getOperation();
+        }
+
+        @Override
+        public void setOperation(Operation operation) {
+            CalculatorModel.this.setOperation(operation);
+        }
+
+        @Override
+        public void close() {
+            LOGGER.info(
+                    "Calculator model session {} has been closed with "
+                            + "lArg: {}, "
+                            + "rArg: {}, "
+                            + "memory: {}, "
+                            + "displayText: '{}', "
+                            + "displayData: {}, "
+                            + "operation: {}",
+                    id,
+                    lArg,
+                    rArg,
+                    memory,
+                    displayText,
+                    displayData,
+                    operation
+            );
+
+            CalculatorModel.this.lock.unlock();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            BlockingSession that = (BlockingSession) o;
+
+            if (id != that.id) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return (int) (id ^ (id >>> 32));
+        }
     }
 
     public static enum Operation {
