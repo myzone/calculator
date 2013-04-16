@@ -1,7 +1,11 @@
 package com.myzone.calculator.model;
 
 import com.google.common.collect.ImmutableMap;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -11,6 +15,10 @@ import java.util.concurrent.locks.ReentrantLock;
  * @date: 04.02.13 12:47
  */
 public class CalculatorModel {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CalculatorModel.class);
+
+    private static volatile long SESSION_COUNTER = 0;
 
     private final Lock lock;
 
@@ -41,8 +49,29 @@ public class CalculatorModel {
     public Session createSession() {
         return new Session() {
 
+            final long id;
+
             /* Session () */ {
                 CalculatorModel.this.lock.lock();
+
+                id = SESSION_COUNTER++;
+
+                LOGGER.info(
+                        "Calculator model session {} has been opened with "
+                                + "lArg: {}, "
+                                + "rArg: {}, "
+                                + "memory: {}, "
+                                + "displayText: '{}', "
+                                + "displayData: {}, "
+                                + "operation: {}",
+                        id,
+                        lArg,
+                        rArg,
+                        memory,
+                        displayText,
+                        displayData,
+                        operation
+                );
             }
 
             @Override
@@ -107,8 +136,46 @@ public class CalculatorModel {
 
             @Override
             public void close() {
+                LOGGER.info(
+                        "Calculator model session {} has been closed with "
+                                + "lArg: {}, "
+                                + "rArg: {}, "
+                                + "memory: {}, "
+                                + "displayText: '{}', "
+                                + "displayData: {}, "
+                                + "operation: {}",
+                        id,
+                        lArg,
+                        rArg,
+                        memory,
+                        displayText,
+                        displayData,
+                        operation
+                );
+
                 CalculatorModel.this.lock.unlock();
             }
+
+            @Override
+            public boolean equals(Object o) {
+                if (this == o) return true;
+                if (o == null || getClass() != o.getClass()) return false;
+
+                try {
+                    Field idField = getClass().getField("id");
+                    idField.setAccessible(true);
+
+                    return id != idField.getLong(o);
+                } catch (Exception e) {
+                    return false;
+                }
+            }
+
+            @Override
+            public int hashCode() {
+                return (int) (id ^ (id >>> 32));
+            }
+
         };
     }
 
@@ -147,7 +214,7 @@ public class CalculatorModel {
     protected void setDisplayText(String displayText) {
         this.displayText = displayText.substring(0, Math.min(
                 15
-                        + (displayText.startsWith("-") ? 1 : 0)
+                        + (StringUtils.countMatches(displayText, "-"))
                         + (displayText.contains("e") ? 5 : 0)
                         + (displayText.contains(".") ? 1 : 0),
                 displayText.length()

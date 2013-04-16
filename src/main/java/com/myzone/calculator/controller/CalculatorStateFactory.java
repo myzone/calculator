@@ -8,6 +8,8 @@ import com.myzone.utils.Converter;
 import com.myzone.utils.statemachine.State;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.regex.Pattern;
+
 import static java.lang.Math.*;
 
 /**
@@ -36,7 +38,12 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
             d = 1;
         }
 
-        return DOUBLE_CONVERTER.render(d);
+        return DOUBLE_CONVERTER.render(d).replace("(e-?)\\d\\d\\d+", "$199");
+    }
+
+    private static String normalize(String s) {
+        Pattern p = Pattern.compile("^([0-9]+)((\\.)([0-9]*?)0*(e(\\+|\\-)[0-9]{2})?)?$");
+        return p.matcher(s).replaceAll("$1$3$4$5");
     }
 
     protected CalculatorModel model;
@@ -126,7 +133,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                     case DIVIDE:
                         session.setlArg(parseDouble(session.getDisplayText()));
                         session.setDisplayData(session.getlArg());
-                        session.setDisplayText(renderDouble(session.getDisplayData()));
+                        session.setDisplayText(normalize(session.getDisplayText()));
                         session.setOperation(CalculatorModel.Operation.bySignal(signal));
                         return afterSingSelection;
 
@@ -201,7 +208,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                     case MULTIPLY:
                     case DIVIDE:
                         session.setlArg(session.getDisplayData());
-                        session.setDisplayText(renderDouble(session.getDisplayData()));
+                        session.setDisplayText(normalize(session.getDisplayText()));
                         session.setOperation(CalculatorModel.Operation.bySignal(signal));
                         return afterSingSelection;
 
@@ -274,7 +281,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                     case MULTIPLY:
                     case DIVIDE:
                         session.setlArg(session.getDisplayData());
-                        session.setDisplayText(renderDouble(session.getlArg()));
+                        session.setDisplayText(normalize(session.getDisplayText()));
                         session.setOperation(CalculatorModel.Operation.bySignal(signal));
                         view.invalidate();
                         return afterSingSelection;
@@ -310,18 +317,6 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         session.setDisplayText(session.getDisplayText().substring(0, session.getDisplayText().length() - 1));
                         if ("0".equals(session.getDisplayText()) || "-0".equals(session.getDisplayText())) {
                             session.setDisplayText("0");
-                        }
-                        session.setDisplayData(parseDouble(session.getDisplayText()));
-                        view.invalidate();
-                        return afterDotInLArg;
-
-                    case REVERSE:
-                        if (!"0".equals(session.getDisplayText())) {
-                            if (session.getDisplayText().startsWith("-")) {
-                                session.setDisplayText(session.getDisplayText().substring(1));
-                            } else {
-                                session.setDisplayText("-" + session.getDisplayText());
-                            }
                         }
                         session.setDisplayData(parseDouble(session.getDisplayText()));
                         view.invalidate();
@@ -392,12 +387,6 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         }
 
                     case BACK_SPACE:
-                        session.setDisplayText(session.getDisplayText().substring(0, session.getDisplayText().length() - 1));
-                        if (session.getDisplayText().isEmpty() || "-".equals(session.getDisplayText()) || "-0".equals(session.getDisplayText())) {
-                            session.setDisplayText("0");
-                        }
-                        session.setDisplayData(parseDouble(session.getDisplayText()));
-                        view.invalidate();
                         return afterSingSelection;
                 }
 
@@ -638,17 +627,6 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         session.setDisplayData(parseDouble(session.getDisplayText()));
                         view.invalidate();
                         return afterDotInRArg;
-
-                    case REVERSE:
-                        if (!"0".equals(session.getDisplayText())) {
-                            if (session.getDisplayText().startsWith("-")) {
-                                session.setDisplayText(session.getDisplayText().substring(1));
-                            } else {
-                                session.setDisplayText("-" + session.getDisplayText());
-                            }
-                        }
-                        view.invalidate();
-                        return afterDotInRArg;
                 }
 
                 return super.react(signal);
@@ -782,18 +760,6 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                             return errorState;
                         }
 
-                    case REVERSE:
-                        if (!"0".equals(session.getDisplayText())) {
-                            if (session.getDisplayText().startsWith("-")) {
-                                session.setDisplayText(session.getDisplayText().substring(1));
-                            } else {
-                                session.setDisplayText("-" + session.getDisplayText());
-                            }
-                        }
-                        session.setDisplayData(parseDouble(session.getDisplayText()));
-                        view.invalidate();
-                        return initialState;
-
                     case INVERSE:
                         try {
                             session.setDisplayData(1D / session.getDisplayData());
@@ -870,18 +836,6 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                             return errorState;
                         }
 
-                    case REVERSE:
-                        if (!"0".equals(session.getDisplayText())) {
-                            if (session.getDisplayText().startsWith("-")) {
-                                session.setDisplayText(session.getDisplayText().substring(1));
-                            } else {
-                                session.setDisplayText("-" + session.getDisplayText());
-                            }
-                        }
-                        session.setDisplayData(parseDouble(session.getDisplayText()));
-                        view.invalidate();
-                        return afterChangeInRArg;
-
                     case INVERSE:
                         try {
                             session.setDisplayData(1D / session.getDisplayData());
@@ -957,6 +911,18 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                     case MEMORY_MINUS:
                         session.setMemory(session.getMemory() - session.getDisplayData());
+                        view.invalidate();
+                        return this;
+
+                    case REVERSE:
+                        if (!"0".equals(session.getDisplayText())) {
+                            if (session.getDisplayText().startsWith("-")) {
+                                session.setDisplayText(session.getDisplayText().substring(1));
+                            } else {
+                                session.setDisplayText("-" + session.getDisplayText());
+                            }
+                        }
+                        session.setDisplayData(parseDouble(session.getDisplayText()));
                         view.invalidate();
                         return this;
                 }

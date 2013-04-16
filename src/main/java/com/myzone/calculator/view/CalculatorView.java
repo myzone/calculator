@@ -37,7 +37,7 @@ public class CalculatorView extends Application {
     private static final double PREF_COLUMN_HEIGHT = 28;
     private static final double PREF_COLUMN_WIDTH = 45;
 
-    private static final Logger logger = LoggerFactory.getLogger(CalculatorView.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CalculatorView.class);
 
     private CalculatorModel model;
     private StateMachine<Signal> stateMachine;
@@ -437,7 +437,7 @@ public class CalculatorView extends Application {
 
         @Override
         public void handle(E event) {
-            logger.info("Signal {} has been emitted by {}", stimulus, event.getSource());
+            LOGGER.info("Signal {} has been emitted by {}", stimulus, event.getSource());
 
             super.handle(event);
         }

@@ -1280,6 +1280,81 @@ public class CalculatorStatesTest {
         }
     }
 
+    @Test
+    public void testReverse() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_9,
+                REVERSE,
+                DIGIT_9
+        ).length);
+
+        try (CalculatorModel.Session session = model.createSession()) {
+            verify(view, atLeastOnce()).invalidate();
+            assertEquals("-99", session.getDisplayText());
+            assertEquals(-99D, session.getDisplayData(), 0D);
+        }
+    }
+
+    @Test
+    public void testBackspaceAfterSignSelection() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_2,
+                DIGIT_3,
+                DIGIT_8,
+                DIVIDE,
+                BACK_SPACE
+        ).length);
+
+        try (CalculatorModel.Session session = model.createSession()) {
+            verify(view, atLeastOnce()).invalidate();
+            assertEquals("238", session.getDisplayText());
+            assertEquals(238D, session.getDisplayData(), 0D);
+        }
+    }
+
+    @Test
+    public void testBackspaceAfterEvaluation() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_2,
+                DIGIT_3,
+                DIGIT_8,
+                DIVIDE,
+                DIGIT_1,
+                EVALUATE,
+                BACK_SPACE
+        ).length);
+
+        try (CalculatorModel.Session session = model.createSession()) {
+            verify(view, atLeastOnce()).invalidate();
+            assertEquals("238", session.getDisplayText());
+            assertEquals(238D, session.getDisplayData(), 0D);
+        }
+    }
+
+    @Test
+    public void testPrecision2() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_1,
+                DIVIDE,
+                DIGIT_7,
+                DIGIT_4,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE,
+                EVALUATE
+        ).length);
+
+        try (CalculatorModel.Session session = model.createSession()) {
+            verify(view, atLeastOnce()).invalidate();
+            assertEquals("0.00000000000001", session.getDisplayText());
+            assertEquals(1.1121061493012954E-15D, session.getDisplayData(), 0D);
+        }
+    }
+
     public void testTODON() {
         assertEquals(0, stateMachine.run(
                 DIVIDE

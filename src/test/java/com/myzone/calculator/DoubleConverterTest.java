@@ -17,7 +17,7 @@ public class DoubleConverterTest {
 
     @Before
     public void setUp() throws Exception {
-        doubleConverter = new DoubleConverter(16, pow(10D, 16D), pow(10D, -16D));
+        doubleConverter = new DoubleConverter(15, pow(10D, 16D), pow(10D, -16D));
     }
 
     @Test
@@ -28,7 +28,8 @@ public class DoubleConverterTest {
         assertEquals("10000000000", doubleConverter.render(pow(10, 10)));
         assertEquals("1000000000000000", doubleConverter.render(pow(10, 15)));
         assertEquals("999999999999998", doubleConverter.render(999999999999999D - 1D));
-        assertEquals("1.272792206135786", doubleConverter.render(1.2727922061357856D));
+        assertEquals("1.2727922061358", doubleConverter.render(1.2727922061357856D));
+        assertEquals("0.00000000000001", doubleConverter.render(1.1121061493012954E-15D));
     }
 
     @Test

@@ -92,7 +92,7 @@ public class DoubleConverter implements Converter<String, Double> {
                                     - (floor(source) != source ? 1 : 0) // for dot
                                     - (source < 0D ? 1 : 0) // for minus
                                     + (source.intValue() == 0 ? 1 : 0) // for additional position if digit part equals 0
-                                    - Long.toString(source.longValue()).length(),
+                                    - Long.toString(source.longValue()).length(), // for digit part
                             0
                     ))
             );
