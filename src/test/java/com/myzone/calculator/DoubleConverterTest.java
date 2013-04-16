@@ -29,7 +29,7 @@ public class DoubleConverterTest {
         assertEquals("1000000000000000", doubleConverter.render(pow(10, 15)));
         assertEquals("999999999999998", doubleConverter.render(999999999999999D - 1D));
         assertEquals("1.2727922061358", doubleConverter.render(1.2727922061357856D));
-        assertEquals("0.00000000000001", doubleConverter.render(1.1121061493012954E-15D));
+        assertEquals("0", doubleConverter.render(1.1121061493012954E-15D));
     }
 
     @Test

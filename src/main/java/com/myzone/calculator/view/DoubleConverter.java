@@ -89,6 +89,7 @@ public class DoubleConverter implements Converter<String, Double> {
                     (floor(source) == 0D ? "#" : ""),
                     repeat("#", max(
                             maxLength
+                                    - 1 // default one
                                     - (floor(source) != source ? 1 : 0) // for dot
                                     - (source < 0D ? 1 : 0) // for minus
                                     + (source.intValue() == 0 ? 1 : 0) // for additional position if digit part equals 0

@@ -25,11 +25,16 @@ import static java.util.Arrays.asList;
 public class CalculatorModel {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CalculatorModel.class);
+    private Set<Executable> IGNORED_METHODS = ImmutableSet
+            .<Executable>builder()
+            .addAll(asList(Session.class.getConstructors()))
+            .addAll(filter(asList(Session.class.getMethods()), "close"::equals))
+            .build();
 
     private static volatile long SESSION_COUNTER = 0;
 
     private final Lock lock;
-    private final ThreadLocal<Session> activeSessions;
+    private volatile Session activeSession;
 
     private volatile double lArg;
     private volatile double rArg;
@@ -43,7 +48,7 @@ public class CalculatorModel {
 
     public CalculatorModel() {
         lock = new ReentrantLock(true);
-        activeSessions = new ThreadLocal<>();
+        activeSession = null;
 
         lArg = 0;
         rArg = 0;
@@ -57,23 +62,15 @@ public class CalculatorModel {
     }
 
     public Session createSession() {
-        Session activeSession = activeSessions.get();
-
         if (activeSession != null) {
             return (Session) Proxy.newProxyInstance(
                     BlockingSession.class.getClassLoader(),
-                    new Class[] {Session.class},
+                    new Class[]{Session.class},
                     new InvocationHandler() {
-
-                        private Set<Executable> ignoredMethods = ImmutableSet
-                                .<Executable>builder()
-                                .addAll(asList(Session.class.getConstructors()))
-                                .addAll(filter(asList(Session.class.getMethods()), "close"::equals))
-                                .build();
 
                         @Override
                         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                            if (!ignoredMethods.contains(method)) {
+                            if (!IGNORED_METHODS.contains(method)) {
                                 return method.invoke(activeSession, method, args);
                             }
 
@@ -324,13 +321,15 @@ public class CalculatorModel {
         DIVIDE {
             @Override
             public strictfp double evaluate(double lArg, double rArg) {
-                if (rArg == 0)
+                if (rArg == 0) {
                     throw new ArithmeticException("Zero division");
+                }
 
                 return lArg / rArg;
             }
         };
-        private static final Map<Signal, Operation> signalOperationMap = ImmutableMap.<Signal, Operation>builder()
+        private static final Map<Signal, Operation> signalOperationMap = ImmutableMap.
+                <Signal, Operation>builder()
                 .put(Signal.PLUS, PLUS)
                 .put(Signal.MINUS, MINUS)
                 .put(Signal.MULTIPLY, MULTIPLY)

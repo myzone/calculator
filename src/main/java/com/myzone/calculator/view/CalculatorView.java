@@ -24,6 +24,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static com.myzone.calculator.model.Signal.*;
 
@@ -33,16 +35,16 @@ import static com.myzone.calculator.model.Signal.*;
  */
 public class CalculatorView extends Application {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CalculatorView.class);
+
     private static final double SPACING_SIZE = 5;
     private static final double PREF_COLUMN_HEIGHT = 28;
     private static final double PREF_COLUMN_WIDTH = 45;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CalculatorView.class);
-
     private CalculatorModel model;
     private StateMachine<Signal> stateMachine;
 
-    private final Thread stateMachineThread;
+    private final ExecutorService stateMachineThread;
     private final Map<String, SignalEmitter<KeyEvent>> signalEmittersMap;
 
     private final TextField memoryDisplayTextField;
@@ -52,7 +54,7 @@ public class CalculatorView extends Application {
         model = new CalculatorModel();
         stateMachine = new EventStateMachine<>(new CalculatorStateFactory(model, this));
 
-        stateMachineThread = new Thread(stateMachine, "StateMachine Thread");
+        stateMachineThread = Executors.newSingleThreadExecutor();
         signalEmittersMap = ImmutableMap
                 .<String, SignalEmitter<KeyEvent>>builder()
                 .put("0", new SignalEmitter<>(DIGIT_0))
@@ -93,12 +95,11 @@ public class CalculatorView extends Application {
                 .alignment(Pos.CENTER_RIGHT)
                 .text("0")
                 .build();
-
     }
 
     @Override
     public void start(Stage stage) throws Exception {
-        stateMachineThread.start();
+        stateMachineThread.submit(stateMachine);
 
         VBox mainContainer = VBoxBuilder
                 .create()
@@ -411,7 +412,7 @@ public class CalculatorView extends Application {
             }
         });
 
-        stage.setOnCloseRequest((event) -> stateMachineThread.interrupt());
+        stage.setOnCloseRequest((event) -> stateMachineThread.shutdownNow());
         stage.setScene(new Scene(mainContainer));
         stage.setResizable(false);
         stage.show();
