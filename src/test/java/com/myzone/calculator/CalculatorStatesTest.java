@@ -41,6 +41,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("4", session.getDisplayText());
+            assertEquals(4D, session.getDisplayData(), 0D);
         }
     }
 
@@ -58,6 +59,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("16", session.getDisplayText());
+            assertEquals(16D, session.getDisplayData(), 0D);
         }
     }
 
@@ -74,6 +76,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("16", session.getDisplayText());
+            assertEquals(16D, session.getDisplayData(), 0D);
         }
     }
 
@@ -88,6 +91,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("4", session.getDisplayText());
+            assertEquals(4D, session.getDisplayData(), 0D);
         }
     }
 
@@ -110,6 +114,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("25", session.getDisplayText());
+            assertEquals(25D, session.getDisplayData(), 0D);
         }
     }
 
@@ -135,6 +140,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("25", session.getDisplayText());
+            assertEquals(25D, session.getDisplayData(), 0D);
         }
     }
 
@@ -159,6 +165,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("25", session.getDisplayText());
+            assertEquals(25D, session.getDisplayData(), 0D);
         }
     }
 
@@ -179,6 +186,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("10", session.getDisplayText());
+            assertEquals(10D, session.getDisplayData(), 0D);
         }
     }
 
@@ -200,6 +208,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("3.2", session.getDisplayText());
+            assertEquals(3.2D, session.getDisplayData(), 0D);
         }
     }
 
@@ -225,6 +234,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("0.00363945578231", session.getDisplayText());
+            assertEquals(0.0036394557823129247D, session.getDisplayData(), 0D);
         }
     }
 
@@ -243,6 +253,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("6.25", session.getDisplayText());
+            assertEquals(6.25D, session.getDisplayData(), 0D);
         }
     }
 
@@ -262,6 +273,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("21.25", session.getDisplayText());
+            assertEquals(21.25D, session.getDisplayData(), 0D);
         }
     }
 
@@ -276,6 +288,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("0", session.getDisplayText());
+            assertEquals(0D, session.getDisplayData(), 0D);
         }
     }
 
@@ -292,6 +305,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("0.96", session.getDisplayText());
+            assertEquals(0.96D, session.getDisplayData(), 0D);
         }
     }
 
@@ -309,6 +323,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("47.04", session.getDisplayText());
+            assertEquals(47.04D, session.getDisplayData(), 0D);
         }
     }
 
@@ -325,6 +340,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("0.", session.getDisplayText());
+            assertEquals(0D, session.getDisplayData(), 0D);
         }
     }
 
@@ -341,6 +357,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("56", session.getDisplayText());
+            assertEquals(56D, session.getDisplayData(), 0D);
         }
     }
 
@@ -358,6 +375,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("-56", session.getDisplayText());
+            assertEquals(-56D, session.getDisplayData(), 0D);
         }
     }
 
@@ -424,6 +442,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("6", session.getDisplayText());
+            assertEquals(6D, session.getDisplayData(), 0D);
         }
     }
 
@@ -439,6 +458,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("3", session.getDisplayText());
+            assertEquals(3D, session.getDisplayData(), 0D);
         }
     }
 
@@ -454,6 +474,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("2.7355647997348", session.getDisplayText());
+            assertEquals(2.7355647997347607, session.getDisplayData(), 0D);
         }
     }
 
@@ -470,6 +491,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("1.6539542919122", session.getDisplayText());
+            assertEquals(1.6539542919121921, session.getDisplayData(), 0D);
         }
     }
 
@@ -493,6 +515,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("12.071067811866", session.getDisplayText());
+            assertEquals(12.0710678118655D, session.getDisplayData(), 0D);
         }
     }
 
@@ -514,6 +537,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("0", session.getDisplayText());
+            assertEquals(0D, session.getDisplayData(), 0D);
         }
     }
 
@@ -540,6 +564,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("0", session.getDisplayText());
+            assertEquals(0D, session.getDisplayData(), 0D);
         }
     }
 
@@ -566,6 +591,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("55555.2", session.getDisplayText());
+            assertEquals(55555.2D, session.getDisplayData(), 0D);
         }
     }
 
@@ -582,6 +608,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("56.", session.getDisplayText());
+            assertEquals(56.0D, session.getDisplayData(), 0D);
         }
     }
 
@@ -639,6 +666,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("1.66666666666667e+16", session.getDisplayText());
+            assertEquals(1.6666666666666664E16D , session.getDisplayData(), 0D);
         }
     }
 
@@ -698,6 +726,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("-1.66666666666667e+16", session.getDisplayText());
+            assertEquals(-1.6666666666666664E16D, session.getDisplayData(), 0D);
         }
     }
 
@@ -744,6 +773,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("0.00000000000001", session.getDisplayText());
+            assertEquals(1.0E-14D, session.getDisplayData(), 0D);
         }
     }
 
@@ -759,6 +789,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("0.0008", session.getDisplayText());
+            assertEquals(0.0008D, session.getDisplayData(), 0D);
         }
     }
 
@@ -786,6 +817,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("0", session.getDisplayText());
+            assertEquals(0D, session.getDisplayData(), 0D);
         }
     }
 
@@ -802,6 +834,7 @@ public class CalculatorStatesTest {
 
         try (CalculatorModel.Session session = model.createSession()) {
             assertEquals("0", session.getDisplayText());
+            assertEquals(0D, session.getDisplayData(), 0D);
         }
     }
 
@@ -820,6 +853,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("0", session.getDisplayText());
+            assertEquals(0D, session.getDisplayData(), 0D);
         }
     }
 
@@ -832,7 +866,9 @@ public class CalculatorStatesTest {
 
 
         try (CalculatorModel.Session session = model.createSession()) {
+            verify(view, atLeastOnce()).invalidate();
             assertEquals("0", session.getDisplayText());
+            assertEquals(0D, session.getDisplayData(), 0D);
         }
     }
 
@@ -848,6 +884,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("0", session.getDisplayText());
+            assertEquals(0D, session.getDisplayData(), 0D);
         }
     }
 
@@ -867,6 +904,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("262144", session.getDisplayText());
+            assertEquals(262144D, session.getDisplayData(), 0D);
         }
     }
 
@@ -886,6 +924,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("381469726562500", session.getDisplayText());
+            assertEquals(381469726562500D, session.getDisplayData(), 0D);
         }
     }
 
@@ -904,6 +943,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("4", session.getDisplayText());
+            assertEquals(4D, session.getDisplayData(), 0D);
         }
     }
 
@@ -927,6 +967,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("0", session.getDisplayText());
+            assertEquals(0D, session.getDisplayData(), 0D);
         }
     }
 
@@ -941,6 +982,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("-1.4142135623731", session.getDisplayText());
+            assertEquals(-1.4142135623731D, session.getDisplayData(), 0D);
         }
     }
 
@@ -957,6 +999,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("743", session.getDisplayText());
+            assertEquals(743D, session.getDisplayData(), 0D);
         }
     }
 
@@ -970,10 +1013,10 @@ public class CalculatorStatesTest {
                 PLUS
         ).length);
 
-        verify(view, atLeastOnce()).invalidate();
-
         try (CalculatorModel.Session session = model.createSession()) {
+            verify(view, atLeastOnce()).invalidate();
             assertEquals("0.01", session.getDisplayText());
+            assertEquals(0.01D, session.getDisplayData(), 0D);
         }
     }
 
@@ -987,10 +1030,10 @@ public class CalculatorStatesTest {
                 PLUS
         ).length);
 
-        verify(view, atLeastOnce()).invalidate();
-
         try (CalculatorModel.Session session = model.createSession()) {
+            verify(view, atLeastOnce()).invalidate();
             assertEquals("0.01", session.getDisplayText());
+            assertEquals(0.01D, session.getDisplayData(), 0D);
         }
     }
 
@@ -1003,10 +1046,11 @@ public class CalculatorStatesTest {
                 DIGIT_9
         ).length);
 
-        verify(view, atLeastOnce()).invalidate();
 
         try (CalculatorModel.Session session = model.createSession()) {
+            verify(view, atLeastOnce()).invalidate();
             assertEquals("9", session.getDisplayText());
+            assertEquals(9D, session.getDisplayData(), 0D);
         }
     }
 
@@ -1040,6 +1084,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("19", session.getDisplayText());
+            assertEquals(19D, session.getDisplayData(), 0D);
         }
     }
 
@@ -1057,6 +1102,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("19", session.getDisplayText());
+            assertEquals(19D, session.getDisplayData(), 0D);
         }
     }
 
@@ -1091,6 +1137,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("1", session.getDisplayText());
+            assertEquals(0.999999999999995D, session.getDisplayData(), 0D);
         }
     }
 
@@ -1107,6 +1154,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("2", session.getDisplayText());
+            assertEquals(2D, session.getDisplayData(), 0D);
         }
     }
 
@@ -1154,6 +1202,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("999999999999998", session.getDisplayText());
+            assertEquals(9.99999999999998E14D, session.getDisplayData(), 0D);
         }
     }
 
@@ -1169,6 +1218,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("0", session.getDisplayText());
+            assertEquals(0D, session.getDisplayData(), 0D);
         }
     }
 
@@ -1204,6 +1254,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("9.99999999999997e+44", session.getDisplayText());
+            assertEquals(9.99999999999997E44D, session.getDisplayData(), 0D);
         }
     }
 
