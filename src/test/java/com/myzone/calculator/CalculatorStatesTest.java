@@ -5,8 +5,10 @@ import com.myzone.calculator.model.CalculatorModel;
 import com.myzone.calculator.model.Signal;
 import com.myzone.calculator.view.CalculatorView;
 import com.myzone.utils.statemachine.TestingEventStateMachine;
+import com.myzone.utils.testing.LoggingRunner;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static com.myzone.calculator.model.Signal.*;
 import static org.junit.Assert.assertEquals;
@@ -16,6 +18,7 @@ import static org.mockito.Mockito.*;
  * @author: myzone
  * @date: 20.02.13 1:21
  */
+@RunWith(LoggingRunner.class)
 public class CalculatorStatesTest {
 
     private CalculatorView view;
@@ -666,7 +669,7 @@ public class CalculatorStatesTest {
         try (CalculatorModel.Session session = model.createSession()) {
             verify(view, atLeastOnce()).invalidate();
             assertEquals("1.66666666666667e+16", session.getDisplayText());
-            assertEquals(1.6666666666666664E16D , session.getDisplayData(), 0D);
+            assertEquals(1.6666666666666664E16D, session.getDisplayData(), 0D);
         }
     }
 
