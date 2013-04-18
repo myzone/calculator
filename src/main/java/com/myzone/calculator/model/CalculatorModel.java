@@ -12,8 +12,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.LongSupplier;
 
 import static com.google.common.collect.Collections2.filter;
 import static java.util.Arrays.asList;
@@ -25,30 +27,43 @@ import static java.util.Arrays.asList;
 public class CalculatorModel {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CalculatorModel.class);
-    private Set<Executable> IGNORED_METHODS = ImmutableSet
+    private static final Set<Executable> IGNORED_METHODS = ImmutableSet
             .<Executable>builder()
             .addAll(asList(Session.class.getConstructors()))
-            .addAll(filter(asList(Session.class.getMethods()), "close"::equals))
+            .addAll(filter(asList(Session.class.getMethods()), (method) -> "close".equals(method.getName())))
             .build();
 
-    private static volatile long SESSION_COUNTER = 0;
+    private static final AtomicLong SESSION_COUNTER = new AtomicLong(0);
 
     private final Lock lock;
-    private volatile Session activeSession;
+    private final ThreadLocal<BlockingSession> activeSessions;
+    private final Session proxySession = (Session) Proxy.newProxyInstance(
+            BlockingSession.class.getClassLoader(),
+            new Class[]{Session.class, LongSupplier.class},
+            new InvocationHandler() {
+                @Override
+                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                    if (!IGNORED_METHODS.contains(method)) {
+                        method.setAccessible(true);
+
+                        return method.invoke(activeSessions.get(), args);
+                    }
+
+                    return null;
+                }
+            }
+    );
 
     private volatile double lArg;
     private volatile double rArg;
-
     private volatile double memory;
-
     private volatile String displayText;
     private volatile double displayData;
-
     private volatile Operation operation;
 
     public CalculatorModel() {
         lock = new ReentrantLock(true);
-        activeSession = null;
+        activeSessions = new ThreadLocal<>();
 
         lArg = 0;
         rArg = 0;
@@ -62,22 +77,8 @@ public class CalculatorModel {
     }
 
     public Session createSession() {
-        if (activeSession != null) {
-            return (Session) Proxy.newProxyInstance(
-                    BlockingSession.class.getClassLoader(),
-                    new Class[]{Session.class},
-                    new InvocationHandler() {
-
-                        @Override
-                        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                            if (!IGNORED_METHODS.contains(method)) {
-                                return method.invoke(activeSession, method, args);
-                            }
-
-                            return null;
-                        }
-                    }
-            );
+        if (activeSessions.get() != null) {
+            return proxySession;
         }
 
         return new BlockingSession();
@@ -141,6 +142,51 @@ public class CalculatorModel {
         this.operation = operation;
     }
 
+    public static enum Operation {
+        PLUS {
+            @Override
+            public strictfp double evaluate(double lArg, double rArg) {
+                return lArg + rArg;
+            }
+        },
+        MINUS {
+            @Override
+            public strictfp double evaluate(double lArg, double rArg) {
+                return lArg - rArg;
+            }
+        },
+        MULTIPLY {
+            @Override
+            public strictfp double evaluate(double lArg, double rArg) {
+                return lArg * rArg;
+            }
+        },
+        DIVIDE {
+            @Override
+            public strictfp double evaluate(double lArg, double rArg) {
+                if (rArg == 0) {
+                    throw new ArithmeticException("Zero division");
+                }
+
+                return lArg / rArg;
+            }
+        };
+        private static final Map<Signal, Operation> signalOperationMap = ImmutableMap.
+                <Signal, Operation>builder()
+                .put(Signal.PLUS, PLUS)
+                .put(Signal.MINUS, MINUS)
+                .put(Signal.MULTIPLY, MULTIPLY)
+                .put(Signal.DIVIDE, DIVIDE)
+                .build();
+
+        public static Operation bySignal(Signal signal) {
+            return signalOperationMap.get(signal);
+        }
+
+        public abstract double evaluate(double lArg, double rArg);
+
+    }
+
     public static interface Session extends AutoCloseable {
 
         double getlArg();
@@ -172,14 +218,15 @@ public class CalculatorModel {
 
     }
 
-    protected class BlockingSession implements Session {
+    protected class BlockingSession implements Session, LongSupplier {
 
         private final long id;
 
         public BlockingSession() {
-            lock.lock();
+            CalculatorModel.this.lock.lock();
+            CalculatorModel.this.activeSessions.set(this);
 
-            id = SESSION_COUNTER++;
+            id = SESSION_COUNTER.incrementAndGet();
 
             LOGGER.info(
                     "Calculator model session {} has been opened with "
@@ -278,7 +325,13 @@ public class CalculatorModel {
                     operation
             );
 
+            CalculatorModel.this.activeSessions.remove();
             CalculatorModel.this.lock.unlock();
+        }
+
+        @Override
+        public long getAsLong() {
+            return id;
         }
 
         @Override
@@ -286,9 +339,9 @@ public class CalculatorModel {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
 
-            BlockingSession that = (BlockingSession) o;
+            LongSupplier that = (LongSupplier) o;
 
-            if (id != that.id) return false;
+            if (id != that.getAsLong()) return false;
 
             return true;
         }
@@ -297,50 +350,6 @@ public class CalculatorModel {
         public int hashCode() {
             return (int) (id ^ (id >>> 32));
         }
-    }
-
-    public static enum Operation {
-        PLUS {
-            @Override
-            public strictfp double evaluate(double lArg, double rArg) {
-                return lArg + rArg;
-            }
-        },
-        MINUS {
-            @Override
-            public strictfp double evaluate(double lArg, double rArg) {
-                return lArg - rArg;
-            }
-        },
-        MULTIPLY {
-            @Override
-            public strictfp double evaluate(double lArg, double rArg) {
-                return lArg * rArg;
-            }
-        },
-        DIVIDE {
-            @Override
-            public strictfp double evaluate(double lArg, double rArg) {
-                if (rArg == 0) {
-                    throw new ArithmeticException("Zero division");
-                }
-
-                return lArg / rArg;
-            }
-        };
-        private static final Map<Signal, Operation> signalOperationMap = ImmutableMap.
-                <Signal, Operation>builder()
-                .put(Signal.PLUS, PLUS)
-                .put(Signal.MINUS, MINUS)
-                .put(Signal.MULTIPLY, MULTIPLY)
-                .put(Signal.DIVIDE, DIVIDE)
-                .build();
-
-        public static Operation bySignal(Signal signal) {
-            return signalOperationMap.get(signal);
-        }
-
-        public abstract double evaluate(double lArg, double rArg);
 
     }
 

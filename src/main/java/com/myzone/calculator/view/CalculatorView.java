@@ -419,7 +419,7 @@ public class CalculatorView extends Application {
     }
 
     public void invalidate() {
-        try(CalculatorModel.Session session = model.createSession()) {
+        try (CalculatorModel.Session session = model.createSession()) {
             double memory = session.getMemory();
             String displayText = session.getDisplayText();
 
