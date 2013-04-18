@@ -3,6 +3,7 @@ package com.myzone.calculator.model;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,6 +77,7 @@ public class CalculatorModel {
         operation = null;
     }
 
+    @NotNull
     public Session createSession() {
         if (activeSessions.get() != null) {
             return proxySession;

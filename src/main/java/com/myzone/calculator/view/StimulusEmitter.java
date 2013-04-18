@@ -3,6 +3,7 @@ package com.myzone.calculator.view;
 import com.myzone.utils.statemachine.StateMachine;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author: myzone
@@ -13,7 +14,7 @@ public class StimulusEmitter<S, E extends Event> implements EventHandler<E> {
     protected final StateMachine<S> stateMachine;
     protected final S stimulus;
 
-    public StimulusEmitter(StateMachine<S> stateMachine, S stimulus) {
+    public StimulusEmitter(@NotNull StateMachine<S> stateMachine, @NotNull S stimulus) {
         this.stateMachine = stateMachine;
         this.stimulus = stimulus;
     }

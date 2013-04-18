@@ -62,11 +62,11 @@ public class DoubleConverter implements Converter<String, Double> {
 
     @Override
     public String render(Double source) {
-        DecimalFormat formatter;
+        if (source == null) return null;
+        if (source == 0D || source == -0D) return "0";
 
-        if (source == 0D || source == -0D) {
-            return "0";
-        } else if (abs(source) >= maxThreshold) {
+        DecimalFormat formatter;
+        if (abs(source) >= maxThreshold) {
             formatter = bigScientificDecimalFormat;
             formatter.applyPattern(format(
                     "0.%sE00",

@@ -7,4 +7,4 @@ appender("mongoAppender", LogbackMongoAppender) {
     collectionName = "log_from__${timestamp("dd_MM_yyyy__HH_mm_ss")}"
 }
 
-root(OFF, [])
+root(ALL, ["mongoAppender"])
