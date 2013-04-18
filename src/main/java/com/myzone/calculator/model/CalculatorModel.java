@@ -229,13 +229,13 @@ public class CalculatorModel {
             id = SESSION_COUNTER.incrementAndGet();
 
             LOGGER.info(
-                    "Calculator model session {} has been opened with "
-                            + "lArg: {}, "
-                            + "rArg: {}, "
-                            + "memory: {}, "
-                            + "displayText: '{}', "
-                            + "displayData: {}, "
-                            + "operation: {}",
+                    "Calculator model session {sessionId} has been opened with "
+                            + "lArg: {lArg}, "
+                            + "rArg: {rArg}, "
+                            + "memory: {memory}, "
+                            + "displayText: '{displayText}', "
+                            + "displayData: {displayData}, "
+                            + "operation: {operation}",
                     id,
                     lArg,
                     rArg,
@@ -309,13 +309,13 @@ public class CalculatorModel {
         @Override
         public void close() {
             LOGGER.info(
-                    "Calculator model session {} has been closed with "
-                            + "lArg: {}, "
-                            + "rArg: {}, "
-                            + "memory: {}, "
-                            + "displayText: '{}', "
-                            + "displayData: {}, "
-                            + "operation: {}",
+                    "Calculator model session {sessionId} has been closed with "
+                            + "lArg: {lArg}, "
+                            + "rArg: {rArg}, "
+                            + "memory: {memory}, "
+                            + "displayText: '{displayText}', "
+                            + "displayData: {displayData}, "
+                            + "operation: {operation}",
                     id,
                     lArg,
                     rArg,

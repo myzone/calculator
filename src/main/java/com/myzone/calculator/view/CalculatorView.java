@@ -438,7 +438,7 @@ public class CalculatorView extends Application {
 
         @Override
         public void handle(E event) {
-            LOGGER.info("Signal {} has been emitted by {}", stimulus, event.getSource());
+            LOGGER.info("Signal {stimulus} has been emitted by {event}", stimulus, event);
 
             super.handle(event);
         }
