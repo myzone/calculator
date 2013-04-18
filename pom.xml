@@ -20,6 +20,8 @@
     <properties>
         <statemachine.version>1.0-SNAPSHOT</statemachine.version>
         <utils-commons.version>1.0-SNAPSHOT</utils-commons.version>
+        <utils-logging.version>1.0-SNAPSHOT</utils-logging.version>
+        <utils-testing.version>1.0-SNAPSHOT</utils-testing.version>
     </properties>
 
     <dependencies>
@@ -50,15 +52,16 @@
             <artifactId>annotations</artifactId>
             <version>${intellij-annotations.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>${slf4j.version}</version>
+            <groupId>com.myzone.utils</groupId>
+            <artifactId>logging</artifactId>
+            <version>${utils-logging.version}</version>
         </dependency>
 
         <dependency>
@@ -66,6 +69,11 @@
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.myzone.utils</groupId>
+            <artifactId>testing</artifactId>
+            <version>${utils-testing.version}</version>
         </dependency>
 
         <dependency>
