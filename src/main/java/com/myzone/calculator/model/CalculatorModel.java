@@ -220,7 +220,7 @@ public class CalculatorModel {
 
     }
 
-    protected class BlockingSession implements Session, LongSupplier {
+    protected class BlockingSession implements Session {
 
         private final long id;
 
@@ -231,13 +231,13 @@ public class CalculatorModel {
             id = SESSION_COUNTER.incrementAndGet();
 
             LOGGER.info(
-                    "Calculator model session {sessionId} has been opened with "
-                            + "lArg: {lArg}, "
-                            + "rArg: {rArg}, "
-                            + "memory: {memory}, "
-                            + "displayText: '{displayText}', "
-                            + "displayData: {displayData}, "
-                            + "operation: {operation}",
+                    "Calculator model session {} has been opened with "
+                            + "lArg: {}, "
+                            + "rArg: {}, "
+                            + "memory: {}, "
+                            + "displayText: '{}', "
+                            + "displayData: {}, "
+                            + "operation: {}",
                     id,
                     lArg,
                     rArg,
@@ -311,13 +311,13 @@ public class CalculatorModel {
         @Override
         public void close() {
             LOGGER.info(
-                    "Calculator model session {sessionId} has been closed with "
-                            + "lArg: {lArg}, "
-                            + "rArg: {rArg}, "
-                            + "memory: {memory}, "
-                            + "displayText: '{displayText}', "
-                            + "displayData: {displayData}, "
-                            + "operation: {operation}",
+                    "Calculator model session {} has been closed with "
+                            + "lArg: {}, "
+                            + "rArg: {}, "
+                            + "memory: {}, "
+                            + "displayText: '{}', "
+                            + "displayData: {}, "
+                            + "operation: {}",
                     id,
                     lArg,
                     rArg,
@@ -332,18 +332,13 @@ public class CalculatorModel {
         }
 
         @Override
-        public long getAsLong() {
-            return id;
-        }
-
-        @Override
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
 
-            LongSupplier that = (LongSupplier) o;
+            BlockingSession that = (BlockingSession) o;
 
-            if (id != that.getAsLong()) return false;
+            if (id != that.id) return false;
 
             return true;
         }

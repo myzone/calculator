@@ -1408,6 +1408,61 @@ public class CalculatorStatesTest {
         }
     }
 
+    @Test
+    public void testClearAfterEval() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_2,
+                PLUS,
+                DIGIT_1,
+                EVALUATE,
+                CLEAR,
+                DIGIT_0,
+                EVALUATE
+        ).length);
+
+        try (CalculatorModel.Session session = model.createSession()) {
+            verify(view, atLeastOnce()).invalidate();
+            assertEquals("0", session.getDisplayText());
+            assertEquals(0D, session.getDisplayData(), 0D);
+        }
+    }
+
+
+    @Test
+    public void test1() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_0,
+                MINUS,
+                DIGIT_0,
+                DOT,
+                EVALUATE
+        ).length);
+
+        try (CalculatorModel.Session session = model.createSession()) {
+            verify(view, atLeastOnce()).invalidate();
+            assertEquals("0", session.getDisplayText());
+            assertEquals(0D, session.getDisplayData(), 0D);
+        }
+    }
+
+    @Test
+    public void testDotInInitialState() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_2,
+                DOT,
+                EVALUATE,
+                DOT,
+                DIGIT_3,
+                DIGIT_3
+        ).length);
+
+        try (CalculatorModel.Session session = model.createSession()) {
+            verify(view, atLeastOnce()).invalidate();
+            assertEquals("0.33", session.getDisplayText());
+            assertEquals(0.33D, session.getDisplayData(), 0D);
+        }
+    }
+
     public void testTODON() {
         assertEquals(0, stateMachine.run(
                 DIVIDE

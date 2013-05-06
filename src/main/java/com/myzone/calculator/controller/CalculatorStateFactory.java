@@ -122,7 +122,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         return afterDigitInLArg;
 
                     case DOT:
-                        session.setDisplayText(session.getDisplayText() + signal.getRepresentation());
+                        session.setDisplayText("0" + signal.getRepresentation());
                         session.setDisplayData(parseDouble(session.getDisplayText()));
                         view.invalidate();
                         return afterDotInLArg;
@@ -154,6 +154,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                         session.setDisplayText(renderDouble(session.getDisplayData()));
                         session.setDisplayData(parseDouble(session.getDisplayText()));
+                        view.invalidate();
                         return initialState;
 
                     case BACK_SPACE:
@@ -302,6 +303,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                         session.setDisplayText(renderDouble(session.getDisplayData()));
                         session.setDisplayData(parseDouble(session.getDisplayText()));
+                        view.invalidate();
                         return initialState;
 
                     case BACK_SPACE:
@@ -717,6 +719,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         session.setrArg(0);
                         session.setDisplayText("0");
                         session.setDisplayData(0);
+                        session.setOperation(null);
                         view.invalidate();
                         return initialState;
 
@@ -796,6 +799,21 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         view.invalidate();
                         return initialState;
 
+                    case MEMORY_CLEAR:
+                        session.setMemory(0);
+                        view.invalidate();
+                        return initialState;
+
+                    case MEMORY_PLUS:
+                        session.setMemory(session.getMemory() + session.getDisplayData());
+                        view.invalidate();
+                        return initialState;
+
+                    case MEMORY_MINUS:
+                        session.setMemory(session.getMemory() - session.getDisplayData());
+                        view.invalidate();
+                        return initialState;
+
                 }
 
                 return super.react(signal);
@@ -871,6 +889,21 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         session.setMemory(session.getDisplayData());
                         view.invalidate();
                         return afterChangeInRArg;
+
+                    case MEMORY_CLEAR:
+                        session.setMemory(0);
+                        view.invalidate();
+                        return afterChangeInRArg;
+
+                    case MEMORY_PLUS:
+                        session.setMemory(session.getMemory() + session.getDisplayData());
+                        view.invalidate();
+                        return afterChangeInRArg;
+
+                    case MEMORY_MINUS:
+                        session.setMemory(session.getMemory() - session.getDisplayData());
+                        view.invalidate();
+                        return afterChangeInRArg;
                 }
 
                 return super.react(signal);
@@ -896,23 +929,9 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         session.setrArg(0);
                         session.setDisplayText("0");
                         session.setDisplayData(0);
+                        session.setOperation(null);
                         view.invalidate();
                         return initialState;
-
-                    case MEMORY_CLEAR:
-                        session.setMemory(0);
-                        view.invalidate();
-                        return this;
-
-                    case MEMORY_PLUS:
-                        session.setMemory(session.getMemory() + session.getDisplayData());
-                        view.invalidate();
-                        return this;
-
-                    case MEMORY_MINUS:
-                        session.setMemory(session.getMemory() - session.getDisplayData());
-                        view.invalidate();
-                        return this;
 
                     case REVERSE:
                         if (!"0".equals(session.getDisplayText())) {
