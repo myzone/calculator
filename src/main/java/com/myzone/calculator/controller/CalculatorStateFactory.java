@@ -165,12 +165,6 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         return initialState;
 
                     case BACK_SPACE:
-                        session.setDisplayText(session.getDisplayText().substring(0, session.getDisplayText().length() - 1));
-                        if (session.getDisplayText().isEmpty() || "-".equals(session.getDisplayText())) {
-                            session.setDisplayText("0");
-                        }
-                        session.setDisplayData(parseDouble(session.getDisplayText()));
-                        view.invalidate();
                         return initialState;
                 }
 
@@ -247,7 +241,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         }
                         session.setDisplayData(parseDouble(session.getDisplayText()));
                         view.invalidate();
-                        return session.getDisplayText().length() < 3 ? initialState : afterDigitInLArg;
+                        return "0".equals(session.getDisplayText()) ? initialState : afterDigitInLArg;
                 }
 
                 return super.react(signal);
@@ -467,13 +461,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         }
 
                     case BACK_SPACE:
-                        session.setDisplayText(session.getDisplayText().substring(0, session.getDisplayText().length() - 1));
-                        if (session.getDisplayText().isEmpty() || "-".equals(session.getDisplayText()) || "-0".equals(session.getDisplayText())) {
-                            session.setDisplayText("0");
-                        }
-                        session.setDisplayData(parseDouble(session.getDisplayText()));
-                        view.invalidate();
-                        return afterSingSelection;
+                        return afterChangeInRArg;
                 }
 
                 return super.react(signal);

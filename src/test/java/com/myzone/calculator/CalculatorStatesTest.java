@@ -1481,6 +1481,90 @@ public class CalculatorStatesTest {
         }
     }
 
+    @Test
+    public void testBackspaceAfterSquareRootInLArg() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_2,
+                SQUARE_ROOT,
+                BACK_SPACE
+        ).length);
+
+        try (CalculatorModel.Session session = model.createSession()) {
+            verify(view, atLeastOnce()).invalidate();
+            assertEquals("1.4142135623731", session.getDisplayText());
+            assertEquals(1.4142135623730951D, session.getDisplayData(), 0D);
+        }
+    }
+
+    @Test
+    public void testBackspaceAfterSquareRootInRArg() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_2,
+                PLUS,
+                DIGIT_2,
+                SQUARE_ROOT,
+                BACK_SPACE
+        ).length);
+
+        try (CalculatorModel.Session session = model.createSession()) {
+            verify(view, atLeastOnce()).invalidate();
+            assertEquals("1.4142135623731", session.getDisplayText());
+            assertEquals(1.4142135623730951D, session.getDisplayData(), 0D);
+        }
+    }
+
+    @Test
+    public void testBackspaceAfterMemoryRestoreInLArg() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_2,
+                DIGIT_2,
+                MEMORY_PLUS,
+                MEMORY_RESTORE,
+                BACK_SPACE
+        ).length);
+
+        try (CalculatorModel.Session session = model.createSession()) {
+            verify(view, atLeastOnce()).invalidate();
+            assertEquals("22", session.getDisplayText());
+            assertEquals(22D, session.getDisplayData(), 0D);
+        }
+    }
+
+    @Test
+    public void testBackspaceAfterMemoryRestoreInRArg() {
+        assertEquals(0, stateMachine.run(
+                PLUS,
+                DIGIT_2,
+                DIGIT_2,
+                MEMORY_PLUS,
+                MEMORY_RESTORE,
+                BACK_SPACE
+        ).length);
+
+        try (CalculatorModel.Session session = model.createSession()) {
+            verify(view, atLeastOnce()).invalidate();
+            assertEquals("22", session.getDisplayText());
+            assertEquals(22D, session.getDisplayData(), 0D);
+        }
+    }
+
+    @Test
+    public void testBackspaceAfterMemoryPlusInRArg() {
+        assertEquals(0, stateMachine.run(
+                PLUS,
+                DIGIT_2,
+                DIGIT_2,
+                MEMORY_PLUS,
+                BACK_SPACE
+        ).length);
+
+        try (CalculatorModel.Session session = model.createSession()) {
+            verify(view, atLeastOnce()).invalidate();
+            assertEquals("22", session.getDisplayText());
+            assertEquals(22D, session.getDisplayData(), 0D);
+        }
+    }
+
     public void testTODON() {
         assertEquals(0, stateMachine.run(
                 DIVIDE
