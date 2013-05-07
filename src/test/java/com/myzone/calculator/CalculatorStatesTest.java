@@ -1565,6 +1565,24 @@ public class CalculatorStatesTest {
         }
     }
 
+    @Test
+    public void testPlusAfterMemoryPlus() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_5,
+                MEMORY_PLUS,
+                PLUS,
+                DOT,
+                DIGIT_3,
+                PLUS
+        ).length);
+
+        try (CalculatorModel.Session session = model.createSession()) {
+            verify(view, atLeastOnce()).invalidate();
+            assertEquals("5.3", session.getDisplayText());
+            assertEquals(5.3D, session.getDisplayData(), 0D);
+        }
+    }
+
     public void testTODON() {
         assertEquals(0, stateMachine.run(
                 DIVIDE
