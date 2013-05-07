@@ -41,9 +41,16 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
         return DOUBLE_CONVERTER.render(d).replace("(e-?)\\d\\d\\d+", "$199");
     }
 
+    private static final Pattern firstPattern = Pattern.compile("^([0-9]+)((\\.)([0-9]*?)0*(e(\\+|\\-)[0-9]{2})?)?$");
+    private static final Pattern secondPattern = Pattern.compile("(.*)\\.$");
+
     private static String normalize(String s) {
-        Pattern p = Pattern.compile("^([0-9]+)((\\.)([0-9]*?)0*(e(\\+|\\-)[0-9]{2})?)?$");
-        return p.matcher(s).replaceAll("$1$3$4$5");
+        String result = s;
+
+        result = firstPattern.matcher(result).replaceAll("$1$3$4$5");
+        result = secondPattern.matcher(result).replaceAll("$1");
+
+        return result;
     }
 
     protected CalculatorModel model;
@@ -795,21 +802,25 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         }
 
                     case MEMORY_STORE:
+                        session.setDisplayText(normalize(session.getDisplayText()));
                         session.setMemory(session.getDisplayData());
                         view.invalidate();
                         return initialState;
 
                     case MEMORY_CLEAR:
+                        session.setDisplayText(normalize(session.getDisplayText()));
                         session.setMemory(0);
                         view.invalidate();
                         return initialState;
 
                     case MEMORY_PLUS:
+                        session.setDisplayText(normalize(session.getDisplayText()));
                         session.setMemory(session.getMemory() + session.getDisplayData());
                         view.invalidate();
                         return initialState;
 
                     case MEMORY_MINUS:
+                        session.setDisplayText(normalize(session.getDisplayText()));
                         session.setMemory(session.getMemory() - session.getDisplayData());
                         view.invalidate();
                         return initialState;
@@ -886,21 +897,25 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         }
 
                     case MEMORY_STORE:
+                        session.setDisplayText(normalize(session.getDisplayText()));
                         session.setMemory(session.getDisplayData());
                         view.invalidate();
                         return afterChangeInRArg;
 
                     case MEMORY_CLEAR:
+                        session.setDisplayText(normalize(session.getDisplayText()));
                         session.setMemory(0);
                         view.invalidate();
                         return afterChangeInRArg;
 
                     case MEMORY_PLUS:
+                        session.setDisplayText(normalize(session.getDisplayText()));
                         session.setMemory(session.getMemory() + session.getDisplayData());
                         view.invalidate();
                         return afterChangeInRArg;
 
                     case MEMORY_MINUS:
+                        session.setDisplayText(normalize(session.getDisplayText()));
                         session.setMemory(session.getMemory() - session.getDisplayData());
                         view.invalidate();
                         return afterChangeInRArg;
