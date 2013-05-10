@@ -20,7 +20,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
     protected static final Converter<String, Double> DOUBLE_CONVERTER = new DoubleConverter(15, pow(10D, 15D), pow(10D, -15D));
 
-    private static double parseDouble(String s) {
+    private static double parseDouble(@NotNull String s) {
         try {
             return DOUBLE_CONVERTER.parse(s);
         } catch (Exception e) {
@@ -28,6 +28,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
         }
     }
 
+    @NotNull
     private static String renderDouble(double d) {
         if (Double.isNaN(d) || Double.isInfinite(d)) {
             throw new ArithmeticException("Double is NaN");
@@ -44,7 +45,8 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
     private static final Pattern firstPattern = Pattern.compile("^([0-9]+)((\\.)([0-9]*?)0*(e(\\+|\\-)[0-9]{2})?)?$");
     private static final Pattern secondPattern = Pattern.compile("(.*)\\.$");
 
-    private static String normalize(String s) {
+    @NotNull
+    private static String normalize(@NotNull String s) {
         String result = s;
 
         result = firstPattern.matcher(result).replaceAll("$1$3$4$5");
@@ -53,18 +55,18 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
         return result;
     }
 
-    protected CalculatorModel model;
-    protected CalculatorView view;
+    protected final CalculatorModel model;
+    protected final CalculatorView view;
 
-    protected State<Signal> initialState;
-    protected State<Signal> afterDigitInLArg;
-    protected State<Signal> afterDotInLArg;
-    protected State<Signal> afterSingSelection;
-    protected State<Signal> afterChangeInRArg;
-    protected State<Signal> afterDigitInRArg;
-    protected State<Signal> afterDotInRArg;
-    protected State<Signal> afterEvaluation;
-    protected State<Signal> errorState;
+    protected final State<Signal> initialState;
+    protected final State<Signal> afterDigitInLArg;
+    protected final State<Signal> afterDotInLArg;
+    protected final State<Signal> afterSingSelection;
+    protected final State<Signal> afterChangeInRArg;
+    protected final State<Signal> afterDigitInRArg;
+    protected final State<Signal> afterDotInRArg;
+    protected final State<Signal> afterEvaluation;
+    protected final State<Signal> errorState;
 
     public CalculatorStateFactory(@NotNull CalculatorModel model, @NotNull CalculatorView view) {
         this.model = model;
