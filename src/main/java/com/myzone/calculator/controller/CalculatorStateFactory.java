@@ -3,14 +3,16 @@ package com.myzone.calculator.controller;
 import com.myzone.calculator.model.CalculatorModel;
 import com.myzone.calculator.model.Signal;
 import com.myzone.calculator.view.CalculatorView;
-import com.myzone.calculator.view.DoubleConverter;
+import com.myzone.utils.BigFraction;
+import com.myzone.utils.BigFractionConverter;
 import com.myzone.utils.Converter;
 import com.myzone.utils.statemachine.State;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Pattern;
 
-import static java.lang.Math.*;
+import static java.lang.Math.abs;
+import static java.lang.Math.pow;
 
 /**
  * @author: myzone
@@ -18,28 +20,24 @@ import static java.lang.Math.*;
  */
 public class CalculatorStateFactory implements State.Factory<Signal> {
 
-    protected static final Converter<String, Double> DOUBLE_CONVERTER = new DoubleConverter(15, pow(10D, 15D), pow(10D, -15D));
+    protected static final Converter<String, BigFraction> BIG_FRACTION_CONVERTER = new BigFractionConverter(15, pow(10D, 15D), pow(10D, -15D));
 
-    private static double parseDouble(@NotNull String s) {
-        try {
-            return DOUBLE_CONVERTER.parse(s);
-        } catch (Exception e) {
-            return Double.NaN;
-        }
+    private static BigFraction parseDouble(@NotNull String s) {
+        return BIG_FRACTION_CONVERTER.parse(s);
     }
 
     @NotNull
-    private static String renderDouble(double d) {
-        if (Double.isNaN(d) || Double.isInfinite(d)) {
-            throw new ArithmeticException("Double is NaN");
-        }
+    private static String renderDouble(BigFraction d) {
+//        if (Double.isNaN(d) || Double.isInfinite(d)) {
+//            throw new ArithmeticException("Double is NaN");
+//        }
 
         // rounding hook
-        if (abs(1 - d) < pow(10, -10)) {
-            d = 1;
+        if (abs(1 - d.doubleValue()) < pow(10, -10)) {
+            d = BigFraction.ONE;
         }
 
-        return DOUBLE_CONVERTER.render(d).replace("(e-?)\\d\\d\\d+", "$199");
+        return BIG_FRACTION_CONVERTER.render(d).replace("(e-?)\\d\\d\\d+", "$199");
     }
 
     private static final Pattern firstPattern = Pattern.compile("^([0-9]+)((\\.)([0-9]*?)0*(e(\\+|\\-)[0-9]{2})?)?$");
@@ -317,7 +315,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                             }
                             session.setDisplayData(parseDouble(session.getDisplayText()));
                             view.invalidate();
-                            return session.getDisplayData() != 0 ? afterDigitInLArg : initialState;
+                            return !session.getDisplayData().equals(BigFraction.ZERO) ? afterDigitInLArg : initialState;
                         }
                         session.setDisplayText(session.getDisplayText().substring(0, session.getDisplayText().length() - 1));
                         if ("0".equals(session.getDisplayText()) || "-0".equals(session.getDisplayText())) {
@@ -617,7 +615,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                             }
                             session.setDisplayData(parseDouble(session.getDisplayText()));
                             view.invalidate();
-                            return session.getDisplayData() != 0 ? afterDigitInRArg : afterChangeInRArg;
+                            return !session.getDisplayData().equals(BigFraction.ZERO) ? afterDigitInRArg : afterChangeInRArg;
                         }
                         session.setDisplayText(session.getDisplayText().substring(0, session.getDisplayText().length() - 1));
                         if (session.getDisplayText().isEmpty() || "-".equals(session.getDisplayText()) || "-0".equals(session.getDisplayText())) {
@@ -712,10 +710,10 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                 switch (signal) {
                     case CLEAR:
                     case CLEAR_EVALUATION:
-                        session.setlArg(0);
-                        session.setrArg(0);
+                        session.setlArg(BigFraction.ZERO);
+                        session.setrArg(BigFraction.ZERO);
                         session.setDisplayText("0");
-                        session.setDisplayData(0);
+                        session.setDisplayData(BigFraction.ZERO);
                         session.setOperation(null);
                         view.invalidate();
                         return initialState;
@@ -739,7 +737,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
             try (CalculatorModel.Session session = model.createSession()) {
                 switch (signal) {
                     case PERCENT:
-                        session.setDisplayData(session.getlArg() * session.getDisplayData() / 100);
+                        session.setDisplayData(session.getlArg().multiply(session.getDisplayData()).divide(BigFraction.valueOf(100)));
                         session.setDisplayText(renderDouble(session.getDisplayData()));
                         view.invalidate();
                         return initialState;
@@ -762,7 +760,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                     case INVERSE:
                         try {
-                            session.setDisplayData(1D / session.getDisplayData());
+                            session.setDisplayData(session.getDisplayData().pow(-1));
                             session.setDisplayText(renderDouble(session.getDisplayData()));
                             view.invalidate();
                             return initialState;
@@ -773,9 +771,9 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         }
 
                     case CLEAR_EVALUATION:
-                        session.setlArg(0);
+                        session.setlArg(BigFraction.ZERO);
                         session.setDisplayText("0");
-                        session.setDisplayData(0);
+                        session.setDisplayData(BigFraction.ZERO);
                         view.invalidate();
                         return initialState;
 
@@ -799,19 +797,19 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                     case MEMORY_CLEAR:
                         session.setDisplayText(normalize(session.getDisplayText()));
-                        session.setMemory(0);
+                        session.setMemory(BigFraction.ZERO);
                         view.invalidate();
                         return initialState;
 
                     case MEMORY_PLUS:
                         session.setDisplayText(normalize(session.getDisplayText()));
-                        session.setMemory(session.getMemory() + session.getDisplayData());
+                        session.setMemory(session.getMemory().add(session.getDisplayData()));
                         view.invalidate();
                         return initialState;
 
                     case MEMORY_MINUS:
                         session.setDisplayText(normalize(session.getDisplayText()));
-                        session.setMemory(session.getMemory() - session.getDisplayData());
+                        session.setMemory(session.getMemory().subtract(session.getDisplayData()));
                         view.invalidate();
                         return initialState;
 
@@ -834,7 +832,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
             try (CalculatorModel.Session session = model.createSession()) {
                 switch (signal) {
                     case PERCENT:
-                        session.setDisplayData(session.getlArg() * session.getDisplayData() / 100);
+                        session.setDisplayData(session.getlArg().multiply(session.getDisplayData()).divide(100));
                         session.setDisplayText(renderDouble(session.getDisplayData()));
                         view.invalidate();
                         return afterChangeInRArg;
@@ -857,7 +855,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                     case INVERSE:
                         try {
-                            session.setDisplayData(1D / session.getDisplayData());
+                            session.setDisplayData(session.getDisplayData().pow(-1));
                             session.setDisplayText(renderDouble(session.getDisplayData()));
                             view.invalidate();
                             return afterChangeInRArg;
@@ -868,9 +866,9 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         }
 
                     case CLEAR_EVALUATION:
-                        session.setrArg(0);
+                        session.setrArg(BigFraction.ZERO);
                         session.setDisplayText("0");
-                        session.setDisplayData(0);
+                        session.setDisplayData(BigFraction.ZERO);
                         view.invalidate();
                         return afterChangeInRArg;
 
@@ -894,19 +892,19 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                     case MEMORY_CLEAR:
                         session.setDisplayText(normalize(session.getDisplayText()));
-                        session.setMemory(0);
+                        session.setMemory(BigFraction.ZERO);
                         view.invalidate();
                         return afterChangeInRArg;
 
                     case MEMORY_PLUS:
                         session.setDisplayText(normalize(session.getDisplayText()));
-                        session.setMemory(session.getMemory() + session.getDisplayData());
+                        session.setMemory(session.getMemory().add(session.getDisplayData()));
                         view.invalidate();
                         return afterChangeInRArg;
 
                     case MEMORY_MINUS:
                         session.setDisplayText(normalize(session.getDisplayText()));
-                        session.setMemory(session.getMemory() - session.getDisplayData());
+                        session.setMemory(session.getMemory().subtract(session.getDisplayData()));
                         view.invalidate();
                         return afterChangeInRArg;
                 }
@@ -930,10 +928,10 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
             try (CalculatorModel.Session session = model.createSession()) {
                 switch (signal) {
                     case CLEAR:
-                        session.setlArg(0);
-                        session.setrArg(0);
+                        session.setlArg(BigFraction.ZERO);
+                        session.setrArg(BigFraction.ZERO);
                         session.setDisplayText("0");
-                        session.setDisplayData(0);
+                        session.setDisplayData(BigFraction.ZERO);
                         session.setOperation(null);
                         view.invalidate();
                         return initialState;
@@ -959,6 +957,13 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
         public String toString() {
             return name;
         }
+    }
+
+    private static BigFraction sqrt(BigFraction bigFraction) {
+        return BigFraction.valueOf(
+                Math.sqrt(bigFraction.getNumerator().doubleValue()),
+                Math.sqrt(bigFraction.getDenominator().doubleValue())
+        );
     }
 
 }

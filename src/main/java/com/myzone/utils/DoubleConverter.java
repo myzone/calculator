@@ -1,6 +1,4 @@
-package com.myzone.calculator.view;
-
-import com.myzone.utils.Converter;
+package com.myzone.utils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -62,8 +60,11 @@ public class DoubleConverter implements Converter<String, Double> {
 
     @Override
     public String render(Double source) {
-        if (source == null) return null;
-        if (source == 0D || source == -0D) return "0";
+        if (source == null)
+            return null;
+
+        if (source == 0D || source == -0D)
+            return "0";
 
         DecimalFormat formatter;
         if (abs(source) >= maxThreshold) {

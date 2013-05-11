@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.myzone.calculator.controller.CalculatorStateFactory;
 import com.myzone.calculator.model.CalculatorModel;
 import com.myzone.calculator.model.Signal;
+import com.myzone.utils.BigFraction;
 import com.myzone.utils.statemachine.EventStateMachine;
 import com.myzone.utils.statemachine.StateMachine;
 import javafx.application.Application;
@@ -420,11 +421,11 @@ public class CalculatorView extends Application {
 
     public void invalidate() {
         try (CalculatorModel.Session session = model.createSession()) {
-            double memory = session.getMemory();
+            BigFraction memory = session.getMemory();
             String displayText = session.getDisplayText();
 
             Platform.runLater(() -> {
-                memoryDisplayTextField.setText(memory != 0 ? "M" : "");
+                memoryDisplayTextField.setText(!memory.equals(BigFraction.ZERO) ? "M" : "");
                 mainDisplayTextField.setText(displayText);
             });
         }

@@ -1,6 +1,6 @@
 package com.myzone.calculator;
 
-import com.myzone.calculator.view.DoubleConverter;
+import com.myzone.utils.DoubleConverter;
 import org.junit.Before;
 import org.junit.Test;
 

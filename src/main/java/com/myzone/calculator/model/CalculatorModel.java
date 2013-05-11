@@ -2,6 +2,7 @@ package com.myzone.calculator.model;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.myzone.utils.BigFraction;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -55,24 +56,24 @@ public class CalculatorModel {
             }
     );
 
-    private volatile double lArg;
-    private volatile double rArg;
-    private volatile double memory;
+    private volatile BigFraction lArg;
+    private volatile BigFraction rArg;
+    private volatile BigFraction memory;
     private volatile String displayText;
-    private volatile double displayData;
+    private volatile BigFraction displayData;
     private volatile Operation operation;
 
     public CalculatorModel() {
         lock = new ReentrantLock(true);
         activeSessions = new ThreadLocal<>();
 
-        lArg = 0;
-        rArg = 0;
+        lArg = BigFraction.ZERO;
+        rArg = BigFraction.ZERO;
 
-        memory = 0;
+        memory = BigFraction.ZERO;
 
         displayText = "0";
-        displayData = 0D;
+        displayData = BigFraction.ZERO;
 
         operation = null;
     }
@@ -86,31 +87,31 @@ public class CalculatorModel {
         return new BlockingSession();
     }
 
-    protected double getlArg() {
+    protected BigFraction getlArg() {
         return lArg;
     }
 
-    protected void setlArg(double lArg) {
+    protected void setlArg(BigFraction lArg) {
         this.lArg = lArg;
     }
 
-    protected double getrArg() {
+    protected BigFraction getrArg() {
         return rArg;
     }
 
-    protected void setrArg(double rArg) {
+    protected void setrArg(BigFraction rArg) {
         this.rArg = rArg;
     }
 
-    protected double getMemory() {
-        if (!Double.isFinite(memory)) {
-            throw new ArithmeticException("Memory is overflowed");
-        }
+    protected BigFraction getMemory() {
+//        if (!Double.isFinite(memory)) {
+//            throw new ArithmeticException("Memory is overflowed");
+//        }
 
         return memory;
     }
 
-    protected void setMemory(double memory) {
+    protected void setMemory(BigFraction memory) {
         this.memory = memory;
     }
 
@@ -128,11 +129,11 @@ public class CalculatorModel {
         ));
     }
 
-    protected double getDisplayData() {
+    protected BigFraction getDisplayData() {
         return displayData;
     }
 
-    protected void setDisplayData(double displayData) {
+    protected void setDisplayData(BigFraction displayData) {
         this.displayData = displayData;
     }
 
@@ -145,38 +146,38 @@ public class CalculatorModel {
     }
 
     public static enum Operation {
-        PLUS {
+        ADD {
             @Override
-            public strictfp double evaluate(double lArg, double rArg) {
-                return lArg + rArg;
+            public strictfp BigFraction evaluate(BigFraction lArg, BigFraction rArg) {
+                return lArg.add(rArg);
             }
         },
-        MINUS {
+        SUBTRACT {
             @Override
-            public strictfp double evaluate(double lArg, double rArg) {
-                return lArg - rArg;
+            public strictfp BigFraction evaluate(BigFraction lArg, BigFraction rArg) {
+                return lArg.subtract(rArg);
             }
         },
         MULTIPLY {
             @Override
-            public strictfp double evaluate(double lArg, double rArg) {
-                return lArg * rArg;
+            public strictfp BigFraction evaluate(BigFraction lArg, BigFraction rArg) {
+                return lArg.multiply(rArg);
             }
         },
         DIVIDE {
             @Override
-            public strictfp double evaluate(double lArg, double rArg) {
-                if (rArg == 0) {
-                    throw new ArithmeticException("Zero division");
-                }
+            public strictfp BigFraction evaluate(BigFraction lArg, BigFraction rArg) {
+//                if (rArg == 0) {
+//                    throw new ArithmeticException("Zero division");
+//                }
 
-                return lArg / rArg;
+                return lArg.divide(rArg);
             }
         };
         private static final Map<Signal, Operation> signalOperationMap = ImmutableMap.
                 <Signal, Operation>builder()
-                .put(Signal.PLUS, PLUS)
-                .put(Signal.MINUS, MINUS)
+                .put(Signal.PLUS, ADD)
+                .put(Signal.MINUS, SUBTRACT)
                 .put(Signal.MULTIPLY, MULTIPLY)
                 .put(Signal.DIVIDE, DIVIDE)
                 .build();
@@ -185,31 +186,31 @@ public class CalculatorModel {
             return signalOperationMap.get(signal);
         }
 
-        public abstract double evaluate(double lArg, double rArg);
+        public abstract BigFraction evaluate(BigFraction lArg, BigFraction rArg);
 
     }
 
     public static interface Session extends AutoCloseable {
 
-        double getlArg();
+        BigFraction getlArg();
 
-        void setlArg(double lArg);
+        void setlArg(BigFraction lArg);
 
-        double getrArg();
+        BigFraction getrArg();
 
-        void setrArg(double rArg);
+        void setrArg(BigFraction rArg);
 
-        public double getMemory();
+        public BigFraction getMemory();
 
-        public void setMemory(double memory);
+        public void setMemory(BigFraction memory);
 
         public String getDisplayText();
 
         void setDisplayText(String displayText);
 
-        double getDisplayData();
+        BigFraction getDisplayData();
 
-        void setDisplayData(double displayData);
+        void setDisplayData(BigFraction displayData);
 
         Operation getOperation();
 
@@ -249,32 +250,32 @@ public class CalculatorModel {
         }
 
         @Override
-        public double getlArg() {
+        public BigFraction getlArg() {
             return CalculatorModel.this.getlArg();
         }
 
         @Override
-        public void setlArg(double lArg) {
+        public void setlArg(BigFraction lArg) {
             CalculatorModel.this.setlArg(lArg);
         }
 
         @Override
-        public double getrArg() {
+        public BigFraction getrArg() {
             return CalculatorModel.this.getrArg();
         }
 
         @Override
-        public void setrArg(double rArg) {
+        public void setrArg(BigFraction rArg) {
             CalculatorModel.this.setrArg(rArg);
         }
 
         @Override
-        public double getMemory() {
+        public BigFraction getMemory() {
             return CalculatorModel.this.getMemory();
         }
 
         @Override
-        public void setMemory(double memory) {
+        public void setMemory(BigFraction memory) {
             CalculatorModel.this.setMemory(memory);
         }
 
@@ -289,12 +290,12 @@ public class CalculatorModel {
         }
 
         @Override
-        public double getDisplayData() {
+        public BigFraction getDisplayData() {
             return CalculatorModel.this.getDisplayData();
         }
 
         @Override
-        public void setDisplayData(double displayData) {
+        public void setDisplayData(BigFraction displayData) {
             CalculatorModel.this.setDisplayData(displayData);
         }
 
@@ -338,9 +339,7 @@ public class CalculatorModel {
 
             BlockingSession that = (BlockingSession) o;
 
-            if (id != that.id) return false;
-
-            return true;
+            return id == that.id;
         }
 
         @Override
