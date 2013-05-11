@@ -28,10 +28,6 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
     @NotNull
     private static String renderDouble(BigFraction d) {
-//        if (Double.isNaN(d) || Double.isInfinite(d)) {
-//            throw new ArithmeticException("Double is NaN");
-//        }
-
         // rounding hook
         if (abs(1 - d.doubleValue()) < pow(10, -10)) {
             d = BigFraction.ONE;
@@ -944,7 +940,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                                 session.setDisplayText("-" + session.getDisplayText());
                             }
                         }
-                        session.setDisplayData(parseDouble(session.getDisplayText()));
+                        session.setDisplayData(session.getDisplayData().negate());
                         view.invalidate();
                         return this;
                 }
