@@ -156,7 +156,6 @@
                     <shadedArtifactAttached>true</shadedArtifactAttached>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.bluestemsoftware.open.maven.plugin</groupId>
                 <artifactId>launch4j-plugin</artifactId>
@@ -178,7 +177,6 @@
                             <!-- TODO: <icon>src/main/resources/icons/exeIcon.ico</icon> -->
                             <jre>
                                 <minVersion>1.8.0</minVersion>
-                                <!-- <maxVersion>1.8.0</maxVersion> -->
                                 <initialHeapSize>128</initialHeapSize>
                                 <maxHeapSize>1024</maxHeapSize>
                             </jre>

@@ -1604,13 +1604,4 @@ public class CalculatorStatesTest {
         }
     }
 
-    public void testTODON() {
-        assertEquals(0, stateMachine.run(
-                DIVIDE
-        ).length);
-
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-        }
-    }
 }

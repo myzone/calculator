@@ -28,6 +28,9 @@ import static java.util.Arrays.asList;
  */
 public class CalculatorModel {
 
+    private static final BigFraction MAX_THRESHOLD = BigFraction.TEN.pow(250);
+    private static final BigFraction MIN_THRESHOLD = BigFraction.TEN.pow(-250);
+
     private static final Logger LOGGER = LoggerFactory.getLogger(CalculatorModel.class);
     private static final Set<Executable> IGNORED_METHODS = ImmutableSet
             .<Executable>builder()
@@ -143,51 +146,6 @@ public class CalculatorModel {
 
     protected void setOperation(Operation operation) {
         this.operation = operation;
-    }
-
-    public static enum Operation {
-        ADD {
-            @Override
-            public strictfp BigFraction evaluate(BigFraction lArg, BigFraction rArg) {
-                return lArg.add(rArg);
-            }
-        },
-        SUBTRACT {
-            @Override
-            public strictfp BigFraction evaluate(BigFraction lArg, BigFraction rArg) {
-                return lArg.subtract(rArg);
-            }
-        },
-        MULTIPLY {
-            @Override
-            public strictfp BigFraction evaluate(BigFraction lArg, BigFraction rArg) {
-                return lArg.multiply(rArg);
-            }
-        },
-        DIVIDE {
-            @Override
-            public strictfp BigFraction evaluate(BigFraction lArg, BigFraction rArg) {
-//                if (rArg == 0) {
-//                    throw new ArithmeticException("Zero division");
-//                }
-
-                return lArg.divide(rArg);
-            }
-        };
-        private static final Map<Signal, Operation> signalOperationMap = ImmutableMap.
-                <Signal, Operation>builder()
-                .put(Signal.PLUS, ADD)
-                .put(Signal.MINUS, SUBTRACT)
-                .put(Signal.MULTIPLY, MULTIPLY)
-                .put(Signal.DIVIDE, DIVIDE)
-                .build();
-
-        public static Operation bySignal(Signal signal) {
-            return signalOperationMap.get(signal);
-        }
-
-        public abstract BigFraction evaluate(BigFraction lArg, BigFraction rArg);
-
     }
 
     public static interface Session extends AutoCloseable {
@@ -347,6 +305,77 @@ public class CalculatorModel {
             return (int) (id ^ (id >>> 32));
         }
 
+    }
+
+    public static enum Operation {
+        ADD {
+            @Override
+            public strictfp BigFraction evaluate(BigFraction lArg, BigFraction rArg) {
+                BigFraction result = lArg.add(rArg);
+
+                if (!isValid(result))
+                    throw new ArithmeticException();
+
+                return result;
+            }
+        },
+        SUBTRACT {
+            @Override
+            public strictfp BigFraction evaluate(BigFraction lArg, BigFraction rArg) {
+                BigFraction result = lArg.subtract(rArg);
+
+                if (!isValid(result))
+                    throw new ArithmeticException();
+
+                return result;
+            }
+        },
+        MULTIPLY {
+            @Override
+            public strictfp BigFraction evaluate(BigFraction lArg, BigFraction rArg) {
+                BigFraction result = lArg.multiply(rArg);
+
+                if (!isValid(result))
+                    throw new ArithmeticException();
+
+                return result;
+            }
+        },
+        DIVIDE {
+            @Override
+            public strictfp BigFraction evaluate(BigFraction lArg, BigFraction rArg) {
+                BigFraction result = lArg.divide(rArg);
+
+                if (!isValid(result))
+                    throw new ArithmeticException();
+
+                return result;
+            }
+        };
+
+        private static final Map<Signal, Operation> signalOperationMap = ImmutableMap.
+                <Signal, Operation>builder()
+                .put(Signal.PLUS, ADD)
+                .put(Signal.MINUS, SUBTRACT)
+                .put(Signal.MULTIPLY, MULTIPLY)
+                .put(Signal.DIVIDE, DIVIDE)
+                .build();
+
+        public static Operation bySignal(Signal signal) {
+            return signalOperationMap.get(signal);
+        }
+
+        public abstract BigFraction evaluate(BigFraction lArg, BigFraction rArg);
+
+        protected boolean isValid(BigFraction bigFraction) {
+            if (bigFraction.abs().compareTo(MAX_THRESHOLD) >= 0)
+                return false;
+
+            if (bigFraction.abs().compareTo(MIN_THRESHOLD) <= 0)
+                return false;
+
+            return true;
+        }
     }
 
 }
