@@ -472,7 +472,7 @@ public class CalculatorStatesTest {
         assertFalse(view.hasMemoryFlag());
         assertEquals("2.7355647997348", view.getDisplayText());
 
-        assertEquals(null, model.getDisplayData());
+        assertEquals(valueOf(6159944306366657L, 2251799813685248L), model.getDisplayData());
     }
 
     @Test
@@ -488,7 +488,7 @@ public class CalculatorStatesTest {
         assertFalse(view.hasMemoryFlag());
         assertEquals("1.6539542919122", view.getDisplayText());
 
-        assertEquals(valueOf(25, 4), model.getDisplayData());
+        assertEquals(valueOf(10534120349184526L, 6369051672525773L), model.getDisplayData());
     }
 
     @Test
@@ -511,7 +511,7 @@ public class CalculatorStatesTest {
         assertTrue(view.hasMemoryFlag());
         assertEquals("12.071067811866", view.getDisplayText());
 
-        assertEquals(null, model.getDisplayData());
+        assertEquals(valueOf(24142135623731L, 2000000000000L), model.getDisplayData());
     }
 
     @Test
@@ -657,7 +657,7 @@ public class CalculatorStatesTest {
         assertFalse(view.hasMemoryFlag());
         assertEquals("1.66666666666667e+16", view.getDisplayText());
 
-        assertEquals(null, model.getDisplayData());
+        assertEquals(valueOf(16666666666666650L, 1L), model.getDisplayData());
     }
 
     @Test
@@ -716,7 +716,7 @@ public class CalculatorStatesTest {
         assertFalse(view.hasMemoryFlag());
         assertEquals("-1.66666666666667e+16", view.getDisplayText());
 
-        assertEquals(null, model.getDisplayData());
+        assertEquals(valueOf(-16666666666666650L, 1L), model.getDisplayData());
     }
 
     @Test

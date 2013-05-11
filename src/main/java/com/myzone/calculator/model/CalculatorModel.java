@@ -368,10 +368,10 @@ public class CalculatorModel {
         public abstract BigFraction evaluate(BigFraction lArg, BigFraction rArg);
 
         protected boolean isValid(BigFraction bigFraction) {
-            if (bigFraction.abs().compareTo(MAX_THRESHOLD) >= 0)
+            if (bigFraction.abs().getNumerator().compareTo(MAX_THRESHOLD.getNumerator()) >= 0)
                 return false;
 
-            if (bigFraction.abs().compareTo(MIN_THRESHOLD) <= 0)
+            if (bigFraction.abs().getDenominator().compareTo(MIN_THRESHOLD.getDenominator()) >= 0)
                 return false;
 
             return true;
