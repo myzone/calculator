@@ -4,6 +4,7 @@ import com.myzone.calculator.controller.CalculatorStateFactory;
 import com.myzone.calculator.model.CalculatorModel;
 import com.myzone.calculator.model.Signal;
 import com.myzone.calculator.view.CalculatorView;
+import com.myzone.utils.BigFraction;
 import com.myzone.utils.statemachine.TestingEventStateMachine;
 import com.myzone.utils.testing.LoggingRunner;
 import org.junit.Before;
@@ -11,8 +12,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static com.myzone.calculator.model.Signal.*;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static com.myzone.utils.BigFraction.valueOf;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
 
 /**
  * @author: myzone
@@ -21,15 +24,28 @@ import static org.mockito.Mockito.*;
 @RunWith(LoggingRunner.class)
 public class CalculatorStatesTest {
 
-    private CalculatorView view;
-    private CalculatorModel model;
-    private TestingEventStateMachine<Signal> stateMachine;
+    private volatile TestingCalculatorView view;
+    private volatile TestingCalculatorModel model;
+    private volatile TestingEventStateMachine<Signal> stateMachine;
 
     @Before
     public void setUp() throws Exception {
-        view = mock(CalculatorView.class);
-        model = new CalculatorModel();
-        stateMachine = new TestingEventStateMachine<>(new CalculatorStateFactory(model, view));
+        model = new TestingCalculatorModel();
+        view = new TestingCalculatorView();
+
+        CalculatorView mockedView = mock(CalculatorView.class);
+        doAnswer(invocation -> {
+            try (CalculatorModel.Session session = model.createSession()) {
+                view = new TestingCalculatorView(
+                        !session.getMemory().equals(BigFraction.ZERO),
+                        session.getDisplayText()
+                );
+            }
+
+            return null;
+        }).when(mockedView).invalidate();
+
+        stateMachine = new TestingEventStateMachine<>(new CalculatorStateFactory(model, mockedView));
     }
 
     @Test
@@ -41,11 +57,10 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("4", session.getDisplayText());
-            assertEquals(4D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("4", view.getDisplayText());
+
+        assertEquals(valueOf(4), model.getDisplayData());
     }
 
     @Test
@@ -59,11 +74,10 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("16", session.getDisplayText());
-            assertEquals(16D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("16", view.getDisplayText());
+
+        assertEquals(valueOf(16), model.getDisplayData());
     }
 
     @Test
@@ -76,11 +90,10 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("16", session.getDisplayText());
-            assertEquals(16D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("16", view.getDisplayText());
+
+        assertEquals(valueOf(16), model.getDisplayData());
     }
 
     @Test
@@ -91,11 +104,10 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("4", session.getDisplayText());
-            assertEquals(4D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("4", view.getDisplayText());
+
+        assertEquals(valueOf(4), model.getDisplayData());
     }
 
     @Test
@@ -114,11 +126,10 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("25", session.getDisplayText());
-            assertEquals(25D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("25", view.getDisplayText());
+
+        assertEquals(valueOf(25), model.getDisplayData());
     }
 
     @Test
@@ -140,11 +151,10 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("25", session.getDisplayText());
-            assertEquals(25D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("25", view.getDisplayText());
+
+        assertEquals(valueOf(25), model.getDisplayData());
     }
 
     @Test
@@ -165,11 +175,10 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("25", session.getDisplayText());
-            assertEquals(25D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("25", view.getDisplayText());
+
+        assertEquals(valueOf(25), model.getDisplayData());
     }
 
     @Test
@@ -186,11 +195,10 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("10", session.getDisplayText());
-            assertEquals(10D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("10", view.getDisplayText());
+
+        assertEquals(valueOf(10), model.getDisplayData());
     }
 
     @Test
@@ -208,11 +216,10 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("3.2", session.getDisplayText());
-            assertEquals(3.2D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("3.2", view.getDisplayText());
+
+        assertEquals(valueOf(16, 5), model.getDisplayData());
     }
 
     @Test
@@ -234,11 +241,10 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("0.00363945578231", session.getDisplayText());
-            assertEquals(0.0036394557823129247D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("0.00363945578231", view.getDisplayText());
+
+        assertEquals(valueOf(107, 29400), model.getDisplayData());
     }
 
     @Test
@@ -253,11 +259,10 @@ public class CalculatorStatesTest {
                 PERCENT
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("6.25", session.getDisplayText());
-            assertEquals(6.25D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("6.25", view.getDisplayText());
+
+        assertEquals(valueOf(25, 4), model.getDisplayData());
     }
 
     @Test
@@ -273,11 +278,10 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("21.25", session.getDisplayText());
-            assertEquals(21.25D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("21.25", view.getDisplayText());
+
+        assertEquals(valueOf(85, 4), model.getDisplayData());
     }
 
     @Test
@@ -288,11 +292,10 @@ public class CalculatorStatesTest {
                 PERCENT
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("0", session.getDisplayText());
-            assertEquals(0D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("0", view.getDisplayText());
+
+        assertEquals(valueOf(0), model.getDisplayData());
     }
 
     @Test
@@ -305,11 +308,11 @@ public class CalculatorStatesTest {
                 PERCENT
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("0.96", session.getDisplayText());
-            assertEquals(0.96D, session.getDisplayData().doubleValue(), 0D);
-        }
+
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("0.96", view.getDisplayText());
+
+        assertEquals(valueOf(24, 25), model.getDisplayData());
     }
 
     @Test
@@ -323,11 +326,11 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("47.04", session.getDisplayText());
-            assertEquals(47.04D, session.getDisplayData().doubleValue(), 0D);
-        }
+
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("47.04", view.getDisplayText());
+
+        assertEquals(valueOf(1176, 25), model.getDisplayData());
     }
 
     @Test
@@ -340,11 +343,11 @@ public class CalculatorStatesTest {
                 DOT
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("0.", session.getDisplayText());
-            assertEquals(0D, session.getDisplayData().doubleValue(), 0D);
-        }
+
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("0.", view.getDisplayText());
+
+        assertEquals(valueOf(0), model.getDisplayData());
     }
 
     @Test
@@ -357,11 +360,11 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("56", session.getDisplayText());
-            assertEquals(56D, session.getDisplayData().doubleValue(), 0D);
-        }
+
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("56", view.getDisplayText());
+
+        assertEquals(valueOf(56), model.getDisplayData());
     }
 
     @Test
@@ -375,11 +378,11 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("-56", session.getDisplayText());
-            assertEquals(-56D, session.getDisplayData().doubleValue(), 0D);
-        }
+
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("-56", view.getDisplayText());
+
+        assertEquals(valueOf(-56), model.getDisplayData());
     }
 
     @Test
@@ -392,10 +395,8 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("ERR", session.getDisplayText());
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("ERR", view.getDisplayText());
     }
 
     @Test
@@ -407,10 +408,8 @@ public class CalculatorStatesTest {
                 SQUARE_ROOT
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("ERR", session.getDisplayText());
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("ERR", view.getDisplayText());
     }
 
     @Test
@@ -426,10 +425,8 @@ public class CalculatorStatesTest {
                 SQUARE_ROOT
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("ERR", session.getDisplayText());
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("ERR", view.getDisplayText());
     }
 
     @Test
@@ -442,11 +439,10 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("6", session.getDisplayText());
-            assertEquals(6D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("6", view.getDisplayText());
+
+        assertEquals(valueOf(6), model.getDisplayData());
     }
 
     @Test
@@ -458,11 +454,10 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("3", session.getDisplayText());
-            assertEquals(3D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("3", view.getDisplayText());
+
+        assertEquals(valueOf(3), model.getDisplayData());
     }
 
     @Test
@@ -474,11 +469,10 @@ public class CalculatorStatesTest {
                 SQUARE_ROOT
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("2.7355647997348", session.getDisplayText());
-            assertEquals(2.7355647997347607, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("2.7355647997348", view.getDisplayText());
+
+        assertEquals(null, model.getDisplayData());
     }
 
     @Test
@@ -491,11 +485,10 @@ public class CalculatorStatesTest {
                 SQUARE_ROOT
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("1.6539542919122", session.getDisplayText());
-            assertEquals(1.6539542919121921, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("1.6539542919122", view.getDisplayText());
+
+        assertEquals(valueOf(25, 4), model.getDisplayData());
     }
 
     @Test
@@ -515,11 +508,10 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("12.071067811866", session.getDisplayText());
-            assertEquals(12.0710678118655D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertTrue(view.hasMemoryFlag());
+        assertEquals("12.071067811866", view.getDisplayText());
+
+        assertEquals(null, model.getDisplayData());
     }
 
     @Test
@@ -537,11 +529,10 @@ public class CalculatorStatesTest {
                 BACK_SPACE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("0", session.getDisplayText());
-            assertEquals(0D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("0", view.getDisplayText());
+
+        assertEquals(valueOf(0), model.getDisplayData());
     }
 
     @Test
@@ -564,11 +555,10 @@ public class CalculatorStatesTest {
                 BACK_SPACE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("0", session.getDisplayText());
-            assertEquals(0D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("0", view.getDisplayText());
+
+        assertEquals(valueOf(0), model.getDisplayData());
     }
 
     @Test
@@ -591,11 +581,10 @@ public class CalculatorStatesTest {
                 DIGIT_2
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("55555.2", session.getDisplayText());
-            assertEquals(55555.2D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("55555.2", view.getDisplayText());
+
+        assertEquals(valueOf(277776, 5), model.getDisplayData());
     }
 
     @Test
@@ -608,11 +597,10 @@ public class CalculatorStatesTest {
                 REVERSE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("56.", session.getDisplayText());
-            assertEquals(56.0D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("56.", view.getDisplayText());
+
+        assertEquals(valueOf(56), model.getDisplayData());
     }
 
     @Test
@@ -666,11 +654,10 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("1.66666666666667e+16", session.getDisplayText());
-            assertEquals(1.6666666666666664E16D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("1.66666666666667e+16", view.getDisplayText());
+
+        assertEquals(null, model.getDisplayData());
     }
 
     @Test
@@ -726,11 +713,10 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("-1.66666666666667e+16", session.getDisplayText());
-            assertEquals(-1.6666666666666664E16D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("-1.66666666666667e+16", view.getDisplayText());
+
+        assertEquals(null, model.getDisplayData());
     }
 
     @Test
@@ -773,11 +759,11 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("0.00000000000001", session.getDisplayText());
-            assertEquals(1.0E-14D, session.getDisplayData().doubleValue(), 0D);
-        }
+
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("0.00000000000001", view.getDisplayText());
+
+        assertEquals(valueOf(1L, 100000000000000L), model.getDisplayData());
     }
 
     @Test
@@ -789,11 +775,11 @@ public class CalculatorStatesTest {
                 PERCENT
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("0.0008", session.getDisplayText());
-            assertEquals(0.0008D, session.getDisplayData().doubleValue(), 0D);
-        }
+
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("0.0008", view.getDisplayText());
+
+        assertEquals(valueOf(1, 1250), model.getDisplayData());
     }
 
     @Test
@@ -817,11 +803,10 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("0", session.getDisplayText());
-            assertEquals(0D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("0", view.getDisplayText());
+
+        assertEquals(valueOf(0), model.getDisplayData());
     }
 
     @Test
@@ -835,10 +820,10 @@ public class CalculatorStatesTest {
                 DIGIT_0
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            assertEquals("0", session.getDisplayText());
-            assertEquals(0D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("0", view.getDisplayText());
+
+        assertEquals(valueOf(0), model.getDisplayData());
     }
 
     @Test
@@ -853,11 +838,10 @@ public class CalculatorStatesTest {
                 DIGIT_0
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("0", session.getDisplayText());
-            assertEquals(0D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("0", view.getDisplayText());
+
+        assertEquals(valueOf(0), model.getDisplayData());
     }
 
     @Test
@@ -868,11 +852,10 @@ public class CalculatorStatesTest {
         ).length);
 
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("0", session.getDisplayText());
-            assertEquals(0D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("0", view.getDisplayText());
+
+        assertEquals(valueOf(0), model.getDisplayData());
     }
 
     @Test
@@ -884,11 +867,10 @@ public class CalculatorStatesTest {
                 REVERSE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("0", session.getDisplayText());
-            assertEquals(0D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("0", view.getDisplayText());
+
+        assertEquals(valueOf(0), model.getDisplayData());
     }
 
     @Test
@@ -904,11 +886,10 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("262144", session.getDisplayText());
-            assertEquals(262144D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("262144", view.getDisplayText());
+
+        assertEquals(valueOf(262144), model.getDisplayData());
     }
 
     @Test
@@ -924,11 +905,10 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("381469726562500", session.getDisplayText());
-            assertEquals(381469726562500D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("381469726562500", view.getDisplayText());
+
+        assertEquals(valueOf(381469726562500L), model.getDisplayData());
     }
 
     @Test
@@ -943,11 +923,10 @@ public class CalculatorStatesTest {
                 PLUS
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("4", session.getDisplayText());
-            assertEquals(4D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertTrue(view.hasMemoryFlag());
+        assertEquals("4", view.getDisplayText());
+
+        assertEquals(valueOf(4), model.getDisplayData());
     }
 
     @Test
@@ -967,11 +946,10 @@ public class CalculatorStatesTest {
                 BACK_SPACE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("0", session.getDisplayText());
-            assertEquals(0D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("0", view.getDisplayText());
+
+        assertEquals(valueOf(0), model.getDisplayData());
     }
 
     @Test
@@ -982,11 +960,10 @@ public class CalculatorStatesTest {
                 REVERSE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("-1.4142135623731", session.getDisplayText());
-            assertEquals(-1.4142135623731D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("-1.4142135623731", view.getDisplayText());
+
+        assertEquals(valueOf(-6369051672525773L, 4503599627370496L), model.getDisplayData());
     }
 
     @Test
@@ -999,11 +976,10 @@ public class CalculatorStatesTest {
                 INVERSE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("743", session.getDisplayText());
-            assertEquals(743D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("743", view.getDisplayText());
+
+        assertEquals(valueOf(743), model.getDisplayData());
     }
 
     @Test
@@ -1016,11 +992,10 @@ public class CalculatorStatesTest {
                 PLUS
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("0.01", session.getDisplayText());
-            assertEquals(0.01D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("0.01", view.getDisplayText());
+
+        assertEquals(valueOf(1, 100), model.getDisplayData());
     }
 
     @Test
@@ -1033,11 +1008,10 @@ public class CalculatorStatesTest {
                 PLUS
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("0.01", session.getDisplayText());
-            assertEquals(0.01D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("0.01", view.getDisplayText());
+
+        assertEquals(valueOf(1, 100), model.getDisplayData());
     }
 
     @Test
@@ -1049,12 +1023,10 @@ public class CalculatorStatesTest {
                 DIGIT_9
         ).length);
 
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("9", view.getDisplayText());
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("9", session.getDisplayText());
-            assertEquals(9D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertEquals(valueOf(9), model.getDisplayData());
     }
 
     @Test
@@ -1068,10 +1040,10 @@ public class CalculatorStatesTest {
                 DIGIT_9
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("9", session.getDisplayText());
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("9", view.getDisplayText());
+
+        assertEquals(valueOf(9), model.getDisplayData());
     }
 
 
@@ -1084,11 +1056,10 @@ public class CalculatorStatesTest {
                 DIGIT_9
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("19", session.getDisplayText());
-            assertEquals(19D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("19", view.getDisplayText());
+
+        assertEquals(valueOf(19), model.getDisplayData());
     }
 
     @Test
@@ -1102,11 +1073,10 @@ public class CalculatorStatesTest {
                 DIGIT_9
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("19", session.getDisplayText());
-            assertEquals(19D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("19", view.getDisplayText());
+
+        assertEquals(valueOf(19), model.getDisplayData());
     }
 
     @Test
@@ -1137,11 +1107,10 @@ public class CalculatorStatesTest {
                 SQUARE_ROOT
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("1", session.getDisplayText());
-            assertEquals(0.999999999999995D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("1", view.getDisplayText());
+
+        assertEquals(valueOf(5368709119999973L, 5368709120000000L), model.getDisplayData());
     }
 
     @Test
@@ -1154,11 +1123,10 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("2", session.getDisplayText());
-            assertEquals(2D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("2", view.getDisplayText());
+
+        assertEquals(valueOf(2), model.getDisplayData());
     }
 
     @Test
@@ -1202,11 +1170,10 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("999999999999998", session.getDisplayText());
-            assertEquals(9.99999999999998E14D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("999999999999998", view.getDisplayText());
+
+        assertEquals(valueOf(999999999999998L), model.getDisplayData());
     }
 
     @Test
@@ -1218,11 +1185,10 @@ public class CalculatorStatesTest {
                 SQUARE_ROOT
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("0", session.getDisplayText());
-            assertEquals(0D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("0", view.getDisplayText());
+
+        assertEquals(valueOf(0), model.getDisplayData());
     }
 
     @Test
@@ -1254,11 +1220,10 @@ public class CalculatorStatesTest {
                 BACK_SPACE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("9.99999999999997e+44", session.getDisplayText());
-            assertEquals(9.99999999999997E44D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("9.99999999999997e+44", view.getDisplayText());
+
+        assertEquals(valueOf("999999999999997000000000000002999999999999999/1"), model.getDisplayData());
     }
 
     @Test
@@ -1272,11 +1237,11 @@ public class CalculatorStatesTest {
                 DIGIT_4
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("4", session.getDisplayText());
-            assertEquals(3333D, session.getMemory().doubleValue(), 0D);
-        }
+
+        assertTrue(view.hasMemoryFlag());
+        assertEquals("4", view.getDisplayText());
+
+        assertEquals(valueOf(4), model.getDisplayData());
     }
 
     @Test
@@ -1291,11 +1256,10 @@ public class CalculatorStatesTest {
                 DIGIT_4
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("4", session.getDisplayText());
-            assertEquals(3333D, session.getMemory().doubleValue(), 0D);
-        }
+        assertTrue(view.hasMemoryFlag());
+        assertEquals("4", view.getDisplayText());
+
+        assertEquals(valueOf(4), model.getDisplayData());
     }
 
     @Test
@@ -1326,11 +1290,10 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("1.00000000000001e+15", session.getDisplayText());
-            assertEquals(1000000000000001D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("1.00000000000001e+15", view.getDisplayText());
+
+        assertEquals(valueOf(1000000000000001L, 1L), model.getDisplayData());
     }
 
     @Test
@@ -1341,11 +1304,10 @@ public class CalculatorStatesTest {
                 DIGIT_9
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("-99", session.getDisplayText());
-            assertEquals(-99D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("-99", view.getDisplayText());
+
+        assertEquals(valueOf(-99), model.getDisplayData());
     }
 
     @Test
@@ -1358,11 +1320,10 @@ public class CalculatorStatesTest {
                 BACK_SPACE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("238", session.getDisplayText());
-            assertEquals(238D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("238", view.getDisplayText());
+
+        assertEquals(valueOf(238), model.getDisplayData());
     }
 
     @Test
@@ -1377,11 +1338,10 @@ public class CalculatorStatesTest {
                 BACK_SPACE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("238", session.getDisplayText());
-            assertEquals(238D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("238", view.getDisplayText());
+
+        assertEquals(valueOf(238), model.getDisplayData());
     }
 
     @Test
@@ -1401,15 +1361,14 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("0", session.getDisplayText());
-            assertEquals(1.1121061493012954E-15D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("0", view.getDisplayText());
+
+        assertEquals(valueOf(1L, 899194740203776L), model.getDisplayData());
     }
 
     @Test
-    public void testClearAfterEval() {
+    public void testClearAfterEvaluation() {
         assertEquals(0, stateMachine.run(
                 DIGIT_2,
                 PLUS,
@@ -1420,16 +1379,15 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("0", session.getDisplayText());
-            assertEquals(0D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("0", view.getDisplayText());
+
+        assertEquals(valueOf(0), model.getDisplayData());
     }
 
 
     @Test
-    public void test1() {
+    public void testNormalizeInRArg() {
         assertEquals(0, stateMachine.run(
                 DIGIT_0,
                 MINUS,
@@ -1438,11 +1396,10 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("0", session.getDisplayText());
-            assertEquals(0D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("0", view.getDisplayText());
+
+        assertEquals(valueOf(0), model.getDisplayData());
     }
 
     @Test
@@ -1456,11 +1413,10 @@ public class CalculatorStatesTest {
                 DIGIT_3
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("0.33", session.getDisplayText());
-            assertEquals(0.33D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("0.33", view.getDisplayText());
+
+        assertEquals(valueOf(33, 100), model.getDisplayData());
     }
 
     @Test
@@ -1474,11 +1430,10 @@ public class CalculatorStatesTest {
                 MEMORY_MINUS
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("0", session.getDisplayText());
-            assertEquals(0D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertTrue(view.hasMemoryFlag());
+        assertEquals("0", view.getDisplayText());
+
+        assertEquals(valueOf(0), model.getDisplayData());
     }
 
     @Test
@@ -1489,11 +1444,10 @@ public class CalculatorStatesTest {
                 BACK_SPACE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("1.4142135623731", session.getDisplayText());
-            assertEquals(1.4142135623730951D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("1.4142135623731", view.getDisplayText());
+
+        assertEquals(valueOf(6369051672525773L, 4503599627370496L), model.getDisplayData());
     }
 
     @Test
@@ -1506,11 +1460,10 @@ public class CalculatorStatesTest {
                 BACK_SPACE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("1.4142135623731", session.getDisplayText());
-            assertEquals(1.4142135623730951D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("1.4142135623731", view.getDisplayText());
+
+        assertEquals(valueOf(6369051672525773L, 4503599627370496L), model.getDisplayData());
     }
 
     @Test
@@ -1523,11 +1476,10 @@ public class CalculatorStatesTest {
                 BACK_SPACE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("22", session.getDisplayText());
-            assertEquals(22D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertTrue(view.hasMemoryFlag());
+        assertEquals("22", view.getDisplayText());
+
+        assertEquals(valueOf(22), model.getDisplayData());
     }
 
     @Test
@@ -1541,11 +1493,10 @@ public class CalculatorStatesTest {
                 BACK_SPACE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("22", session.getDisplayText());
-            assertEquals(22D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertTrue(view.hasMemoryFlag());
+        assertEquals("22", view.getDisplayText());
+
+        assertEquals(valueOf(22), model.getDisplayData());
     }
 
     @Test
@@ -1558,11 +1509,10 @@ public class CalculatorStatesTest {
                 BACK_SPACE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("22", session.getDisplayText());
-            assertEquals(22D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertTrue(view.hasMemoryFlag());
+        assertEquals("22", view.getDisplayText());
+
+        assertEquals(valueOf(22), model.getDisplayData());
     }
 
     @Test
@@ -1576,11 +1526,10 @@ public class CalculatorStatesTest {
                 PLUS
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("5.3", session.getDisplayText());
-            assertEquals(5.3D, session.getDisplayData().doubleValue(), 0D);
-        }
+        assertTrue(view.hasMemoryFlag());
+        assertEquals("5.3", view.getDisplayText());
+
+        assertEquals(valueOf(53, 10), model.getDisplayData());
     }
 
     @Test
@@ -1597,11 +1546,125 @@ public class CalculatorStatesTest {
                 EVALUATE
         ).length);
 
-        try (CalculatorModel.Session session = model.createSession()) {
-            verify(view, atLeastOnce()).invalidate();
-            assertEquals("0", session.getDisplayText());
-            assertEquals(0D, session.getDisplayData().doubleValue(), 0D);
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("0", view.getDisplayText());
+
+        assertEquals(valueOf(0), model.getDisplayData());
+    }
+
+    @Test
+    public void testRound() {
+        assertEquals(0, stateMachine.run(
+                DIGIT_1,
+                DIVIDE,
+                DIGIT_3,
+                PLUS,
+                DIGIT_6,
+                DIGIT_6,
+                DIGIT_6,
+                DIGIT_6,
+                DIGIT_6,
+                DIGIT_6,
+                DIGIT_6,
+                DIGIT_6,
+                DIGIT_6,
+                MULTIPLY,
+                DIGIT_2,
+                EVALUATE
+        ).length);
+
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("1333333332.6667", view.getDisplayText());
+
+        assertEquals(valueOf(3999999998L, 3L), model.getDisplayData());
+    }
+
+    private static class TestingCalculatorModel extends CalculatorModel {
+
+        @Override
+        public BigFraction getlArg() {
+            return super.getlArg();
         }
+
+        @Override
+        public void setlArg(BigFraction lArg) {
+            super.setlArg(lArg);
+        }
+
+        @Override
+        public BigFraction getrArg() {
+            return super.getrArg();
+        }
+
+        @Override
+        public void setrArg(BigFraction rArg) {
+            super.setrArg(rArg);
+        }
+
+        @Override
+        public BigFraction getMemory() {
+            return super.getMemory();
+        }
+
+        @Override
+        public void setMemory(BigFraction memory) {
+            super.setMemory(memory);
+        }
+
+        @Override
+        public String getDisplayText() {
+            return super.getDisplayText();
+        }
+
+        @Override
+        public void setDisplayText(String displayText) {
+            super.setDisplayText(displayText);
+        }
+
+        @Override
+        public BigFraction getDisplayData() {
+            return super.getDisplayData();
+        }
+
+        @Override
+        public void setDisplayData(BigFraction displayData) {
+            super.setDisplayData(displayData);
+        }
+
+        @Override
+        public Operation getOperation() {
+            return super.getOperation();
+        }
+
+        @Override
+        public void setOperation(Operation operation) {
+            super.setOperation(operation);
+        }
+    }
+
+    private static class TestingCalculatorView {
+
+        protected final boolean memoryFlag;
+        protected final String displayText;
+
+        private TestingCalculatorView() {
+            memoryFlag = false;
+            displayText = "0";
+        }
+
+        private TestingCalculatorView(boolean memoryFlag, String displayText) {
+            this.memoryFlag = memoryFlag;
+            this.displayText = displayText;
+        }
+
+        public boolean hasMemoryFlag() {
+            return memoryFlag;
+        }
+
+        public String getDisplayText() {
+            return displayText;
+        }
+
     }
 
 }
