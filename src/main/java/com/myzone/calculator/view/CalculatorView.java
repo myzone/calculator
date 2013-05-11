@@ -33,6 +33,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static com.myzone.calculator.model.Signal.*;
+import static javafx.scene.text.Font.font;
 
 /**
  * @author: myzone
@@ -46,8 +47,7 @@ public class CalculatorView extends Application {
     private static final double PREF_COLUMN_HEIGHT = 28;
     private static final double PREF_COLUMN_WIDTH = 45;
 
-    private static final String FONT = "LCD Display Grid";
-    private static final double FONT_SIZE = 19.5;
+    private static final Font FONT = font("Erbos Draco 1st Open NBP Regular", 19.5);
 
     private CalculatorModel model;
     private StateMachine<Signal> stateMachine;
@@ -89,7 +89,7 @@ public class CalculatorView extends Application {
                 .editable(false)
                 .cache(false)
                 .focusTraversable(false)
-                .font(Font.font(FONT, FONT_SIZE))
+                .font(FONT)
                 .prefHeight(PREF_COLUMN_HEIGHT + SPACING_SIZE * 2)
                 .prefWidth(PREF_COLUMN_WIDTH)
                 .alignment(Pos.CENTER)
@@ -100,10 +100,10 @@ public class CalculatorView extends Application {
                 .create()
                 .editable(false)
                 .cache(false)
-                .font(Font.font(FONT, FONT_SIZE))
+                .font(FONT)
                 .focusTraversable(false)
                 .prefHeight(PREF_COLUMN_HEIGHT + SPACING_SIZE * 2)
-                .prefWidth((PREF_COLUMN_WIDTH + SPACING_SIZE) * 5)
+                .prefWidth((PREF_COLUMN_WIDTH + SPACING_SIZE) * 5 - 3) // chosen empirically
                 .alignment(Pos.CENTER_RIGHT)
                 .text("0")
                 .build();
