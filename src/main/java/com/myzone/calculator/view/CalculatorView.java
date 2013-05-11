@@ -12,14 +12,18 @@ import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBuilder;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFieldBuilder;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.HBoxBuilder;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.VBoxBuilder;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +45,9 @@ public class CalculatorView extends Application {
     private static final double SPACING_SIZE = 5;
     private static final double PREF_COLUMN_HEIGHT = 28;
     private static final double PREF_COLUMN_WIDTH = 45;
+
+    private static final String FONT = "LCD Display Grid";
+    private static final double FONT_SIZE = 19.5;
 
     private CalculatorModel model;
     private StateMachine<Signal> stateMachine;
@@ -81,8 +88,10 @@ public class CalculatorView extends Application {
                 .create()
                 .editable(false)
                 .cache(false)
-                .prefHeight(PREF_COLUMN_HEIGHT + SPACING_SIZE)
-                .prefColumnCount(2)
+                .focusTraversable(false)
+                .font(Font.font(FONT, FONT_SIZE))
+                .prefHeight(PREF_COLUMN_HEIGHT + SPACING_SIZE * 2)
+                .prefWidth(PREF_COLUMN_WIDTH)
                 .alignment(Pos.CENTER)
                 .text("")
                 .build();
@@ -90,9 +99,11 @@ public class CalculatorView extends Application {
         mainDisplayTextField = TextFieldBuilder
                 .create()
                 .editable(false)
-                .prefHeight(PREF_COLUMN_HEIGHT + SPACING_SIZE)
-                .prefColumnCount(22)
                 .cache(false)
+                .font(Font.font(FONT, FONT_SIZE))
+                .focusTraversable(false)
+                .prefHeight(PREF_COLUMN_HEIGHT + SPACING_SIZE * 2)
+                .prefWidth((PREF_COLUMN_WIDTH + SPACING_SIZE) * 5)
                 .alignment(Pos.CENTER_RIGHT)
                 .text("0")
                 .build();
@@ -102,300 +113,59 @@ public class CalculatorView extends Application {
     public void start(Stage stage) throws Exception {
         stateMachineThread.submit(stateMachine);
 
-        VBox mainContainer = VBoxBuilder
-                .create()
-                .padding(new Insets(10.0))
-                .spacing(SPACING_SIZE)
-                .children(
-                        HBoxBuilder
-                                .create()
-                                .children(
-                                        memoryDisplayTextField,
-                                        mainDisplayTextField
-                                )
-                                .build(),
-                        HBoxBuilder
-                                .create()
-                                .spacing(SPACING_SIZE)
-                                .children(
-                                        VBoxBuilder
-                                                .create()
-                                                .spacing(SPACING_SIZE)
-                                                .children(
-                                                        ButtonBuilder
-                                                                .create()
-                                                                .prefHeight(PREF_COLUMN_HEIGHT)
-                                                                .minWidth(PREF_COLUMN_WIDTH)
-                                                                .text("←")
-                                                                .onMouseClicked(new SignalEmitter<>(BACK_SPACE))
-                                                                .focusTraversable(false)
-                                                                .build(),
-                                                        ButtonBuilder
-                                                                .create()
-                                                                .prefHeight(PREF_COLUMN_HEIGHT)
-                                                                .minWidth(PREF_COLUMN_WIDTH)
-                                                                .text("7")
-                                                                .onMouseClicked(new SignalEmitter<>(DIGIT_7))
-                                                                .focusTraversable(false)
-                                                                .build(),
-                                                        ButtonBuilder
-                                                                .create()
-                                                                .prefHeight(PREF_COLUMN_HEIGHT)
-                                                                .minWidth(PREF_COLUMN_WIDTH)
-                                                                .text("4")
-                                                                .onMouseClicked(new SignalEmitter<>(DIGIT_4))
-                                                                .focusTraversable(false)
-                                                                .build(),
-                                                        ButtonBuilder
-                                                                .create()
-                                                                .prefHeight(PREF_COLUMN_HEIGHT)
-                                                                .minWidth(PREF_COLUMN_WIDTH)
-                                                                .text("1")
-                                                                .onMouseClicked(new SignalEmitter<>(DIGIT_1))
-                                                                .focusTraversable(false)
-                                                                .build()
-                                                )
-                                                .focusTraversable(false)
-                                                .build(),
-                                        VBoxBuilder
-                                                .create()
-                                                .spacing(SPACING_SIZE)
-                                                .children(
-                                                        ButtonBuilder
-                                                                .create()
-                                                                .prefHeight(PREF_COLUMN_HEIGHT)
-                                                                .minWidth(PREF_COLUMN_WIDTH)
-                                                                .text("C")
-                                                                .onMouseClicked(new SignalEmitter<>(CLEAR))
-                                                                .focusTraversable(false)
-                                                                .build(),
-                                                        ButtonBuilder
-                                                                .create()
-                                                                .prefHeight(PREF_COLUMN_HEIGHT)
-                                                                .minWidth(PREF_COLUMN_WIDTH)
-                                                                .text("8")
-                                                                .onMouseClicked(new SignalEmitter<>(DIGIT_8))
-                                                                .focusTraversable(false)
-                                                                .build(),
-                                                        ButtonBuilder
-                                                                .create()
-                                                                .prefHeight(PREF_COLUMN_HEIGHT)
-                                                                .minWidth(PREF_COLUMN_WIDTH)
-                                                                .text("5")
-                                                                .onMouseClicked(new SignalEmitter<>(DIGIT_5))
-                                                                .focusTraversable(false)
-                                                                .build(),
-                                                        ButtonBuilder
-                                                                .create()
-                                                                .prefHeight(PREF_COLUMN_HEIGHT)
-                                                                .minWidth(PREF_COLUMN_WIDTH)
-                                                                .text("2")
-                                                                .onMouseClicked(new SignalEmitter<>(DIGIT_2))
-                                                                .focusTraversable(false)
-                                                                .build()
-                                                )
-                                                .focusTraversable(false)
-                                                .build(),
-                                        VBoxBuilder
-                                                .create()
-                                                .spacing(SPACING_SIZE)
-                                                .children(
-                                                        ButtonBuilder
-                                                                .create()
-                                                                .prefHeight(PREF_COLUMN_HEIGHT)
-                                                                .minWidth(PREF_COLUMN_WIDTH)
-                                                                .text("CE")
-                                                                .onMouseClicked(new SignalEmitter<>(CLEAR_EVALUATION))
-                                                                .focusTraversable(false)
-                                                                .build(),
-                                                        ButtonBuilder
-                                                                .create()
-                                                                .prefHeight(PREF_COLUMN_HEIGHT)
-                                                                .minWidth(PREF_COLUMN_WIDTH)
-                                                                .text("9")
-                                                                .onMouseClicked(new SignalEmitter<>(DIGIT_9))
-                                                                .focusTraversable(false)
-                                                                .build(),
-                                                        ButtonBuilder
-                                                                .create()
-                                                                .prefHeight(PREF_COLUMN_HEIGHT)
-                                                                .minWidth(PREF_COLUMN_WIDTH)
-                                                                .text("6")
-                                                                .onMouseClicked(new SignalEmitter<>(DIGIT_6))
-                                                                .focusTraversable(false)
-                                                                .build(),
-                                                        ButtonBuilder
-                                                                .create()
-                                                                .prefHeight(PREF_COLUMN_HEIGHT)
-                                                                .minWidth(PREF_COLUMN_WIDTH)
-                                                                .text("3")
-                                                                .onMouseClicked(new SignalEmitter<>(DIGIT_3))
-                                                                .focusTraversable(false)
-                                                                .build()
-                                                )
-                                                .focusTraversable(false).build(),
-                                        VBoxBuilder
-                                                .create()
-                                                .spacing(SPACING_SIZE)
-                                                .children(
-                                                        ButtonBuilder
-                                                                .create()
-                                                                .prefHeight(PREF_COLUMN_HEIGHT)
-                                                                .minWidth(PREF_COLUMN_WIDTH)
-                                                                .text("/")
-                                                                .onMouseClicked(new SignalEmitter<>(DIVIDE))
-                                                                .focusTraversable(false)
-                                                                .build(),
-                                                        ButtonBuilder
-                                                                .create()
-                                                                .prefHeight(PREF_COLUMN_HEIGHT)
-                                                                .minWidth(PREF_COLUMN_WIDTH)
-                                                                .text("*")
-                                                                .onMouseClicked(new SignalEmitter<>(MULTIPLY))
-                                                                .focusTraversable(false)
-                                                                .build(),
-                                                        ButtonBuilder
-                                                                .create()
-                                                                .prefHeight(PREF_COLUMN_HEIGHT)
-                                                                .minWidth(PREF_COLUMN_WIDTH)
-                                                                .text("-")
-                                                                .onMouseClicked(new SignalEmitter<>(MINUS))
-                                                                .focusTraversable(false)
-                                                                .build(),
-                                                        ButtonBuilder
-                                                                .create()
-                                                                .prefHeight(PREF_COLUMN_HEIGHT)
-                                                                .minWidth(PREF_COLUMN_WIDTH)
-                                                                .text("+")
-                                                                .onMouseClicked(new SignalEmitter<>(PLUS))
-                                                                .focusTraversable(false)
-                                                                .build()
-                                                )
-                                                .focusTraversable(false).build(),
-                                        VBoxBuilder
-                                                .create()
-                                                .spacing(SPACING_SIZE)
-                                                .children(
-                                                        ButtonBuilder
-                                                                .create()
-                                                                .prefHeight(PREF_COLUMN_HEIGHT)
-                                                                .minWidth(PREF_COLUMN_WIDTH)
-                                                                .text("±")
-                                                                .onMouseClicked(new SignalEmitter<>(REVERSE))
-                                                                .focusTraversable(false)
-                                                                .build(),
-                                                        ButtonBuilder
-                                                                .create()
-                                                                .prefHeight(PREF_COLUMN_HEIGHT)
-                                                                .minWidth(PREF_COLUMN_WIDTH)
-                                                                .text("xˉ¹")
-                                                                .onMouseClicked(new SignalEmitter<>(INVERSE))
-                                                                .focusTraversable(false)
-                                                                .build(),
-                                                        ButtonBuilder
-                                                                .create()
-                                                                .prefHeight(PREF_COLUMN_HEIGHT)
-                                                                .minWidth(PREF_COLUMN_WIDTH)
-                                                                .text("%")
-                                                                .onMouseClicked(new SignalEmitter<>(PERCENT))
-                                                                .focusTraversable(false)
-                                                                .build(),
-                                                        ButtonBuilder
-                                                                .create()
-                                                                .prefHeight(PREF_COLUMN_HEIGHT)
-                                                                .minWidth(PREF_COLUMN_WIDTH)
-                                                                .text("√")
-                                                                .onMouseClicked(new SignalEmitter<>(SQUARE_ROOT))
-                                                                .focusTraversable(false)
-                                                                .build()
-                                                )
-                                                .focusTraversable(false)
-                                                .build(),
-                                        VBoxBuilder
-                                                .create()
-                                                .spacing(SPACING_SIZE)
-                                                .children(
-                                                        ButtonBuilder
-                                                                .create()
-                                                                .prefHeight(PREF_COLUMN_HEIGHT)
-                                                                .minWidth(PREF_COLUMN_WIDTH)
-                                                                .text("MR")
-                                                                .onMouseClicked(new SignalEmitter<>(MEMORY_RESTORE))
-                                                                .focusTraversable(false)
-                                                                .build(),
-                                                        ButtonBuilder
-                                                                .create()
-                                                                .prefHeight(PREF_COLUMN_HEIGHT)
-                                                                .minWidth(PREF_COLUMN_WIDTH)
-                                                                .text("MC")
-                                                                .onMouseClicked(new SignalEmitter<>(MEMORY_CLEAR))
-                                                                .focusTraversable(false)
-                                                                .build(),
-                                                        ButtonBuilder
-                                                                .create()
-                                                                .prefHeight(PREF_COLUMN_HEIGHT)
-                                                                .minWidth(PREF_COLUMN_WIDTH)
-                                                                .text("MS")
-                                                                .onMouseClicked(new SignalEmitter<>(MEMORY_STORE))
-                                                                .focusTraversable(false)
-                                                                .build(),
-                                                        ButtonBuilder
-                                                                .create()
-                                                                .prefHeight(PREF_COLUMN_HEIGHT)
-                                                                .minWidth(PREF_COLUMN_WIDTH)
-                                                                .text("M+")
-                                                                .onMouseClicked(new SignalEmitter<>(MEMORY_PLUS))
-                                                                .focusTraversable(false)
-                                                                .build()
-                                                )
-                                                .focusTraversable(false)
-                                                .build()
-                                )
-                                .focusTraversable(false)
-                                .build(),
-                        HBoxBuilder
-                                .create()
-                                .spacing(SPACING_SIZE)
-                                .children(
-                                        ButtonBuilder
-                                                .create()
-                                                .prefHeight(PREF_COLUMN_HEIGHT)
-                                                .minWidth(PREF_COLUMN_WIDTH * 2 + SPACING_SIZE)
-                                                .text("0")
-                                                .onMouseClicked(new SignalEmitter<>(DIGIT_0))
-                                                .focusTraversable(false)
-                                                .build(),
-                                        ButtonBuilder
-                                                .create()
-                                                .prefHeight(PREF_COLUMN_HEIGHT)
-                                                .minWidth(PREF_COLUMN_WIDTH)
-                                                .text(".")
-                                                .onMouseClicked(new SignalEmitter<>(DOT))
-                                                .focusTraversable(false)
-                                                .build(),
-                                        ButtonBuilder
-                                                .create()
-                                                .prefHeight(PREF_COLUMN_HEIGHT)
-                                                .minWidth(PREF_COLUMN_WIDTH * 2 + SPACING_SIZE)
-                                                .text("=")
-                                                .onMouseClicked(new SignalEmitter<>(EVALUATE))
-                                                .focusTraversable(false)
-                                                .build(),
-                                        ButtonBuilder
-                                                .create()
-                                                .prefHeight(PREF_COLUMN_HEIGHT)
-                                                .minWidth(PREF_COLUMN_WIDTH)
-                                                .text("M-")
-                                                .onMouseClicked(new SignalEmitter<>(MEMORY_MINUS))
-                                                .focusTraversable(false)
-                                                .build()
-                                )
-                                .focusTraversable(false)
-                                .build()
-                )
-                .focusTraversable(false)
-                .build();
+        VBox mainContainer = createColumn(
+                createRow(
+                        memoryDisplayTextField,
+                        mainDisplayTextField
+                ),
+                createRow(
+                        createColumn(
+                                createButton("←", BACK_SPACE),
+                                createButton("7", DIGIT_7),
+                                createButton("4", DIGIT_4),
+                                createButton("1", DIGIT_1)
+                        ),
+                        createColumn(
+                                createButton("C", CLEAR),
+                                createButton("8", DIGIT_8),
+                                createButton("5", DIGIT_5),
+                                createButton("2", DIGIT_2)
+                        ),
+                        createColumn(
+                                createButton("CE", CLEAR_EVALUATION),
+                                createButton("9", DIGIT_9),
+                                createButton("6", DIGIT_6),
+                                createButton("3", DIGIT_3)
 
+                        ),
+                        createColumn(
+                                createButton("/", DIVIDE),
+                                createButton("*", MULTIPLY),
+                                createButton("-", MINUS),
+                                createButton("+", PLUS)
+                        ),
+                        createColumn(
+                                createButton("±", REVERSE),
+                                createButton("xˉ¹", INVERSE),
+                                createButton("%", PERCENT),
+                                createButton("√", SQUARE_ROOT)
+                        ),
+                        createColumn(
+                                createButton("MR", MEMORY_RESTORE),
+                                createButton("MC", MEMORY_CLEAR),
+                                createButton("MS", MEMORY_STORE),
+                                createButton("M+", MEMORY_PLUS)
+                        )
+                ),
+                createRow(
+                        createBigButton("0", DIGIT_0),
+                        createButton(".", DOT),
+                        createBigButton("=", EVALUATE),
+                        createButton("M-", MEMORY_MINUS)
+                )
+        );
+
+        mainContainer.setPadding(new Insets(30, 0, 15, 15)); // chosen empirically
         mainContainer.setOnKeyReleased((event) -> {
             switch (event.getCode()) {
                 case ENTER:
@@ -429,6 +199,46 @@ public class CalculatorView extends Application {
                 mainDisplayTextField.setText(displayText);
             });
         }
+    }
+
+    protected Button createButton(String text, Signal signal) {
+        return ButtonBuilder
+                .create()
+                .prefHeight(PREF_COLUMN_HEIGHT)
+                .minWidth(PREF_COLUMN_WIDTH)
+                .text(text)
+                .onMouseClicked(new SignalEmitter<>(signal))
+                .focusTraversable(false)
+                .build();
+    }
+
+    protected Button createBigButton(String text, Signal signal) {
+        return ButtonBuilder
+                .create()
+                .prefHeight(PREF_COLUMN_HEIGHT)
+                .minWidth(PREF_COLUMN_WIDTH * 2 + SPACING_SIZE)
+                .text(text)
+                .onMouseClicked(new SignalEmitter<>(signal))
+                .focusTraversable(false)
+                .build();
+    }
+
+    protected VBox createColumn(Node... nodes) {
+        return VBoxBuilder
+                .create()
+                .spacing(SPACING_SIZE)
+                .children(nodes)
+                .focusTraversable(false)
+                .build();
+    }
+
+    protected HBox createRow(Node... nodes) {
+        return HBoxBuilder
+                .create()
+                .spacing(SPACING_SIZE)
+                .children(nodes)
+                .focusTraversable(false)
+                .build();
     }
 
     protected class SignalEmitter<E extends Event> extends StimulusEmitter<Signal, E> {
