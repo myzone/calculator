@@ -24,7 +24,9 @@ import javafx.scene.layout.HBoxBuilder;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.VBoxBuilder;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,10 +49,11 @@ public class CalculatorView extends Application {
     private static final double PREF_COLUMN_HEIGHT = 28;
     private static final double PREF_COLUMN_WIDTH = 45;
 
-    private static final Font FONT = font("Erbos Draco 1st Open NBP Regular", 19.5);
+    private static final Font DISPLAY_FONT = font("Ubuntu Mono", FontWeight.SEMI_BOLD, 18);
+    private static final Font BUTTON_FONT = font("Consolas", FontWeight.SEMI_BOLD, 12);
 
-    private CalculatorModel model;
-    private StateMachine<Signal> stateMachine;
+    private final CalculatorModel model;
+    private final StateMachine<Signal> stateMachine;
 
     private final ExecutorService stateMachineThread;
     private final Map<String, SignalEmitter<KeyEvent>> signalEmittersMap;
@@ -89,7 +92,7 @@ public class CalculatorView extends Application {
                 .editable(false)
                 .cache(false)
                 .focusTraversable(false)
-                .font(FONT)
+                .font(DISPLAY_FONT)
                 .prefHeight(PREF_COLUMN_HEIGHT + SPACING_SIZE * 2)
                 .prefWidth(PREF_COLUMN_WIDTH)
                 .alignment(Pos.CENTER)
@@ -100,7 +103,7 @@ public class CalculatorView extends Application {
                 .create()
                 .editable(false)
                 .cache(false)
-                .font(FONT)
+                .font(DISPLAY_FONT)
                 .focusTraversable(false)
                 .prefHeight(PREF_COLUMN_HEIGHT + SPACING_SIZE * 2)
                 .prefWidth((PREF_COLUMN_WIDTH + SPACING_SIZE) * 5 - 3) // chosen empirically
@@ -120,7 +123,7 @@ public class CalculatorView extends Application {
                 ),
                 createRow(
                         createColumn(
-                                createButton("←", BACK_SPACE),
+                                createButton("\u2190", BACK_SPACE),
                                 createButton("7", DIGIT_7),
                                 createButton("4", DIGIT_4),
                                 createButton("1", DIGIT_1)
@@ -145,10 +148,10 @@ public class CalculatorView extends Application {
                                 createButton("+", PLUS)
                         ),
                         createColumn(
-                                createButton("±", REVERSE),
-                                createButton("xˉ¹", INVERSE),
+                                createButton("\u00b1", REVERSE),
+                                createButton("\u215f\u2093", INVERSE),
                                 createButton("%", PERCENT),
-                                createButton("√", SQUARE_ROOT)
+                                createButton("\u221a", SQUARE_ROOT)
                         ),
                         createColumn(
                                 createButton("MR", MEMORY_RESTORE),
@@ -183,6 +186,8 @@ public class CalculatorView extends Application {
             }
         });
 
+        stage.setTitle("Calculator");
+        stage.setIconified(true);
         stage.setOnCloseRequest((event) -> stateMachineThread.shutdownNow());
         stage.setScene(new Scene(mainContainer));
         stage.setResizable(false);
@@ -206,6 +211,7 @@ public class CalculatorView extends Application {
                 .create()
                 .prefHeight(PREF_COLUMN_HEIGHT)
                 .minWidth(PREF_COLUMN_WIDTH)
+                .font(BUTTON_FONT)
                 .text(text)
                 .onMouseClicked(new SignalEmitter<>(signal))
                 .focusTraversable(false)
@@ -217,6 +223,7 @@ public class CalculatorView extends Application {
                 .create()
                 .prefHeight(PREF_COLUMN_HEIGHT)
                 .minWidth(PREF_COLUMN_WIDTH * 2 + SPACING_SIZE)
+                .font(BUTTON_FONT)
                 .text(text)
                 .onMouseClicked(new SignalEmitter<>(signal))
                 .focusTraversable(false)
