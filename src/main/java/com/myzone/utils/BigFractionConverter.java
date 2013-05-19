@@ -6,6 +6,7 @@ package com.myzone.utils;
  */
 public class BigFractionConverter implements Converter<String, BigFraction> {
 
+    protected final int maxLength;
     protected final Converter<String, Double> doubleConverter;
 
     public BigFractionConverter(int maxLength) {
@@ -13,7 +14,8 @@ public class BigFractionConverter implements Converter<String, BigFraction> {
     }
 
     public BigFractionConverter(int maxLength, double maxThreshold, double minThreshold) {
-        doubleConverter = new DoubleConverter(maxLength, maxThreshold, minThreshold);
+        this.maxLength = maxLength;
+        this.doubleConverter = new DoubleConverter(maxLength, maxThreshold, minThreshold);
     }
 
     @Override
@@ -29,6 +31,6 @@ public class BigFractionConverter implements Converter<String, BigFraction> {
         if (source == null)
             return null;
 
-        return doubleConverter.render(source.toBigDecimal(20).doubleValue());
+        return doubleConverter.render(source.toBigDecimal(maxLength + 1).doubleValue());
     }
 }

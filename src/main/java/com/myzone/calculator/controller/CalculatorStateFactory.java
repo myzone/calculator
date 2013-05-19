@@ -136,8 +136,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                     case MINUS:
                     case MULTIPLY:
                     case DIVIDE:
-                        session.setlArg(parseDouble(session.getDisplayText()));
-                        session.setDisplayData(session.getlArg());
+                        session.setlArg(session.getDisplayData());
                         session.setDisplayText(normalize(session.getDisplayText()));
                         session.setOperation(CalculatorModel.Operation.bySignal(signal));
                         return afterSingSelection;
