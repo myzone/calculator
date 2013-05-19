@@ -290,6 +290,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
                         if (session.getOperation() != null) {
                             try {
                                 session.setlArg(session.getOperation().evaluate(session.getDisplayData(), session.getrArg()));
+                                session.setDisplayData(session.getlArg());
                                 session.setDisplayText(renderDouble(session.getDisplayData()));
                                 view.invalidate();
                                 return afterEvaluation;
@@ -631,12 +632,9 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
 
     protected class AfterEvaluationState extends LArgState {
+
         public AfterEvaluationState() {
             super("afterEvaluation");
-        }
-
-        public AfterEvaluationState(String name) {
-            super(name);
         }
 
         @NotNull
@@ -950,10 +948,13 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
     }
 
     private static BigFraction sqrt(BigFraction bigFraction) {
-        double doubleNumerator = Math.sqrt(bigFraction.getNumerator().doubleValue());
-        double doubleDenominator = Math.sqrt(bigFraction.getDenominator().doubleValue());
-
-        return BigFraction.valueOf(BigDecimal.valueOf(doubleNumerator).divide(BigDecimal.valueOf(doubleDenominator)));
+        return BigFraction.valueOf(
+                new BigDecimal(
+                        Math.sqrt(bigFraction.getNumerator().doubleValue()) / Math.sqrt(bigFraction.getDenominator().doubleValue())
+                )
+        );
     }
+
+
 
 }
