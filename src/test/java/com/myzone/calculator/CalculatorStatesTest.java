@@ -6,11 +6,9 @@ import com.myzone.calculator.model.Signal;
 import com.myzone.calculator.view.CalculatorView;
 import com.myzone.utils.BigFraction;
 import com.myzone.utils.statemachine.TestingEventStateMachine;
-import com.myzone.utils.testing.LoggingRunner;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import static com.myzone.calculator.model.Signal.*;
 import static com.myzone.utils.BigFraction.valueOf;
@@ -1580,7 +1578,7 @@ public class CalculatorStatesTest {
     }
 
     @Test
-    public void test1() {
+    public void testManyEvaluationsAfterDot2() {
         assertEmpty(stateMachine.run(
                 DIGIT_5,
                 MULTIPLY,
@@ -1598,7 +1596,7 @@ public class CalculatorStatesTest {
     }
 
     @Test
-    public void test2() {
+    public void testNegativeZeroSquareRoot() {
         assertEmpty(stateMachine.run(
                 DIGIT_0,
                 DOT,
@@ -1613,10 +1611,11 @@ public class CalculatorStatesTest {
     }
 
     @Test
-    public void test3() {
+    public void testNegativeZeroNormalization() {
         assertEmpty(stateMachine.run(
                 DIGIT_0,
                 DOT,
+                REVERSE,
                 MULTIPLY
         ));
 
@@ -1628,7 +1627,7 @@ public class CalculatorStatesTest {
 
     @Test
     @Ignore("There isn't any idea how to fix this")
-    public void test4() {
+    public void testSquareRoot2() {
         assertEmpty(stateMachine.run(
                 DIGIT_5,
                 DIGIT_5,
@@ -1641,6 +1640,38 @@ public class CalculatorStatesTest {
         assertEquals("55", view.getDisplayText());
 
         assertEquals(valueOf(55), model.getDisplayData());
+    }
+
+
+    @Test
+    @Ignore("There isn't any idea how to fix this")
+    public void testSquareRoot3() {
+        assertEmpty(stateMachine.run(
+                DIGIT_2,
+                DIGIT_2,
+                DIGIT_2,
+                DIGIT_2,
+                DIGIT_2,
+                DIGIT_2,
+                DIGIT_2,
+                DIGIT_2,
+                DIGIT_2,
+                DIGIT_2,
+                DIGIT_2,
+                DIGIT_2,
+                DIGIT_5,
+                DIGIT_5,
+                DIGIT_5,
+                SQUARE_ROOT,
+                MULTIPLY,
+                EVALUATE
+        ));
+
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("222222222222555", view.getDisplayText());
+
+        assertEquals(valueOf(222222222222555L), model.getDisplayData());
+
     }
 
     private static class TestingCalculatorModel extends CalculatorModel {

@@ -955,6 +955,4 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
         );
     }
 
-
-
 }
