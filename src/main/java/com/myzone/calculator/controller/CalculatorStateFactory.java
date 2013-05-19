@@ -9,6 +9,7 @@ import com.myzone.utils.Converter;
 import com.myzone.utils.statemachine.State;
 import org.jetbrains.annotations.NotNull;
 
+import java.math.BigDecimal;
 import java.util.regex.Pattern;
 
 import static java.lang.Math.abs;
@@ -45,6 +46,7 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
         result = firstPattern.matcher(result).replaceAll("$1$3$4$5");
         result = secondPattern.matcher(result).replaceAll("$1");
+        result = result.equals("-0") ? "0" : result;
 
         return result;
     }
@@ -740,10 +742,6 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                     case SQUARE_ROOT:
                         try {
-                            if (session.getDisplayText().startsWith("-")) {
-                                throw new ArithmeticException("Negative square root");
-                            }
-
                             session.setDisplayData(sqrt(session.getDisplayData()));
                             session.setDisplayText(renderDouble(session.getDisplayData()));
                             view.invalidate();
@@ -835,10 +833,6 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
 
                     case SQUARE_ROOT:
                         try {
-                            if (session.getDisplayText().startsWith("-")) {
-                                throw new ArithmeticException("Negative square root");
-                            }
-
                             session.setDisplayData(sqrt(session.getDisplayData()));
                             session.setDisplayText(renderDouble(session.getDisplayData()));
                             view.invalidate();
@@ -956,10 +950,10 @@ public class CalculatorStateFactory implements State.Factory<Signal> {
     }
 
     private static BigFraction sqrt(BigFraction bigFraction) {
-        return BigFraction.valueOf(
-                Math.sqrt(bigFraction.getNumerator().doubleValue()),
-                Math.sqrt(bigFraction.getDenominator().doubleValue())
-        );
+        double doubleNumerator = Math.sqrt(bigFraction.getNumerator().doubleValue());
+        double doubleDenominator = Math.sqrt(bigFraction.getDenominator().doubleValue());
+
+        return BigFraction.valueOf(BigDecimal.valueOf(doubleNumerator).divide(BigDecimal.valueOf(doubleDenominator)));
     }
 
 }

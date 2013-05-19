@@ -165,7 +165,7 @@ public class CalculatorView extends Application {
                 )
         );
 
-        mainContainer.setPadding(new Insets(30, 0, 15, 15)); // chosen empirically
+        mainContainer.setPadding(new Insets(15)); // chosen empirically
         mainContainer.setOnKeyReleased((event) -> {
             switch (event.getCode()) {
                 case ENTER:
@@ -249,7 +249,7 @@ public class CalculatorView extends Application {
 
         @Override
         public void handle(E event) {
-            LOGGER.info("Signal {stimulus} has been emitted by {event}", stimulus, event);
+            LOGGER.info("Signal {} has been emitted by {}", stimulus, event);
 
             super.handle(event);
         }

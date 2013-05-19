@@ -21,7 +21,6 @@ import static org.mockito.Mockito.mock;
  * @author: myzone
  * @date: 20.02.13 1:21
  */
-@RunWith(LoggingRunner.class)
 public class CalculatorStatesTest {
 
     private volatile TestingCalculatorView view;
@@ -50,12 +49,12 @@ public class CalculatorStatesTest {
 
     @Test
     public void testTwoMultiplyTwo() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_2,
                 MULTIPLY,
                 DIGIT_2,
                 EVALUATE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("4", view.getDisplayText());
@@ -65,14 +64,14 @@ public class CalculatorStatesTest {
 
     @Test
     public void testTwoMultiplyTwoWithManyEvaluations() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_2,
                 MULTIPLY,
                 DIGIT_2,
                 EVALUATE,
                 EVALUATE,
                 EVALUATE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("16", view.getDisplayText());
@@ -82,13 +81,13 @@ public class CalculatorStatesTest {
 
     @Test
     public void testTwoMultiplyWithManyEvaluations() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_2,
                 MULTIPLY,
                 EVALUATE,
                 EVALUATE,
                 EVALUATE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("16", view.getDisplayText());
@@ -98,11 +97,11 @@ public class CalculatorStatesTest {
 
     @Test
     public void testSquare() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_2,
                 MULTIPLY,
                 EVALUATE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("4", view.getDisplayText());
@@ -112,7 +111,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testManyAdds() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 PLUS,
                 DIGIT_5,
                 PLUS,
@@ -124,7 +123,7 @@ public class CalculatorStatesTest {
                 PLUS,
                 DIGIT_5,
                 EVALUATE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("25", view.getDisplayText());
@@ -134,7 +133,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testManyAddsAndEvaluations() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 PLUS,
                 DIGIT_5,
                 PLUS,
@@ -149,7 +148,7 @@ public class CalculatorStatesTest {
                 PLUS,
                 DIGIT_5,
                 EVALUATE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("25", view.getDisplayText());
@@ -159,7 +158,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testManyStrangeEvaluations() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 PLUS,
                 DIGIT_5,
                 PLUS,
@@ -173,7 +172,7 @@ public class CalculatorStatesTest {
                 DIGIT_2,
                 DIGIT_0,
                 EVALUATE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("25", view.getDisplayText());
@@ -183,7 +182,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testManyEvaluations() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 PLUS,
                 DIGIT_5,
                 PLUS,
@@ -193,7 +192,7 @@ public class CalculatorStatesTest {
                 PLUS,
                 DIGIT_7,
                 EVALUATE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("10", view.getDisplayText());
@@ -203,7 +202,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testManyEvaluationsWithDot() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 PLUS,
                 DIGIT_5,
                 PLUS,
@@ -214,7 +213,7 @@ public class CalculatorStatesTest {
                 PLUS,
                 DIGIT_3,
                 EVALUATE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("3.2", view.getDisplayText());
@@ -224,7 +223,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testComplexEvaluationWithDot() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DOT,
                 DIGIT_3,
                 PLUS,
@@ -239,7 +238,7 @@ public class CalculatorStatesTest {
                 DIGIT_4,
                 DIGIT_7,
                 EVALUATE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("0.00363945578231", view.getDisplayText());
@@ -249,7 +248,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testPercentAfterEvaluation() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_1,
                 DIGIT_0,
                 PLUS,
@@ -257,7 +256,7 @@ public class CalculatorStatesTest {
                 DIGIT_5,
                 EVALUATE,
                 PERCENT
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("6.25", view.getDisplayText());
@@ -267,7 +266,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testEvaluationAfterPercentAfterEvaluation() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_1,
                 DIGIT_0,
                 PLUS,
@@ -276,7 +275,7 @@ public class CalculatorStatesTest {
                 EVALUATE,
                 PERCENT,
                 EVALUATE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("21.25", view.getDisplayText());
@@ -286,11 +285,11 @@ public class CalculatorStatesTest {
 
     @Test
     public void testPercentWithOneArg() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 PLUS,
                 DIGIT_1,
                 PERCENT
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("0", view.getDisplayText());
@@ -300,13 +299,13 @@ public class CalculatorStatesTest {
 
     @Test
     public void testPercent() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_4,
                 DIGIT_8,
                 MINUS,
                 DIGIT_2,
                 PERCENT
-        ).length);
+        ));
 
 
         assertFalse(view.hasMemoryFlag());
@@ -317,14 +316,14 @@ public class CalculatorStatesTest {
 
     @Test
     public void testEvaluationAfterPercent() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_4,
                 DIGIT_8,
                 MINUS,
                 DIGIT_2,
                 PERCENT,
                 EVALUATE
-        ).length);
+        ));
 
 
         assertFalse(view.hasMemoryFlag());
@@ -335,13 +334,13 @@ public class CalculatorStatesTest {
 
     @Test
     public void testManyDots() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 PLUS,
                 DIGIT_0,
                 DOT,
                 DOT,
                 DOT
-        ).length);
+        ));
 
 
         assertFalse(view.hasMemoryFlag());
@@ -352,13 +351,13 @@ public class CalculatorStatesTest {
 
     @Test
     public void testManyEvaluationsWithPositiveNumber() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_5,
                 DIGIT_6,
                 EVALUATE,
                 EVALUATE,
                 EVALUATE
-        ).length);
+        ));
 
 
         assertFalse(view.hasMemoryFlag());
@@ -369,14 +368,14 @@ public class CalculatorStatesTest {
 
     @Test
     public void testManyEvaluationsWithNegativeNumber() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_5,
                 DIGIT_6,
                 REVERSE,
                 EVALUATE,
                 EVALUATE,
                 EVALUATE
-        ).length);
+        ));
 
 
         assertFalse(view.hasMemoryFlag());
@@ -387,13 +386,13 @@ public class CalculatorStatesTest {
 
     @Test
     public void testZeroDivision() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_5,
                 DIGIT_6,
                 DIVIDE,
                 DIGIT_0,
                 EVALUATE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("ERR", view.getDisplayText());
@@ -401,12 +400,12 @@ public class CalculatorStatesTest {
 
     @Test
     public void testSquareRootFromNegativeNumber() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_5,
                 DIGIT_6,
                 REVERSE,
                 SQUARE_ROOT
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("ERR", view.getDisplayText());
@@ -414,7 +413,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testComplexSquareRootFromNegativeNumber() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_5,
                 DIGIT_6,
                 SQUARE_ROOT,
@@ -423,7 +422,7 @@ public class CalculatorStatesTest {
                 DIGIT_3,
                 EVALUATE,
                 SQUARE_ROOT
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("ERR", view.getDisplayText());
@@ -431,13 +430,13 @@ public class CalculatorStatesTest {
 
     @Test
     public void testSquareRoot() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_9,
                 SQUARE_ROOT,
                 PLUS,
                 DIGIT_3,
                 EVALUATE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("6", view.getDisplayText());
@@ -447,12 +446,12 @@ public class CalculatorStatesTest {
 
     @Test
     public void testNumberAfterSquareRoot() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_9,
                 SQUARE_ROOT,
                 DIGIT_3,
                 EVALUATE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("3", view.getDisplayText());
@@ -462,38 +461,38 @@ public class CalculatorStatesTest {
 
     @Test
     public void testDoubleSquareRoot() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_5,
                 DIGIT_6,
                 SQUARE_ROOT,
                 SQUARE_ROOT
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("2.7355647997348", view.getDisplayText());
 
-        assertEquals(valueOf(6159944306366657L, 2251799813685248L), model.getDisplayData());
+        assertEquals(valueOf(2735564799734761L, 1000000000000000L), model.getDisplayData());
     }
 
     @Test
     public void testTripleSquareRoot() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_5,
                 DIGIT_6,
                 SQUARE_ROOT,
                 SQUARE_ROOT,
                 SQUARE_ROOT
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("1.6539542919122", view.getDisplayText());
 
-        assertEquals(valueOf(10534120349184526L, 6369051672525773L), model.getDisplayData());
+        assertEquals(valueOf(3230379476391L, 1953125000000L), model.getDisplayData());
     }
 
     @Test
     public void testMemory() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_1,
                 DIGIT_0,
                 MEMORY_STORE,
@@ -506,7 +505,7 @@ public class CalculatorStatesTest {
                 PLUS,
                 MEMORY_RESTORE,
                 EVALUATE
-        ).length);
+        ));
 
         assertTrue(view.hasMemoryFlag());
         assertEquals("12.071067811866", view.getDisplayText());
@@ -516,7 +515,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testBackspace() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_5,
                 DIGIT_5,
                 DIGIT_5,
@@ -527,7 +526,7 @@ public class CalculatorStatesTest {
                 BACK_SPACE,
                 BACK_SPACE,
                 BACK_SPACE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("0", view.getDisplayText());
@@ -537,7 +536,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testTooManyBackspace() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_5,
                 DIGIT_5,
                 DIGIT_5,
@@ -553,7 +552,7 @@ public class CalculatorStatesTest {
                 DIGIT_7,
                 BACK_SPACE,
                 BACK_SPACE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("0", view.getDisplayText());
@@ -563,7 +562,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testBackspaceWithDottedNumber() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_5,
                 DIGIT_5,
                 DIGIT_5,
@@ -579,7 +578,7 @@ public class CalculatorStatesTest {
                 DOT,
                 DOT,
                 DIGIT_2
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("55555.2", view.getDisplayText());
@@ -589,13 +588,13 @@ public class CalculatorStatesTest {
 
     @Test
     public void testDoubleReverseAfterDot() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_5,
                 DIGIT_6,
                 DOT,
                 REVERSE,
                 REVERSE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("56.", view.getDisplayText());
@@ -605,7 +604,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testPositiveOverflow() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_5,
                 DIGIT_5,
                 DIGIT_5,
@@ -652,7 +651,7 @@ public class CalculatorStatesTest {
                 EVALUATE,
                 EVALUATE,
                 EVALUATE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("1.66666666666667e+16", view.getDisplayText());
@@ -662,7 +661,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testNegativeOverflow() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_5,
                 DIGIT_5,
                 DIGIT_5,
@@ -711,7 +710,7 @@ public class CalculatorStatesTest {
                 EVALUATE,
                 EVALUATE,
                 EVALUATE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("-1.66666666666667e+16", view.getDisplayText());
@@ -721,7 +720,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testPrecision() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DOT,
                 DIGIT_0,
                 DIGIT_0,
@@ -757,7 +756,7 @@ public class CalculatorStatesTest {
                 DIVIDE,
                 DIGIT_2,
                 EVALUATE
-        ).length);
+        ));
 
 
         assertFalse(view.hasMemoryFlag());
@@ -768,12 +767,12 @@ public class CalculatorStatesTest {
 
     @Test
     public void testPercentAfterSign() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_2,
                 DIVIDE,
                 PERCENT,
                 PERCENT
-        ).length);
+        ));
 
 
         assertFalse(view.hasMemoryFlag());
@@ -784,7 +783,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testPrecision1() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_2,
                 SQUARE_ROOT,
                 MINUS,
@@ -801,7 +800,7 @@ public class CalculatorStatesTest {
                 EVALUATE,
                 EVALUATE,
                 EVALUATE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("0", view.getDisplayText());
@@ -811,14 +810,14 @@ public class CalculatorStatesTest {
 
     @Test
     public void testManyNullsAtBeginning() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_0,
                 DIGIT_0,
                 DIGIT_0,
                 DIGIT_0,
                 DIGIT_0,
                 DIGIT_0
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("0", view.getDisplayText());
@@ -828,7 +827,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testManyNullsAfterSingSelection() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_1,
                 PLUS,
                 DIGIT_0,
@@ -836,7 +835,7 @@ public class CalculatorStatesTest {
                 DIGIT_0,
                 DIGIT_0,
                 DIGIT_0
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("0", view.getDisplayText());
@@ -846,10 +845,10 @@ public class CalculatorStatesTest {
 
     @Test
     public void testReverseNullsAtBeginning() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_0,
                 REVERSE
-        ).length);
+        ));
 
 
         assertFalse(view.hasMemoryFlag());
@@ -860,12 +859,12 @@ public class CalculatorStatesTest {
 
     @Test
     public void testReverseNullsAfterSingSelection() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_1,
                 PLUS,
                 DIGIT_0,
                 REVERSE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("0", view.getDisplayText());
@@ -875,7 +874,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testManySquareRootsMultiplications2() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_1,
                 DIGIT_6,
                 MULTIPLY,
@@ -884,7 +883,7 @@ public class CalculatorStatesTest {
                 SQUARE_ROOT,
                 MULTIPLY,
                 EVALUATE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("262144", view.getDisplayText());
@@ -894,7 +893,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testManyPercentsMultiplications() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_5,
                 DIGIT_0,
                 MULTIPLY,
@@ -903,7 +902,7 @@ public class CalculatorStatesTest {
                 PERCENT,
                 MULTIPLY,
                 EVALUATE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("381469726562500", view.getDisplayText());
@@ -913,7 +912,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testMemoryRecovery() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_2,
                 MEMORY_PLUS,
                 CLEAR,
@@ -921,7 +920,7 @@ public class CalculatorStatesTest {
                 MULTIPLY,
                 MEMORY_RESTORE,
                 PLUS
-        ).length);
+        ));
 
         assertTrue(view.hasMemoryFlag());
         assertEquals("4", view.getDisplayText());
@@ -931,7 +930,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testMinusZero() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_0,
                 DOT,
                 DIGIT_0,
@@ -944,7 +943,7 @@ public class CalculatorStatesTest {
                 BACK_SPACE,
                 BACK_SPACE,
                 BACK_SPACE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("0", view.getDisplayText());
@@ -954,27 +953,27 @@ public class CalculatorStatesTest {
 
     @Test
     public void testReverseSquareRoot() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_2,
                 SQUARE_ROOT,
                 REVERSE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("-1.4142135623731", view.getDisplayText());
 
-        assertEquals(valueOf(-6369051672525773L, 4503599627370496L), model.getDisplayData());
+        assertEquals(valueOf(-14142135623730951L, 10000000000000000L), model.getDisplayData());
     }
 
     @Test
     public void testDoubleInverse() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_7,
                 DIGIT_4,
                 DIGIT_3,
                 INVERSE,
                 INVERSE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("743", view.getDisplayText());
@@ -984,13 +983,13 @@ public class CalculatorStatesTest {
 
     @Test
     public void testNormalize() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DOT,
                 DIGIT_0,
                 DIGIT_1,
                 DIGIT_0,
                 PLUS
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("0.01", view.getDisplayText());
@@ -1000,13 +999,13 @@ public class CalculatorStatesTest {
 
     @Test
     public void testNormalizeAfterPlus() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DOT,
                 DIGIT_0,
                 DIGIT_1,
                 DIGIT_0,
                 PLUS
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("0.01", view.getDisplayText());
@@ -1016,12 +1015,12 @@ public class CalculatorStatesTest {
 
     @Test
     public void testBackspaceAfterDotInLArg1() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_0,
                 DOT,
                 BACK_SPACE,
                 DIGIT_9
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("9", view.getDisplayText());
@@ -1031,14 +1030,14 @@ public class CalculatorStatesTest {
 
     @Test
     public void testBackspaceAfterDotInRArg1() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_1,
                 PLUS,
                 DIGIT_0,
                 DOT,
                 BACK_SPACE,
                 DIGIT_9
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("9", view.getDisplayText());
@@ -1049,12 +1048,12 @@ public class CalculatorStatesTest {
 
     @Test
     public void testBackspaceAfterDotInLArg2() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_1,
                 DOT,
                 BACK_SPACE,
                 DIGIT_9
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("19", view.getDisplayText());
@@ -1064,14 +1063,14 @@ public class CalculatorStatesTest {
 
     @Test
     public void testBackspaceAfterDotInRArg2() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_1,
                 PLUS,
                 DIGIT_1,
                 DOT,
                 BACK_SPACE,
                 DIGIT_9
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("19", view.getDisplayText());
@@ -1081,7 +1080,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testRounding() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DOT,
                 DIGIT_9,
                 DIGIT_9,
@@ -1105,23 +1104,23 @@ public class CalculatorStatesTest {
                 DIGIT_9,
                 DIGIT_9,
                 SQUARE_ROOT
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("1", view.getDisplayText());
 
-        assertEquals(valueOf(5368709119999973L, 5368709120000000L), model.getDisplayData());
+        assertEquals(valueOf(199999999999999L, 200000000000000L), model.getDisplayData());
     }
 
     @Test
     public void testManyEvaluationsAfterDot() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_2,
                 DOT,
                 EVALUATE,
                 EVALUATE,
                 EVALUATE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("2", view.getDisplayText());
@@ -1131,7 +1130,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testDecrementMaxNormalized() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_9,
                 DIGIT_9,
                 DIGIT_9,
@@ -1168,7 +1167,7 @@ public class CalculatorStatesTest {
                 MINUS,
                 DIGIT_1,
                 EVALUATE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("999999999999998", view.getDisplayText());
@@ -1178,12 +1177,12 @@ public class CalculatorStatesTest {
 
     @Test
     public void testSquareRootAfterClearAfterError() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_0,
                 INVERSE,
                 CLEAR,
                 SQUARE_ROOT
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("0", view.getDisplayText());
@@ -1193,7 +1192,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testScientificNumberModification() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_9,
                 DIGIT_9,
                 DIGIT_9,
@@ -1218,7 +1217,7 @@ public class CalculatorStatesTest {
                 EVALUATE,
                 EVALUATE,
                 BACK_SPACE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("9.99999999999997e+44", view.getDisplayText());
@@ -1228,14 +1227,14 @@ public class CalculatorStatesTest {
 
     @Test
     public void testModificationAfterMemorySetInLArg() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_3,
                 DIGIT_3,
                 DIGIT_3,
                 DIGIT_3,
                 MEMORY_STORE,
                 DIGIT_4
-        ).length);
+        ));
 
 
         assertTrue(view.hasMemoryFlag());
@@ -1246,7 +1245,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testModificationAfterMemorySetInRArg() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 MULTIPLY,
                 DIGIT_3,
                 DIGIT_3,
@@ -1254,7 +1253,7 @@ public class CalculatorStatesTest {
                 DIGIT_3,
                 MEMORY_STORE,
                 DIGIT_4
-        ).length);
+        ));
 
         assertTrue(view.hasMemoryFlag());
         assertEquals("4", view.getDisplayText());
@@ -1264,7 +1263,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testTransitionToScientificNotation() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_9,
                 DIGIT_9,
                 DIGIT_9,
@@ -1288,7 +1287,7 @@ public class CalculatorStatesTest {
                 EVALUATE,
                 EVALUATE,
                 EVALUATE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("1.00000000000001e+15", view.getDisplayText());
@@ -1298,11 +1297,11 @@ public class CalculatorStatesTest {
 
     @Test
     public void testReverse() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_9,
                 REVERSE,
                 DIGIT_9
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("-99", view.getDisplayText());
@@ -1312,13 +1311,13 @@ public class CalculatorStatesTest {
 
     @Test
     public void testBackspaceAfterSignSelection() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_2,
                 DIGIT_3,
                 DIGIT_8,
                 DIVIDE,
                 BACK_SPACE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("238", view.getDisplayText());
@@ -1328,7 +1327,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testBackspaceAfterEvaluation() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_2,
                 DIGIT_3,
                 DIGIT_8,
@@ -1336,7 +1335,7 @@ public class CalculatorStatesTest {
                 DIGIT_1,
                 EVALUATE,
                 BACK_SPACE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("238", view.getDisplayText());
@@ -1346,7 +1345,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testPrecision2() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_1,
                 DIVIDE,
                 DIGIT_7,
@@ -1359,7 +1358,7 @@ public class CalculatorStatesTest {
                 EVALUATE,
                 EVALUATE,
                 EVALUATE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("0", view.getDisplayText());
@@ -1369,7 +1368,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testClearAfterEvaluation() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_2,
                 PLUS,
                 DIGIT_1,
@@ -1377,7 +1376,7 @@ public class CalculatorStatesTest {
                 CLEAR,
                 DIGIT_0,
                 EVALUATE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("0", view.getDisplayText());
@@ -1388,13 +1387,13 @@ public class CalculatorStatesTest {
 
     @Test
     public void testNormalizeInRArg() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_0,
                 MINUS,
                 DIGIT_0,
                 DOT,
                 EVALUATE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("0", view.getDisplayText());
@@ -1404,14 +1403,14 @@ public class CalculatorStatesTest {
 
     @Test
     public void testDotInInitialState() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_2,
                 DOT,
                 EVALUATE,
                 DOT,
                 DIGIT_3,
                 DIGIT_3
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("0.33", view.getDisplayText());
@@ -1421,14 +1420,14 @@ public class CalculatorStatesTest {
 
     @Test
     public void testNormalizationAfterMemoryOperations() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_2,
                 DIGIT_5,
                 MEMORY_PLUS,
                 REVERSE,
                 DOT,
                 MEMORY_MINUS
-        ).length);
+        ));
 
         assertTrue(view.hasMemoryFlag());
         assertEquals("0", view.getDisplayText());
@@ -1438,43 +1437,43 @@ public class CalculatorStatesTest {
 
     @Test
     public void testBackspaceAfterSquareRootInLArg() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_2,
                 SQUARE_ROOT,
                 BACK_SPACE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("1.4142135623731", view.getDisplayText());
 
-        assertEquals(valueOf(6369051672525773L, 4503599627370496L), model.getDisplayData());
+        assertEquals(valueOf(14142135623730951L, 10000000000000000L), model.getDisplayData());
     }
 
     @Test
     public void testBackspaceAfterSquareRootInRArg() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_2,
                 PLUS,
                 DIGIT_2,
                 SQUARE_ROOT,
                 BACK_SPACE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("1.4142135623731", view.getDisplayText());
 
-        assertEquals(valueOf(6369051672525773L, 4503599627370496L), model.getDisplayData());
+        assertEquals(valueOf(14142135623730951L, 10000000000000000L), model.getDisplayData());
     }
 
     @Test
     public void testBackspaceAfterMemoryRestoreInLArg() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_2,
                 DIGIT_2,
                 MEMORY_PLUS,
                 MEMORY_RESTORE,
                 BACK_SPACE
-        ).length);
+        ));
 
         assertTrue(view.hasMemoryFlag());
         assertEquals("22", view.getDisplayText());
@@ -1484,14 +1483,14 @@ public class CalculatorStatesTest {
 
     @Test
     public void testBackspaceAfterMemoryRestoreInRArg() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 PLUS,
                 DIGIT_2,
                 DIGIT_2,
                 MEMORY_PLUS,
                 MEMORY_RESTORE,
                 BACK_SPACE
-        ).length);
+        ));
 
         assertTrue(view.hasMemoryFlag());
         assertEquals("22", view.getDisplayText());
@@ -1501,13 +1500,13 @@ public class CalculatorStatesTest {
 
     @Test
     public void testBackspaceAfterMemoryPlusInRArg() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 PLUS,
                 DIGIT_2,
                 DIGIT_2,
                 MEMORY_PLUS,
                 BACK_SPACE
-        ).length);
+        ));
 
         assertTrue(view.hasMemoryFlag());
         assertEquals("22", view.getDisplayText());
@@ -1517,14 +1516,14 @@ public class CalculatorStatesTest {
 
     @Test
     public void testPlusAfterMemoryPlus() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_5,
                 MEMORY_PLUS,
                 PLUS,
                 DOT,
                 DIGIT_3,
                 PLUS
-        ).length);
+        ));
 
         assertTrue(view.hasMemoryFlag());
         assertEquals("5.3", view.getDisplayText());
@@ -1534,7 +1533,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testSmallDigitRounding() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_3,
                 MINUS,
                 DOT,
@@ -1544,7 +1543,7 @@ public class CalculatorStatesTest {
                 EVALUATE,
                 EVALUATE,
                 EVALUATE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("0", view.getDisplayText());
@@ -1554,7 +1553,7 @@ public class CalculatorStatesTest {
 
     @Test
     public void testRound() {
-        assertEquals(0, stateMachine.run(
+        assertEmpty(stateMachine.run(
                 DIGIT_1,
                 DIVIDE,
                 DIGIT_3,
@@ -1571,12 +1570,75 @@ public class CalculatorStatesTest {
                 MULTIPLY,
                 DIGIT_2,
                 EVALUATE
-        ).length);
+        ));
 
         assertFalse(view.hasMemoryFlag());
         assertEquals("1333333332.6667", view.getDisplayText());
 
         assertEquals(valueOf(3999999998L, 3L), model.getDisplayData());
+    }
+
+    @Test
+    public void test1() {
+        assertEmpty(stateMachine.run(
+                DIGIT_5,
+                MULTIPLY,
+                DIGIT_3,
+                EVALUATE,
+                DOT,
+                DIGIT_2,
+                EVALUATE
+        ));
+
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("0.6", view.getDisplayText());
+
+        assertEquals(valueOf(3, 5), model.getDisplayData());
+    }
+
+    @Test
+    public void test2() {
+        assertEmpty(stateMachine.run(
+                DIGIT_0,
+                DOT,
+                REVERSE,
+                SQUARE_ROOT
+        ));
+
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("0", view.getDisplayText());
+
+        assertEquals(valueOf(0), model.getDisplayData());
+    }
+
+    @Test
+    public void test3() {
+        assertEmpty(stateMachine.run(
+                DIGIT_0,
+                DOT,
+                MULTIPLY
+        ));
+
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("0", view.getDisplayText());
+
+        assertEquals(valueOf(0), model.getDisplayData());
+    }
+
+    @Test
+    public void test4() {
+        assertEmpty(stateMachine.run(
+                DIGIT_5,
+                DIGIT_5,
+                SQUARE_ROOT,
+                MULTIPLY,
+                EVALUATE
+        ));
+
+        assertFalse(view.hasMemoryFlag());
+        assertEquals("55", view.getDisplayText());
+
+        assertEquals(valueOf(55), model.getDisplayData());
     }
 
     private static class TestingCalculatorModel extends CalculatorModel {
@@ -1640,6 +1702,10 @@ public class CalculatorStatesTest {
         public void setOperation(Operation operation) {
             super.setOperation(operation);
         }
+    }
+
+    private static <T> void assertEmpty(T[] arr) {
+        assertEquals(0, arr.length);
     }
 
     private static class TestingCalculatorView {
