@@ -107,10 +107,6 @@ public class CalculatorModel {
     }
 
     protected BigFraction getMemory() {
-//        if (!Double.isFinite(memory)) {
-//            throw new ArithmeticException("Memory is overflowed");
-//        }
-
         return memory;
     }
 
