@@ -3,7 +3,7 @@ package com.myzone.calculator.controller;
 import com.myzone.calculator.model.CalculatorModel;
 import com.myzone.calculator.model.Signal;
 import com.myzone.calculator.view.CalculatorView;
-import com.myzone.utils.BigFraction;
+import com.myzone.utils.math.BigFraction;
 import com.myzone.utils.BigFractionConverter;
 import com.myzone.utils.Converter;
 import com.myzone.utils.statemachine.State;

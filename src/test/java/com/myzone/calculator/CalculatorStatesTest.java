@@ -4,13 +4,13 @@ import com.myzone.calculator.controller.CalculatorStateFactory;
 import com.myzone.calculator.model.CalculatorModel;
 import com.myzone.calculator.model.Signal;
 import com.myzone.calculator.view.CalculatorView;
-import com.myzone.utils.BigFraction;
+import com.myzone.utils.math.BigFraction;
 import com.myzone.utils.statemachine.TestingEventStateMachine;
 import org.junit.Before;
 import org.junit.Test;
 
 import static com.myzone.calculator.model.Signal.*;
-import static com.myzone.utils.BigFraction.valueOf;
+import static com.myzone.utils.math.BigFraction.valueOf;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;

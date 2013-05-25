@@ -2,7 +2,7 @@ package com.myzone.calculator.model;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.myzone.utils.BigFraction;
+import com.myzone.utils.math.BigFraction;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;

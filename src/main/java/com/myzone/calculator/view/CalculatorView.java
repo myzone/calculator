@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.myzone.calculator.controller.CalculatorStateFactory;
 import com.myzone.calculator.model.CalculatorModel;
 import com.myzone.calculator.model.Signal;
-import com.myzone.utils.BigFraction;
+import com.myzone.utils.math.BigFraction;
 import com.myzone.utils.statemachine.EventStateMachine;
 import com.myzone.utils.statemachine.StateMachine;
 import javafx.application.Application;
